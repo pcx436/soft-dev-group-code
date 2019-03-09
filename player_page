@@ -1,0 +1,200 @@
+
+<html>
+<head>
+  <title>Player Page</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <body style="background-color:#19222B">
+  <style>    
+    /* Set black background color, white text and some padding */
+footer {
+  background-color: #655;
+  color: white;
+  padding: 15px;
+}
+body {
+  font-family: Arial;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+form.example input[type=text] {
+  padding: 10px;
+  font-size: 17px;
+  border: 1px solid grey;
+  float: left;
+  width: 80%;
+  background: #white;
+}
+
+form.example button {
+  float: left;
+  width: 20%;
+  padding: 10px;
+  background: #2196F3;
+  color: white;
+  font-size: 17px;
+  border: 1px solid grey;
+  border-left: none;
+  cursor: pointer;
+}
+
+form.example button:hover {
+  background: #0b7dda;
+}
+
+form.example::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse" style = "background-color: #19222B">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Tracked Out</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="#">Home</a></li>
+
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+      <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container text-center" style ="background-color:#19222B">    
+  <div class="row">
+    <div class="col-sm-3 well">
+      <div class="well">
+        <p><a href="#">Song Search</a>
+
+		<form class="example" action="/action_page.php" style="margin:auto;max-width:300px">
+  		<input type="text" placeholder="Search.." name="search2">
+  		<button type="submit"><i class="fa fa-search"></i></button>
+		</form></p>
+       
+      </div>
+      <div class="well" >
+        <p><a href="#">Queue</a></p>
+        <p>
+        	<button type="button" class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-thumbs-up"></span>
+                <button type="button" class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-thumbs-down"></span>
+            </button>
+        </button>
+
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+        </p>
+
+    </div>
+
+</p>
+</div>
+
+  <div class="col-sm-7" >
+    
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="panel panel-default text-center">
+            <div class="panel-body">
+              <p>Album Cover</p>
+               <img src = 'zep.jpg' width = "600px" height="500px">
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="well">
+            <p>Song Controls</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-3">
+          <div class="well">
+           <p>John:</p>
+          </div>
+        </div>
+        <div class="col-sm-9">
+          <div class="well">
+            <p>Chat Box</p>
+          </div>
+        </div>
+      </div>
+
+</div>
+  <div class="col-sm-2 well">
+      <div class="thumbnail">
+        <p>Server List:</p>
+        <button class="btn btn-primary">Keystone</button>
+        <br/>
+  		<br/>
+        <button class="btn btn-primary">Winter Park</button>
+        	<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+      </div>  
+  </div>
+  <div class="col-sm-2 well">    
+      <div class="well">
+        <p>Users</p>
+
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+    		<br/> 
+      </div>
+      </div>
+
+
+
+</body>
+
+</html>
