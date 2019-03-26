@@ -57,6 +57,8 @@ form.example::after {
   </style>
 </head>
 <body>
+<script src="https://sdk.scdn.co/spotify-player.js"></script>
+<script src="playback.js"></script>
 
 <nav class="navbar navbar-inverse" style = "background-color: #19222B">
   <div class="container-fluid">
@@ -125,7 +127,7 @@ form.example::after {
           <div class="panel panel-default text-center">
             <div class="panel-body">
               <p>Album Cover</p>
-               <img src = 'zep.jpg' width = "600px" height="500px">
+               <img id= "album" src = 'zep.jpg' width = "600px" height="500px">
             </div>
           </div>
         </div>
@@ -134,7 +136,8 @@ form.example::after {
       <div class="row">
         <div class="col-sm-12">
           <div class="well">
-            <p>Song Controls</p>
+            <p>Playback Controls</p>
+            <button class="btn btn-primary" onclick="playPause()">Play/Pause</button>
           </div>
         </div>
       </div>
