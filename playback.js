@@ -3,7 +3,7 @@ var player;
 window.onSpotifyWebPlaybackSDKReady = () => {
     //token is used to connect with spotify connect leaving this undone not sure how we want to authorize this
     //have to have spotify premium and get a code which expires every hour
-    var token = 'BQADysFNYIoFATq00BRUYN8cF_x2CEOWgSCNaH-4YsWsVVoNBI3GSwKLT7_FhM9QDjLg9hyIRKhMwQ_yjwHWzdP4htaJaelEU5T8gpKmZPVvjw07QNMFAyBpLgnK3ZWhpFJyafq6yfM0_3mD0nVrftwdgVbM1H4MosZ_';
+    var token = 'BQB0apmU6rgGHmiOIdCDQhi_W0Zkq1OjRsYUKzexF18C2o6A8YrPHr40J5fDiGeSW5OAZ-jJkR5cJp8GEgqz6HpAKHA5XetwFvC0zmsyWt0O7gdP4h1iYUjhRlbz1ORGoc5jyGi-JSLmX8WT9Tteg5Sp1JTjWdVEOMX0';
     player = new Spotify.Player({
     name: 'Tracked Out',
     getOAuthToken: cb => { cb(token); }
@@ -25,6 +25,8 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       console.log('Position in Song', position);
       console.log('Duration of Song', duration);
       console.log("Album Image", current_track.album.images[2].url); //The album image url of the currently playing track
+      document.getElementById("song_title").innerHTML = current_track.name;//sets song name
+      document.getElementById("artist_name").innerHTML = current_track.artists[0].name;
       document.getElementById("album").src = current_track.album.images[2].url;//sets the album image
     });
 
@@ -43,6 +45,9 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 };
 
 //play/pause the current playing track. Maybe just have it mute?
+
+var toggle = 0;
+
 function playPause(){
     console.log("play/pause button");
     player.togglePlay().then(() => {
