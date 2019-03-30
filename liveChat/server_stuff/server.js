@@ -37,9 +37,12 @@ var db = pgp(dbConfig);
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/'));//This line is necessary for us to use relative paths and access our resources directory
 
-var escape = require('escape-html'), session = require('client-sessions'); // require session
+
+var escape = require('escape-html'); // used for cleaning up user input.
+var session = require('client-sessions'); // includes ability to actually use sessions.
 
 // duration should equate to a week
+// secret is random generated string that came from my password generator.
 app.use(session({
 	cookieName: 'session',
 	secret: 'L0I_hm9j:X1a3s@&9C;da5NN7SHi>',
@@ -47,7 +50,7 @@ app.use(session({
 	activeDuration: 1000 * 60 * 5
 })); //instantiate session
 
-//app.use(flash());
+
 /*********************************
  Below we'll add the get & post requests which will handle:
    - Database access
@@ -57,6 +60,7 @@ app.use(session({
 
 // home page 
 app.get('/', function(req, res) {
+	// user is logged in, show them the home page
 	if(req.session && req.session.user){
 		res.render('pages/home', { 
 			page_title:"Home",
@@ -65,18 +69,21 @@ app.get('/', function(req, res) {
 		});
 	}
 	else{
+		// user isn't logged in, redirect them to the homepage
 		res.redirect('/login');
 	}
 	
 });
 
-// login page
+// login page GET
 app.get('/login', function(req, res) {
 
+	// if user is already logged in, redirect them to the homepage
 	if(req.session && req.session.user){
 		res.redirect('/');
 	}
 	else{
+		// user not logged in, show them the home page
 		res.render('pages/login',{ 
 			page_title:"Login",
 			custom_style:"resources/css/login.css",
@@ -89,39 +96,41 @@ app.get('/login', function(req, res) {
 // MODIFY TO PREVENT SQL INJECTION ATTACKS
 // Also follow along with the managing session stuff, that looks real helpful!
 app.post('/login', function(req, res){
-	console.log(req.body);
-	// already logged in, tried to post again.
-	// will only occur with deliberate tampering (i think)
+
 	if(req.session && req.session.user){
+		// already logged in, tried to post again.
+		// will only occur with deliberate tampering (i think)
 		res.redirect('/');
 	}
 	else if(req.body.user && req.body.pwOne){
+		// both a username and password have been submitted to us
+
+		// sanitize inputs (just a little bit)
 		var cleanName = escape(req.body.user);
 		var cleanPW = escape(req.body.pwOne);
+
+		// query to send to server
 		var existQuery = 'SELECT uid FROM users WHERE username=\'' + cleanName + '\' AND hash = crypt(\'' + cleanPW + '\', hash);';
-		console.log(existQuery);
 		db.task('get-everything', task => {
 			return task.batch([task.any(existQuery)]);
 		})
 		.then(info => {
-			//console.log('user logged in correctly');
-			console.log(req.session);
-			console.log(cleanName);
+			// successful login, add username to session for persistent login capabilities
 			req.session.user = cleanName;
 			res.end('success');
 		})
 		.catch(error => {
-			//req.flash('error', err);
+			// login failed for some reason
 			console.log(error);
-			console.log('user done FUCKED up!');
 		  	res.end('failure');
 		})
 	}
-	else{// somehow posted without username and/or password. Shouldn't have happened
+	else{// somehow posted without username and/or password. Shouldn't have happened.
 		res.end('failure');
 	}
 });
 
+// will be implemented once chat system is built
 /*app.get('/player', function(req, res){
 	if(!req.session.uid){
 		req.redirect('/login');
@@ -132,154 +141,17 @@ app.post('/login', function(req, res){
 	}
 });*/
 
-// registration page 
+// registration page, going to need this eventually
 /*app.get('/register', function(req, res) {
 	res.render('pages/register',{
 		page_title:"Registration Page"
 	});
 });
 */
-// team stats
-/*app.get('/team_stats', function(req, res) {
-  var q1 = 'select * from football_games;';
-  var q2 = 'select count(*) from football_games where home_score > visitor_score;';
-  var q3 = 'select count(*) from football_games where home_score < visitor_score;';
 
-  db.task('get-everything', task => {
-		return task.batch([
-			task.any(q1),
-			task.any(q2),
-			task.any(q3)
-		]);
-	})
-	.then(info => {
-	  res.render('pages/team_stats',{
-		page_title: "2018 Season Stats",
-		data: info[0],
-		nWin: info[1][0],
-		nLose: info[2][0]
-	  })
-	})
-	.catch(error => {
-	  // display error message in case an error
-	  request.flash('error', err);
-	  response.render('pages/team_stats', {
-		  title: '2018 Season Stats',
-		  data: '',
-		  nWin: '',
-		  nLose: ''
-	  })
-	})
-});
 
-app.get('/home', function(req, res) {
-  var query = 'select * from favorite_colors;';
-  db.any(query)
-		.then(function (rows) {
-		  res.render('pages/home',{
-		  page_title: "Home Page",
-		  data: rows,
-		  color: '',
-		  color_msg: ''
-		})
 
-		})
-		.catch(function (err) {
-			// display error message in case an error
-			request.flash('error', err);
-			response.render('pages/home', {
-				title: 'Home Page',
-				data: '',
-				color: '',
-				color_msg: ''
-			})
-		})
-});
-
-app.get('/home/pick_color', function(req, res) {
-  var color_choice = req.query.color_selection;
-  var color_options =  'select * from favorite_colors;';
-  var color_message = "select color_msg from favorite_colors where hex_value = '" + color_choice + "';"; 
-  db.task('get-everything', task => {
-		return task.batch([
-			task.any(color_options),
-			task.any(color_message)
-		]);
-	})
-	.then(info => {
-	  res.render('pages/home',{
-		page_title: "Home Page",
-		data: info[0],
-		color: color_choice,
-		color_msg: info[1][0].color_msg
-	  })
-	})
-	.catch(error => {
-		// display error message in case an error
-			request.flash('error', err);
-			response.render('pages/home', {
-				title: 'Home Page',
-				data: '',
-				color: '',
-				color_msg: ''
-			})
-	});
-  
-});
-
-app.post('/home/pick_color', function(req, res) {
-  var color_hex = req.body.color_hex;
-  var color_name = req.body.color_name;
-  var color_message = req.body.color_message;
-  var insert_statement = "INSERT INTO favorite_colors(hex_value, name, color_msg) VALUES('" + color_hex + "','" + 
-			  color_name + "','" + color_message +"') ON CONFLICT DO NOTHING;";
-
-  var color_select = 'select * from favorite_colors;';
-  db.task('get-everything', task => {
-		return task.batch([
-			task.any(insert_statement),
-			task.any(color_select)
-		]);
-	})
-	.then(info => {
-	  res.render('pages/home',{
-		page_title: "Home Page",
-		data: info[1],
-		color: color_hex,
-		color_msg: color_message
-	  })
-	})
-	.catch(error => {
-		// display error message in case an error
-		request.flash('error', err);
-		response.render('pages/home', {
-			title: 'Home Page',
-			data: '',
-			color: '',
-			color_msg: ''
-		})
-	});
-});
-
-app.get('/player_info', function(req, res)
-{
-  var fb_players = 'select id, name from football_players;';
-  db.any(fb_players).then(function (rows) {
-	res.render('pages/player_info',{
-	  page_title: "Player Info",
-	  data: rows
-	})
-  })
-  .catch(function (err) {
-	// display error message in case an error
-	request.flash('error', err);
-	response.render('pages/player_info', {
-		title: 'Player Info',
-		data: ''
-	})
-  })
-});*/
-
+// start server on port 3000
 app.listen(3000);
 console.log('http://localhost:3000 is the home page');
 console.log('http://localhost:3000/login is the login page');
