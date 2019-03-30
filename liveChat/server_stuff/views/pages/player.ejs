@@ -1,0 +1,121 @@
+<% include ../partials/header %>
+        <script src="https://sdk.scdn.co/spotify-player.js"></script>
+        <script src="playback.js"></script>
+        <div class="container text-center darkBlue">
+            <div class="row">
+                <div class="col-sm-3 well">
+                    <div class="well">
+                        <p>
+                            <a href="#">Song Search</a>
+                            <form class="example" action="/action_page.php" style="margin:auto; max-width:300px;">
+                                <input type="text" placeholder="Search.." name="search2">
+                                <button type="submit"><i class="fa fa-search"></i></button>
+                            </form>
+                        </p>   
+                    </div>
+                    <div class="well">
+                        <p>
+                            <a href="#">Queue</a>
+                        </p>
+                        <p>
+                            <button type="button" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-thumbs-up"></span>
+                            <button type="button" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-thumbs-down"></span>
+                            </button>
+                            </button>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-7">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="panel panel-default text-center">
+                            <div class="panel-body darkBlue">
+                                <img id= "album" src = 'zep.jpg' width = "560px" height="560px">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="well">
+                            <h3 id="song_title">Song Title</h3>
+                            <p id="artist_name">Artist</p>
+                            <button class="btn btn-primary" onclick="playPause()">Play/Pause</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="well">
+                            <p>John:</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-9">
+                        <div class="well">
+                            <p>Chat Box</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2 well">
+                <div class="thumbnail">
+                    <p>Server List:</p>
+                    <button class="btn btn-primary">A-Basin</button>
+                    <br/>
+                    <br/>
+                    <button class="btn btn-primary">Copper Mountain</button>
+                    <br/>
+                    <br/>
+                    <button class="btn btn-primary">Eldora</button>
+                    <br/>
+                    <br/>
+                    <button class="btn btn-primary">Vail Resorts</button>
+                    <br/>
+                    <br/>
+                    <button class="btn btn-primary">Winter Park</button>
+                    <br/>
+                    <br/>
+                    <br/>
+                </div>
+            </div>
+            <div class="col-sm-2 well">
+                <div class="well">
+                    <p>Users</p>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

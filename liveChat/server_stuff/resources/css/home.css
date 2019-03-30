@@ -1,0 +1,17 @@
+/* Set black background color, white text and some padding */
+footer {
+	background-color: #555;
+	color: white;
+	padding: 15px;
+}
+body {
+	font-family: Arial;
+	background-image: url("https://s22867.pcdn.co/wp-content/uploads/2017/12/Candide-Thovex-6.jpg");
+	background-position: center;
+	background-size: cover;
+}
+* {
+	box-sizing: border-box;
+}
+body,h1 {font-family: "Raleway", sans-serif}
+body, html {height: 100%}

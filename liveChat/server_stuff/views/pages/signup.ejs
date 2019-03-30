@@ -1,0 +1,43 @@
+<% include header %>
+<%
+  
+
+  
+%>
+  <div class="bgimg w3-display-container w3-animate-opacity w3-text-black">
+    <div class="w3-display-topleft w3-padding-large w3-large">
+      <div class="container">
+        <!--Username group-->
+        <div class="form-group row">
+          <label  class="col-sm-2 col-form-label" for="usernameChoice">Enter Username</label>
+          <div class="col-sm-10">
+            <input type="username" class="form-control" id="usernameChoice" name="usernameChoice" placeholder="Username">
+          </div>
+        </div>
+        <!--Email group-->
+        <div class="form-group row">
+          <label  class="col-sm-2 col-form-label" for="mailAddr">Enter Email</label>
+          <div class="col-sm-10">
+            <input type="username" class="form-control" id="mailAddr" name="mailAddr" placeholder="example@website.com">
+          </div>
+        </div>
+        <!--First password group-->
+        <div class="form-group row">
+          <label  class="col-sm-2 col-form-label" for="pwOne">Enter Password</label>
+          <div class="col-sm-10">
+            <input type="password" class="form-control" id="pwOne" name="pwOne" placeholder="Password">
+          </div>
+        </div>
+        <!--Password confirmation group-->
+        <div class="form-group row">
+          <label  class="col-sm-2 col-form-label" for="pwTwo">Confirm Password</label>
+          <div class="col-sm-10">
+            <input type="password" class="form-control" id="pwTwo" name="pwTwo" placeholder="Password">
+          </div>
+        </div>
+        <input type="submit" value="login" class="btn btn-primary btn-block">
+        Not Aleady A Member?<a href="signup_page.html"> Sign Up</a>
+      </div>
+    </div>
+  </body>
+</html>

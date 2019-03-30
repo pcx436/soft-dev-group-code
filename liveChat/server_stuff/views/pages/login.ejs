@@ -1,0 +1,98 @@
+<% include ../partials/header %>
+		<!-- <script type='text/javascript'>
+         $(document).ready(function() {
+            //option A
+            $("form").submit(function(e){
+                alert('submit intercepted');
+                e.preventDefault(e);
+            });
+        });
+        </script> -->
+
+		<script>
+			$(document).ready(function(){
+				var uname, pass;
+				$("#submit").click(function(){
+					var bad = false;
+					console.log('submit button pressed');
+					uname = $('#uname');
+					pass = $('#pwOne');
+
+					// check username length
+					if(uname.val().length <= 0){
+						console.log('length error');
+						$('#uname').addClass('invalid');
+						$('#uname').removeClass('valid');
+						bad = true;
+					}
+
+					// check password length
+					if(pass.val().length <= 0){
+						console.log('pw len error');
+						$('#pwOne').addClass('invalid');
+						$('#pwOne').removeClass('valid');
+						bad = true;
+					}
+
+					// only proceed if both look good
+					if(!bad){
+						$('#uname, #pwOne').addClass('valid');
+						$('#uname, #pwOne').removeClass('invalid');
+
+						console.log('No formatting errors, sending to server');
+						$.post("http://localhost:3000/login", {user:uname.val(), pwOne:pass.val()}, function(data){
+							if(data === 'success'){
+								uname.prop('disabled', true);
+								pass.prop('disabled', true);
+								$('#badAlert').hide();
+								$('#goodAlert').show();
+								for(var s = 0; s < 5; s++){
+									setTimeout(function(){
+										$('#countdown').text($('#countdown').text() - 1);
+									}, 1000);
+								}
+								window.location.replace('http://localhost:3000/');
+							}
+							else{
+								$('#badAlert').show();
+								uname.prop('disabled', false);
+								pass.prop('disabled', false);
+							}
+						});
+					}
+				});
+
+			});
+
+			
+		</script>
+		<!--GOTTA FIX THE FUCKING VALIDATION-->
+		<div class="container">
+			<!--Username group-->
+			<!-- <form id="formNoYeet" onsubmit="subCreds()" class="needs-validation" accept-charset="UTF-8"> -->
+				<div class="form-group row ">
+					<label class="col-sm-2 col-form-label py-auto py-lg-auto my-lg-auto" for="uname"><h4><b>Enter Username</b></h4></label>
+					<div class="col-sm-10 py-auto py-lg-auto my-lg-auto">
+						<input type="username" class="form-control" id="uname" name="uname" placeholder="Username" required>
+					</div>
+				</div>
+				<!--First password group-->
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label py-auto py-lg-auto my-lg-auto" for="pwOne"><h4><b>Enter Password</b></h4></label>
+					<div class="col-sm-10 py-auto py-lg-auto my-lg-auto">
+						<input type="password" class="form-control" id="pwOne" name="pwOne" placeholder="Password" required>
+					</div>
+				</div>
+				<input type="submit" id="submit" value="Login" class="btn btn-primary btn-block">
+			<!-- </form> -->
+			<h5>Not Aleady A Member? <a href="signup.ejs">Sign Up</a></h5>
+			<div class="alert alert-success" style="display: none;" role="alert" id="goodAlert">
+				Successful login! Redirecting to the homepage in <span id="countdown">5</span>...
+			</div>
+			<div class="alert alert-danger alert-dismissible" style="display: none;" role="alert" id="badAlert">
+				Uh oh! Your username and/or password were incorrect. Please try again.
+				<button type="button" class="close" onClick='$("#badAlert").hide();'data-dismiss="alert" aria-label="Close">
+				</button>
+			</div>
+		</div>
+<% include ../partials/footer %>
