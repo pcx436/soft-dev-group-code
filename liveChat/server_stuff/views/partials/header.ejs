@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<%# used to implement dynamic page titles %>
 		<title><%= page_title %></title>
 
 		<!--jQuery-->
@@ -21,37 +22,49 @@
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+		<%# custom stylings on a per-page basis%>
 		<link rel="stylesheet" href="<%= custom_style %>">
 		
-		<!--Header styling, legacy bootstrap stuff-->
+		<!--Resizing icons-->
 		<style>
 			.custo-icon{
 				width: 16px;
 				height: 16px;
 			}
 		</style>
+		<script>
+			function makeActive(ele){
+				$("#" + ele).addClass('active');
+			}
+
+		</script>
 	</head>
-	<body>
+	<body onload='makeActive("<%- active %>")'>
+		<!-- New navbar code -->
 		<nav class="navbar navbar-expand-lg navbar-dark text-white" style="background-color: black;">
 			<div class="container-fluid">
 				<a class="navbar-brand" href="#">Tracked Out</a>
-
 				<div class="collapse navbar-collapse" id="yaBoi">
 					<ul class="navbar-nav mr-auto">
-						<li class="nav-item active"><a class="nav-link" href="#">Home</a></li>
-						<li class="nav-item"><a class="nav-link" href="#">Listen</a></li>
+						<li class="nav-item" id="home-nav"><a class="nav-link" href="#">Home</a></li>
+						<li class="nav-item" id="listen-nav"><a class="nav-link" href="#">Listen</a></li>
 					</ul>
 					<ul class="nav navbar-nav">
+					<%# If the user is logged in, display a welcome message. If they're not, display the signin/signup buttons%>
 					<%
-						if(user){
-							var message = 'Welcome, ' + user;%>
-							<%= message _%>
+						if(user){ 
+							var message = '<li class="nav-item py-auto my-auto py-lg-auto my-lg-auto">Welcome, ' + user + '</li>';
+							var messageTwo = '<li class="nav-item"><a class="nav-link" href="/logout"><img class="custo-icon" src="resources/imgs/si-glyph-sign-out.svg" /> Logout</a></li>';
+					%>
+							<%- message %>
+							<%- messageTwo %>
+
 					<% 	}
 						else{
-							var message = '<li class="active nav-item"><a class="nav-link" href="#"><img class="custo-icon" src="resources/imgs/si-glyph-person-2.svg" /> Sign Up</a></li>';%>
+							var message = '<li class="nav-item" id="signup-nav"><a class="nav-link" href="#"><img class="custo-icon" src="resources/imgs/si-glyph-person-2.svg" /> Sign Up</a></li>';%>
 							<%- message _%>
 					<%	
-							message = '<li class="active nav-item"><a class="nav-link" href="#"><img class="custo-icon" src="resources/imgs/si-glyph-sign-in.svg" /> Login</a></li>';%>
+							message = '<li class="nav-item" id="login-nav"><a class="nav-link" href="/login"><img class="custo-icon" src="resources/imgs/si-glyph-sign-in.svg" /> Login</a></li>';%>
 							<%- message _%>
 					<% 	}%>
 					</ul>

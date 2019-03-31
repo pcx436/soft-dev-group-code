@@ -1,17 +1,9 @@
 <% include ../partials/header %>
-		<!-- <script type='text/javascript'>
-         $(document).ready(function() {
-            //option A
-            $("form").submit(function(e){
-                alert('submit intercepted');
-                e.preventDefault(e);
-            });
-        });
-        </script> -->
-
 		<script>
 			$(document).ready(function(){
 				var uname, pass;
+
+				// submit button has been pressed, initiate validation proceedure
 				$("#submit").click(function(){
 					var bad = false;
 					console.log('submit button pressed');
@@ -40,31 +32,43 @@
 						$('#uname, #pwOne').removeClass('invalid');
 
 						console.log('No formatting errors, sending to server');
+
+						// initiate post requst to server, attempt to login
 						$.post("http://localhost:3000/login", {user:uname.val(), pwOne:pass.val()}, function(data){
-							if(data === 'success'){
+							if(data === 'success'){ // user logged in successfully
+								
+								console.log('ya boi logged in');
+								// disable all fields so they cant login twice during countdown
 								uname.prop('disabled', true);
 								pass.prop('disabled', true);
-								$('#badAlert').hide();
-								$('#goodAlert').show();
-								for(var s = 0; s < 5; s++){
-									setTimeout(function(){
-										$('#countdown').text($('#countdown').text() - 1);
-									}, 1000);
-								}
-								window.location.replace('http://localhost:3000/');
+								$('#submit').prop('disabled', true);
+								
+								$('#badAlert').hide(); // hide failure message
+								$('#goodAlert').show(); // show success message
+
+								// begin 5 second countdown till redirection. Yeah, i realize it's nasty
+								setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, 1000);
+								setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, 2000);
+								setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, 3000);
+								setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, 4000);
+								setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, 5000);
+								setTimeout(function(){window.location.replace('http://localhost:3000/');}, 5000);
 							}
 							else{
+								// user couldn't login, display bad message
+								console.log('lol wut');
+
 								$('#badAlert').show();
+
+								// ensure all inputs and submission are enabled
 								uname.prop('disabled', false);
 								pass.prop('disabled', false);
+								$('#submit').prop('disabled', false);
 							}
 						});
 					}
 				});
-
-			});
-
-			
+			});			
 		</script>
 		<!--GOTTA FIX THE FUCKING VALIDATION-->
 		<div class="container">
@@ -86,13 +90,18 @@
 				<input type="submit" id="submit" value="Login" class="btn btn-primary btn-block">
 			<!-- </form> -->
 			<h5>Not Aleady A Member? <a href="signup.ejs">Sign Up</a></h5>
+
+			<!-- Successful login alert box -->
 			<div class="alert alert-success" style="display: none;" role="alert" id="goodAlert">
 				Successful login! Redirecting to the homepage in <span id="countdown">5</span>...
 			</div>
+
+			<!-- Failed login alert box -->
 			<div class="alert alert-danger alert-dismissible" style="display: none;" role="alert" id="badAlert">
 				Uh oh! Your username and/or password were incorrect. Please try again.
 				<button type="button" class="close" onClick='$("#badAlert").hide();'data-dismiss="alert" aria-label="Close">
 				</button>
 			</div>
 		</div>
-<% include ../partials/footer %>
+	</body>
+</html>

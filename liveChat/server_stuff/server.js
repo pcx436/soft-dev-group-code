@@ -65,7 +65,8 @@ app.get('/', function(req, res) {
 		res.render('pages/home', { 
 			page_title:"Home",
 			custom_style:"resources/css/home.css",
-			user: req.session.user
+			user: req.session.user,
+			active: 'home-nav'
 		});
 	}
 	else{
@@ -88,7 +89,7 @@ app.get('/login', function(req, res) {
 			page_title:"Login",
 			custom_style:"resources/css/login.css",
 			user: '',
-			bad:''
+			active: 'login-nav'
 		});
 	}
 });
@@ -104,6 +105,7 @@ app.post('/login', function(req, res){
 	}
 	else if(req.body.user && req.body.pwOne){
 		// both a username and password have been submitted to us
+		console.log('we loggin, my dudes');
 
 		// sanitize inputs (just a little bit)
 		var cleanName = escape(req.body.user);
@@ -112,12 +114,21 @@ app.post('/login', function(req, res){
 		// query to send to server
 		var existQuery = 'SELECT uid FROM users WHERE username=\'' + cleanName + '\' AND hash = crypt(\'' + cleanPW + '\', hash);';
 		db.task('get-everything', task => {
-			return task.batch([task.any(existQuery)]);
+			return task.any(existQuery);
 		})
 		.then(info => {
 			// successful login, add username to session for persistent login capabilities
-			req.session.user = cleanName;
-			res.end('success');
+			console.log(info);
+			if(info[0]){
+				req.session.user = cleanName;
+				console.log('user seems to exist');
+				res.end('success');	
+			}
+			else{
+				console.log('user login failure');
+				res.end('failure');
+			}
+			
 		})
 		.catch(error => {
 			// login failed for some reason
@@ -130,16 +141,28 @@ app.post('/login', function(req, res){
 	}
 });
 
+app.get('/logout', function(req, res){
+	if(req.session && req.session.user){
+		req.session.reset();
+		res.redirect('/login');
+	}
+});
+
 // will be implemented once chat system is built
-/*app.get('/player', function(req, res){
+app.get('/player', function(req, res){
 	if(!req.session.uid){
 		req.redirect('/login');
 	}
 	else{
-		page_title: 'Player Page',
-		custom_style: 'resources/css/player.css'
+		res.render('pages/widget', {
+			page_title: 'Player Page',
+			custom_style: 'resources/css/player.css',
+			user: req.session.user,
+			active: 'listen-nav'
+
+		});
 	}
-});*/
+});
 
 // registration page, going to need this eventually
 /*app.get('/register', function(req, res) {
