@@ -1,2 +1,0 @@
-This is a guide im following on how to build a live chat, though its broken since it was using a version of socket.io that was real outdated.
-Updating the socket.io module broke it so now i've gotta figure out why and how to fix it.
