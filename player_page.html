@@ -1,4 +1,3 @@
-
 <html>
 <head>
   <title>Player Page</title>
@@ -19,11 +18,9 @@ footer {
 body {
   font-family: Arial;
 }
-
 * {
   box-sizing: border-box;
 }
-
 form.example input[type=text] {
   padding: 10px;
   font-size: 17px;
@@ -32,7 +29,6 @@ form.example input[type=text] {
   width: 80%;
   background: #white;
 }
-
 form.example button {
   float: left;
   width: 20%;
@@ -44,11 +40,9 @@ form.example button {
   border-left: none;
   cursor: pointer;
 }
-
 form.example button:hover {
   background: #0b7dda;
 }
-
 form.example::after {
   content: "";
   clear: both;
@@ -66,15 +60,15 @@ form.example::after {
 <nav class="navbar navbar-inverse" style = "background-color: #19222B">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#">Tracked Out</a>
+      <a class="navbar-brand" href="home_page">Tracked Out</a>
     </div>
     <ul class="nav navbar-nav">
-      <li class="active"><a href="#">Home</a></li>
+      <li class="active"><a href="home_page.html">Home</a></li>
 
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-      <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      <li><a href="signup_page.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+      <li><a href="login_page.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
     </ul>
   </div>
 </nav>
@@ -85,37 +79,57 @@ form.example::after {
       <div class="well">
         <p><a href="#">Song Search</a>
 
-		<form class="example" action="/action_page.php" style="margin:auto;max-width:300px">
-  		<input type="text" placeholder="Search.." name="search2">
-  		<button type="submit"><i class="fa fa-search"></i></button>
-		</form></p>
+    <form class="example" action="/action_page.php" style="margin:auto;max-width:300px">
+      <input type="text" placeholder="Search.." name="search2">
+      <button type="submit"><i class="fa fa-search"></i></button>
+    </form></p>
        
       </div>
       <div class="well" >
         <p><a href="#">Queue</a></p>
         <p>
-        	<button type="button" class="btn btn-default btn-sm">
+         <script type="text/javascript">
+
+          var clicks = 0;
+          function thumbs_up() {
+            clicks += 1;
+            document.getElementById("clicks").innerHTML = clicks;
+            up.disabled = true;
+            down.disabled = false;
+
+          };
+          function thumbs_down() {
+            if (clicks >0){
+            clicks -= 1;
+            document.getElementById("clicks").innerHTML = clicks;
+            down.disabled = true;
+            up.disabled = false;
+          };
+        };
+        </script>
+          <button type="button" class="btn btn-default btn-sm" id='up' onclick="thumbs_up()">
                 <span class="glyphicon glyphicon-thumbs-up"></span>
-                <button type="button" class="btn btn-default btn-sm">
+                <button type="button" class="btn btn-default btn-sm" id='down' onclick="thumbs_down()">
                 <span class="glyphicon glyphicon-thumbs-down"></span>
             </button>
         </button>
+        <p>Votes: <a id="clicks">0</a></p>
 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
         </p>
 
     </div>
@@ -164,38 +178,38 @@ form.example::after {
         <p>Server List:</p>
         <button class="btn btn-primary">Keystone</button>
         <br/>
-  		<br/>
+      <br/>
         <button class="btn btn-primary">Winter Park</button>
-        	<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
+          <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
       </div>  
   </div>
   <div class="col-sm-2 well">    
       <div class="well">
         <p>Users</p>
 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
-    		<br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
+        <br/> 
       </div>
       </div>
 
