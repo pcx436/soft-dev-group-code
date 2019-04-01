@@ -1,43 +1,96 @@
-<% include header %>
-<%
-  
+<% include ../partials/header %>
 
-  
-%>
-  <div class="bgimg w3-display-container w3-animate-opacity w3-text-black">
-    <div class="w3-display-topleft w3-padding-large w3-large">
-      <div class="container">
-        <!--Username group-->
-        <div class="form-group row">
-          <label  class="col-sm-2 col-form-label" for="usernameChoice">Enter Username</label>
-          <div class="col-sm-10">
-            <input type="username" class="form-control" id="usernameChoice" name="usernameChoice" placeholder="Username">
-          </div>
+    <div class="bgimg w3-display-container w3-animate-opacity w3-text-black">
+        <div class="w3-display-topleft w3-padding-large w3-large">
+            <div class="container">
+                <form>
+                    <!--Username group-->
+                    <div class="form-group row">
+                        <label  class="col-sm-2 col-form-label" for="usernameChoice">Enter Username</label>
+                        <div class="col-sm-10">
+                            <input type="username" class="form-control" id="usernameChoice" name="usernameChoice" placeholder="Username" required>
+                        </div>
+                    </div>
+                    <!--Email group-->
+                    <div class="form-group row">
+                        <label  class="col-sm-2 col-form-label" for="mailAddr">Enter Email</label>
+                        <div class="col-sm-10">
+                            <input type="username" class="form-control" id="mailAddr" name="mailAddr" placeholder="example@website.com" required>
+                        </div>
+                    </div>
+                    <!--First password group-->
+                    <div class="form-group row">
+                        <label  class="col-sm-2 col-form-label" for="pwOne">Enter Password</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="pwOne" name="pwOne" placeholder="Password" required>
+                        </div>
+                    </div>
+                    <!--Password confirmation group-->
+                    <div class="form-group row">
+                        <label  class="col-sm-2 col-form-label" for="pwTwo">Confirm Password</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="pwTwo" name="pwTwo" placeholder="Password" required>
+                        </div>
+                    </div>
+
+                    <!-- Successful login alert box -->
+                    <div class="alert alert-success" style="display: none;" role="alert" id="goodAlert">
+                        Successful signup! Redirecting to the login page in <span id="countdown">3</span>...
+                    </div>
+
+                    <!-- Failed login alert box -->
+                    <div class="alert alert-danger alert-dismissible" style="display: none;" role="alert" id="badAlert">
+                        <span id="alertMessage">Uh oh! Your username and/or password were incorrect. Please try again.</span>
+                        <button type="button" class="close" onClick='$("#badAlert").hide();' data-dismiss="alert" aria-label="Close">
+                        </button>
+                    </div>
+                    <input type="submit" value="login" class="btn btn-primary btn-block">
+                </form>
+                Aleady A Member?<a href="/login"> Login</a>
+            </div>
         </div>
-        <!--Email group-->
-        <div class="form-group row">
-          <label  class="col-sm-2 col-form-label" for="mailAddr">Enter Email</label>
-          <div class="col-sm-10">
-            <input type="username" class="form-control" id="mailAddr" name="mailAddr" placeholder="example@website.com">
-          </div>
-        </div>
-        <!--First password group-->
-        <div class="form-group row">
-          <label  class="col-sm-2 col-form-label" for="pwOne">Enter Password</label>
-          <div class="col-sm-10">
-            <input type="password" class="form-control" id="pwOne" name="pwOne" placeholder="Password">
-          </div>
-        </div>
-        <!--Password confirmation group-->
-        <div class="form-group row">
-          <label  class="col-sm-2 col-form-label" for="pwTwo">Confirm Password</label>
-          <div class="col-sm-10">
-            <input type="password" class="form-control" id="pwTwo" name="pwTwo" placeholder="Password">
-          </div>
-        </div>
-        <input type="submit" value="login" class="btn btn-primary btn-block">
-        Not Aleady A Member?<a href="signup_page.html"> Sign Up</a>
-      </div>
-    </div>
-  </body>
+        <script>
+            use strict;
+            // form validation jazz
+            $(function(){
+                $('form').submit(function(e){
+                    e.preventDefault();
+                    var unameEle = $('#usernameChoice'), emailEle = $('#mailAddr'), pwOneEle = $('#pwOne'), pwTwoEle = $('#pwTwo');
+                    var bad = 0, msgs = ['You did not submit one or more fields', 'Your passwords do not match', 'You did not submit one or more required fields and your passwords do not match.'];
+
+                    if(uname.val().length <= 0 || email.val().length <= 0 || pwOne.val().length <= 0 || pwTwo.val().length <= 0){
+                        bad = 1;
+                    }
+                    if(!(pwOne.val() === pwTwo.val())){
+                        bad += 2;
+                    }
+
+                    if(bad !=== 0){
+                        $('#alertMessage').text(msgs[bad - 1]);
+                        $('#badAlert').show();
+                    }
+                    else{
+                        $.post('http://localhost:3000/signup', {uname:unameEle.val(), email:emailEle.val(), pwOne:pwOneEle.val(), pwTwo:pwTwoEle.val()}, function(data){
+                            if(data === 'success'){
+                                $('#goodAlert').show()
+                                $('#badAlert').hide();
+
+                                setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, 1000);
+                                setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, 2000);
+                                setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, 3000);
+                                setTimeout(function(){window.location.replace('http://localhost:3000/');}, 3000);
+
+                            }
+                            else{
+                                $('#goodAlert').hide();
+                                $('#alertMessage').text('Uhhh... something went wrong???');
+                                $('#badAlert').show();
+                            }
+                        });
+                    }
+
+                });
+            });
+        </script>
+    </body>
 </html>
