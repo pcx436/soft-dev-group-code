@@ -33,3 +33,7 @@ In order to run the different examples, open the folder with the name of the flo
     $ node app.js
 
 Then, open `http://localhost:8888` in a browser.
+
+
+app key: 50253af00a8749f2bb5330d1f3a44382
+app secret: 01f9c2d6866d410ea25d0e1702dde56a
