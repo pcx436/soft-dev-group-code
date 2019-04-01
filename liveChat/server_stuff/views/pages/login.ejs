@@ -1,12 +1,13 @@
 <% include ../partials/header %>
 		<script>
-			$(document).ready(function(){
+			$(function(){
 				var uname, pass, both;
 
-				// submit button has been pressed, initiate validation proceedure
-				$("#submit").click(function(){
+				// Form has been submitted, initiate validation proceedure
+				$("form").submit(function(e){
 					var bad = false;
-					console.log('submit button pressed');
+					console.log('form submitted');
+					e.preventDefault();
 					uname = $('#uname');
 					pass = $('#pwOne');
 					both = $('#uname, #pwOne');
@@ -69,9 +70,9 @@
 		<!--GOTTA FIX THE FUCKING VALIDATION-->
 		<div class="container">
 			<!--Username group-->
-			<!-- <form id="formNoYeet" onsubmit="subCreds()" class="needs-validation" accept-charset="UTF-8"> -->
+			<form id="formNoYeet" class="needs-validation" accept-charset="UTF-8">
 				<div class="form-group row ">
-					<label class="col-sm-2 col-form-label py-auto py-lg-auto my-lg-auto" for="uname"><h4><b>Enter Username</b></h4></label>
+					<label class="col-sm-2 col-form-label py-auto py-sm-auto my-sm-auto" for="uname"><h4><b>Enter Username</b></h4></label>
 					<div class="col-sm-10 py-auto py-lg-auto my-lg-auto">
 						<input type="username" class="form-control" id="uname" name="uname" placeholder="Username" required>
 					</div>
@@ -84,7 +85,7 @@
 					</div>
 				</div>
 				<input type="submit" id="submit" value="Login" class="btn btn-primary btn-block">
-			<!-- </form> -->
+			</form>
 			<h5>Not Aleady A Member? <a href="signup.ejs">Sign Up</a></h5>
 
 			<!-- Successful login alert box -->
