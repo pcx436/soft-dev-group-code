@@ -230,12 +230,73 @@ app.post('/room-select', function(req, res){
 
 
 // registration page, going to need this eventually
-/*app.get('/register', function(req, res) {
-	res.render('pages/register',{
-		page_title:"Registration Page"
-	});
+app.get('/signup', function(req, res) {
+	if(!req.session && !req.session.user){
+		res.render('pages/signup',{
+			page_title:"Registration Page",
+			custom_style: "resources/css/home.css",
+			user: '',
+			active: 'signup-nav'
+		});	
+	}
+	else{
+		res.redirect('/');
+	}
 });
-*/
+
+app.post('/signup', function(req, res){
+	if(!req.session && !req.session.user && req.body.uname && req.body.pwOne && req.body.email && req.body.pwTwo){
+		var createQuery, query = "SELECT uid FROM users WHERE username = \'" + req.body.uname + "\' OR email = \'" + req.body.email + "\';";
+
+
+		db.task('get-everything', task => {
+			return task.any(query);
+		})
+		.then(info => {
+			// we found someone, that's not okay
+			if(info[0]){
+				console.log('Someone tried to make a user that already exists (' + req.body.uname + ').');
+				res.end('failure');
+			}
+			else{
+				console.log('User found and will be created');
+				createQuery = 'INSERT INTO users(username, email, hash) VALUES (\'' + req.body.uname + '\', \'' + req.body.email + '\', \''
+				 + req.body.pwOne + '\');';
+			}
+		})
+		.catch(error => {
+			console.log(error);
+			console.log('User lookup threw an error');
+			res.end('failure');
+		})
+
+		// if user not found, try to insert
+		db.task('get-everything', task => {
+			return task.any(query);
+		})
+		.then(info => {
+			// we found someone, that's not okay
+			if(info[0]){
+				console.log('User \'' + req.body.uname + '\' inserted successfully.');
+				res.end('success');
+			}
+			else{
+				console.log('Failed to insert?');
+				res.end('failure');
+			}
+		})
+		.catch(error => {
+			console.log(error);
+			console.log('User insertion threw an error');
+			res.end('failure');
+		})
+	}
+	else{
+		res.end('failure');
+	}
+
+});
+
 
 
 
@@ -243,5 +304,6 @@ app.post('/room-select', function(req, res){
 server.listen(3000);
 console.log('http://localhost:3000 is the home page');
 console.log('http://localhost:3000/login is the login page');
+console.log('http://localhost:3000/signup is the signup page');
 console.log('http://localhost:3000/widget is the widget test page');
 console.log('http://localhost:3000/player is the player test page');

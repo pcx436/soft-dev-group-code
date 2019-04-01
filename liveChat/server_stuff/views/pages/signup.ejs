@@ -3,6 +3,12 @@
     <div class="bgimg w3-display-container w3-animate-opacity w3-text-black">
         <div class="w3-display-topleft w3-padding-large w3-large">
             <div class="container">
+                <!-- Length error alert box -->
+                <div class="alert alert-danger alert-dismissible" style="display: none;" role="alert" id="lengthAlert">
+                    Uh oh! Your username and/or password were incorrect. Please try again.
+                    <button type="button" class="close" onClick='$("#lengthAlert").hide();' data-dismiss="alert" aria-label="Close">
+                    </button>
+                </div>
                 <form>
                     <!--Username group-->
                     <div class="form-group row">
@@ -25,6 +31,7 @@
                             <input type="password" class="form-control" id="pwOne" name="pwOne" placeholder="Password" required>
                         </div>
                     </div>
+
                     <!--Password confirmation group-->
                     <div class="form-group row">
                         <label  class="col-sm-2 col-form-label" for="pwTwo">Confirm Password</label>
@@ -37,13 +44,6 @@
                     <div class="alert alert-success" style="display: none;" role="alert" id="goodAlert">
                         Successful signup! Redirecting to the login page in <span id="countdown">3</span>...
                     </div>
-
-                    <!-- Failed login alert box -->
-                    <div class="alert alert-danger alert-dismissible" style="display: none;" role="alert" id="badAlert">
-                        <span id="alertMessage">Uh oh! Your username and/or password were incorrect. Please try again.</span>
-                        <button type="button" class="close" onClick='$("#badAlert").hide();' data-dismiss="alert" aria-label="Close">
-                        </button>
-                    </div>
                     <input type="submit" value="login" class="btn btn-primary btn-block">
                 </form>
                 Aleady A Member?<a href="/login"> Login</a>
@@ -53,6 +53,22 @@
             use strict;
             // form validation jazz
             $(function(){
+                var lowerCaseLetters = /[a-z]/g; // : Fill in the regular experssion for lowerCaseLetters
+                var upperCaseLetters = /[A-Z]/g; // : Fill in the regular experssion for upperCaseLetters
+                var numbers = /\d/g; // : Fill in the regular experssion for digits
+                var minLength = 8; // : Change the minimum length to what what it needs to be in the question 
+                $('#pwOne').keyup(function(){
+                    var v = $(this).val();
+                    if(v.match(lowerCaseLetters) && v.match(upperCaseLetters) && v.match(numbers) && v.length >= minLength){
+                        $(this).removeClass('invalid');
+                        $(this).addClass('valid');
+                    }
+                    else{
+                        $(this).removeClass('valid');
+                        $(this).addClass('invalid');
+                    }
+                });
+
                 $('form').submit(function(e){
                     e.preventDefault();
                     var unameEle = $('#usernameChoice'), emailEle = $('#mailAddr'), pwOneEle = $('#pwOne'), pwTwoEle = $('#pwTwo');
