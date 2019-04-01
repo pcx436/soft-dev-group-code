@@ -11,6 +11,8 @@ var app = express();
 var bodyParser = require('body-parser'); //Ensure our body-parser tool has been added
 app.use(bodyParser.json());              // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 
 //Create Database Connection
 var pgp = require('pg-promise')();
@@ -49,7 +51,6 @@ app.use(session({
 	duration: 1000 * 60 * 60 * 24 * 7,
 	activeDuration: 1000 * 60 * 5
 })); //instantiate session
-
 
 /*********************************
  Below we'll add the get & post requests which will handle:
@@ -141,6 +142,7 @@ app.post('/login', function(req, res){
 	}
 });
 
+// logout functionality. Destroys session and redirects to login page
 app.get('/logout', function(req, res){
 	if(req.session && req.session.user){
 		req.session.reset();
@@ -148,21 +150,84 @@ app.get('/logout', function(req, res){
 	}
 });
 
-// will be implemented once chat system is built
 app.get('/player', function(req, res){
-	if(!req.session.uid){
-		req.redirect('/login');
+	if(!req.session && !req.session.user){
+		res.redirect('/login');
 	}
 	else{
-		res.render('pages/widget', {
-			page_title: 'Player Page',
+		res.render('pages/player', {
+			page_title: 'Player',
 			custom_style: 'resources/css/player.css',
 			user: req.session.user,
 			active: 'listen-nav'
-
 		});
 	}
 });
+
+
+
+// migrating to bootstrap 4
+app.get('/widget', function(req, res){
+	if(!req.session && !req.session.user){
+		res.redirect('/login');
+	}
+	else{
+		res.render('pages/widget', {
+			page_title: 'Widget Test',
+			custom_style: 'resources/css/widget.css',
+			user: req.session.user,
+			active: 'listen-nav'
+		});
+	}
+});
+
+// kinda bad since it doesn't rely on session cookies. Can't reliably tell who's doing what
+io.on('connection', function(socket){
+	console.log("Some user has established a socket connection to the server");
+	socket.on('disconnect', function(){
+		console.log("Someone has terminated a socket connection");
+	});
+	socket.on('chat message', function(data){
+		// poorly designed, doesn't rely on session cookies and therefore inherently allows for impersenation.
+		console.log('Message "' + data.msg + '" received from ' + data.name + " in room \"" + data.rm + "\"");
+		// socket.to(data.rm).emit('chat message', data.msg);
+		socket.broadcast.emit('chat message', data);
+	})
+
+});
+
+// MODIFY TO PREVENT SQL INJECTION
+// essentially does nothing, cant figure out how to integrate session and socket.io
+app.post('/room-select', function(req, res){
+	if(req.session && req.session.user && req.body.rname){
+		var query = "SELECT rid FROM rooms WHERE r_name = \'" + req.body.rname + "\';";
+
+		db.task('get-everything', task => {
+			return task.any(query);
+		})
+		.then(info => {
+			// successful login, add username to session for persistent login capabilities
+			if(info[0]){
+				console.log('User ' + req.session.user + ' is joining room ' + req.body.rname + '.');
+				req.session.croom = req.body.rname; //croom = current room				
+				res.end('success');	
+			}
+			else{
+				console.log('Room join query failed');
+				res.end('failure');
+			}
+			
+		})
+		.catch(error => {
+			// login failed for some reason
+			console.log(error);
+		  	res.end('Room join query threw an error');
+		})
+	}
+
+
+});
+
 
 // registration page, going to need this eventually
 /*app.get('/register', function(req, res) {
@@ -175,7 +240,8 @@ app.get('/player', function(req, res){
 
 
 // start server on port 3000
-app.listen(3000);
+server.listen(3000);
 console.log('http://localhost:3000 is the home page');
 console.log('http://localhost:3000/login is the login page');
-
+console.log('http://localhost:3000/widget is the widget test page');
+console.log('http://localhost:3000/player is the player test page');

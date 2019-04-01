@@ -1,7 +1,7 @@
 <% include ../partials/header %>
 		<script>
 			$(document).ready(function(){
-				var uname, pass;
+				var uname, pass, both;
 
 				// submit button has been pressed, initiate validation proceedure
 				$("#submit").click(function(){
@@ -9,27 +9,25 @@
 					console.log('submit button pressed');
 					uname = $('#uname');
 					pass = $('#pwOne');
+					both = $('#uname, #pwOne');
 
 					// check username length
 					if(uname.val().length <= 0){
 						console.log('length error');
-						$('#uname').addClass('invalid');
-						$('#uname').removeClass('valid');
+						uname.addClass('invalid').removeClass('valid');
 						bad = true;
 					}
 
 					// check password length
 					if(pass.val().length <= 0){
 						console.log('pw len error');
-						$('#pwOne').addClass('invalid');
-						$('#pwOne').removeClass('valid');
+						pass.addClass('invalid').removeClass('valid');
 						bad = true;
 					}
 
 					// only proceed if both look good
 					if(!bad){
-						$('#uname, #pwOne').addClass('valid');
-						$('#uname, #pwOne').removeClass('invalid');
+						both.addClass('valid').removeClass('invalid');
 
 						console.log('No formatting errors, sending to server');
 
@@ -39,8 +37,7 @@
 								
 								console.log('ya boi logged in');
 								// disable all fields so they cant login twice during countdown
-								uname.prop('disabled', true);
-								pass.prop('disabled', true);
+								both.prop('disabled', true);
 								$('#submit').prop('disabled', true);
 								
 								$('#badAlert').hide(); // hide failure message
@@ -61,8 +58,7 @@
 								$('#badAlert').show();
 
 								// ensure all inputs and submission are enabled
-								uname.prop('disabled', false);
-								pass.prop('disabled', false);
+								both.prop('disabled', false);
 								$('#submit').prop('disabled', false);
 							}
 						});

@@ -18,7 +18,6 @@ CREATE TABLE users (
  uid UUID UNIQUE NOT NULL,
  email TEXT NOT NULL UNIQUE,
  username TEXT NOT NULL PRIMARY KEY UNIQUE,
- salt TEXT NOT NULL,
  hash TEXT NOT NULL,
  current_room UUID
 );
@@ -31,7 +30,6 @@ $BODY$
 DECLARE
  sal TEXT := gen_salt('bf');
 BEGIN
- NEW.salt = sal;
  NEW.hash = crypt(NEW.hash, sal);
  NEW.uid = gen_random_uuid();
  

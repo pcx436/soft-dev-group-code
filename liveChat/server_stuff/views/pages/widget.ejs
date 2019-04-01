@@ -1,103 +1,198 @@
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-<!------ Include the above in your HEAD tag ---------->
-
-<div class="container">
-    <div class="row">
-        <div class="col-md-5">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <span class="glyphicon glyphicon-comment"></span> Chat
-                    <div class="btn-group pull-right">
-                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                            <span class="glyphicon glyphicon-chevron-down"></span>
-                        </button>
-                        <ul class="dropdown-menu slidedown">
-                            <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-refresh">
-                            </span>Refresh</a></li>
-                            <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-ok-sign">
-                            </span>Available</a></li>
-                            <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-remove">
-                            </span>Busy</a></li>
-                            <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-time"></span>
-                                Away</a></li>
-                            <li class="divider"></li>
-                            <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-off"></span>
-                                Sign Out</a></li>
-                        </ul>
+<% include ../partials/header %>
+        <!-- Chat box adapted from BhaumikPatel https://bootsnipp.com/snippets/r1KW -->
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 float-center">
+                    <div class="card">
+                        <div class="card-header bg-primary bog text-white">
+                            <h5 class="card-title"><img src="resources/imgs/si-glyph-bubble-message-text.svg" /> Chat</h5>
+                        </div>
+                        <div class="card-body pt-lg-0 px-lg-1">
+                            <ul id="messages" class="chat list-group list-group-flush">
+                                <!-- <li class="left list-group-item clearfix">
+                                    <div class="chat-body clearfix">
+                                        <div class="header">
+                                            <strong class="primary-font">Jack Sparrow</strong> 
+                                            <small class="float-right text-muted">
+                                                <img src="resources/imgs/si-glyph-clock.svg" />12 mins ago
+                                            </small>
+                                        </div>
+                                        <p class="card-text">
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare
+                                            dolor, quis ullamcorper ligula sodales.
+                                        </p>
+                                    </div>
+                                </li>
+                                <li class="right list-group-item clearfix">
+                                    
+                                    <div class="chat-body clearfix">
+                                        <div class="header">
+                                            <small class="text-muted">
+                                                <img src="resources/imgs/si-glyph-clock.svg" />13 mins ago
+                                            </small>
+                                            <strong class="float-right primary-font">Bhaumik Patel</strong>
+                                        </div>
+                                        <p class="card-text">
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare
+                                            dolor, quis ullamcorper ligula sodales.
+                                        </p>
+                                    </div>
+                                </li>
+                                <li class="left list-group-item clearfix">
+                                    <div class="chat-body clearfix">
+                                        <div class="header">
+                                            <strong class="primary-font">Jack Sparrow</strong>
+                                            <small class="float-right text-muted">
+                                                <img src="resources/imgs/si-glyph-clock.svg" /><span class="countAgo">14 mins ago</span>
+                                            </small>
+                                        </div>
+                                        <p class="card-text">
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare
+                                            dolor, quis ullamcorper ligula sodales.
+                                        </p>
+                                    </div>
+                                </li>
+                                <li class="right list-group-item clearfix">
+                                    <div class="chat-body clearfix">
+                                        <div class="header">
+                                            <small class=" text-muted">
+                                                <img src="resources/imgs/si-glyph-clock.svg" />15 mins ago
+                                            </small>
+                                            <strong class="float-right primary-font">Bhaumik Patel</strong>
+                                        </div>
+                                        <p class="card-text">
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare
+                                            dolor, quis ullamcorper ligula sodales.
+                                        </p>
+                                    </div>
+                                </li> -->
+                            </ul>
+                        </div>
+                        <div class="card-footer">
+                            <form>
+                                <div class="input-group input-group-sm">
+                                    <input id="chat-input" type="text" class="form-control" placeholder="Type your message here..." />
+                                    <div class="input-group-append">
+                                        <input type="submit" class="btn btn-warning btn-sm" id="chat-submit" value="Send">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
-                <div class="panel-body">
-                    <ul class="chat">
-                        <li class="left clearfix"><span class="chat-img pull-left">
-                            <img src="http://placehold.it/50/55C1E7/fff&text=U" alt="User Avatar" class="img-circle" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <strong class="primary-font">Jack Sparrow</strong> <small class="pull-right text-muted">
-                                        <span class="glyphicon glyphicon-time"></span>12 mins ago</small>
-                                </div>
-                                <p>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare
-                                    dolor, quis ullamcorper ligula sodales.
-                                </p>
-                            </div>
-                        </li>
-                        <li class="right clearfix"><span class="chat-img pull-right">
-                            <img src="http://placehold.it/50/FA6F57/fff&text=ME" alt="User Avatar" class="img-circle" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <small class=" text-muted"><span class="glyphicon glyphicon-time"></span>13 mins ago</small>
-                                    <strong class="pull-right primary-font">Bhaumik Patel</strong>
-                                </div>
-                                <p>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare
-                                    dolor, quis ullamcorper ligula sodales.
-                                </p>
-                            </div>
-                        </li>
-                        <li class="left clearfix"><span class="chat-img pull-left">
-                            <img src="http://placehold.it/50/55C1E7/fff&text=U" alt="User Avatar" class="img-circle" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <strong class="primary-font">Jack Sparrow</strong> <small class="pull-right text-muted">
-                                        <span class="glyphicon glyphicon-time"></span>14 mins ago</small>
-                                </div>
-                                <p>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare
-                                    dolor, quis ullamcorper ligula sodales.
-                                </p>
-                            </div>
-                        </li>
-                        <li class="right clearfix"><span class="chat-img pull-right">
-                            <img src="http://placehold.it/50/FA6F57/fff&text=ME" alt="User Avatar" class="img-circle" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <small class=" text-muted"><span class="glyphicon glyphicon-time"></span>15 mins ago</small>
-                                    <strong class="pull-right primary-font">Bhaumik Patel</strong>
-                                </div>
-                                <p>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare
-                                    dolor, quis ullamcorper ligula sodales.
-                                </p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <div class="panel-footer">
-                    <div class="input-group">
-                        <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here..." />
-                        <span class="input-group-btn">
-                            <button class="btn btn-warning btn-sm" id="btn-chat">
-                                Send</button>
-                        </span>
+            </div>
+            <div class="row">
+                <div class="col-sm-2 card">
+                    <div class="thumbnail">
+                        <p>Server List:</p>
+                        <button class="btn btn-primary room-btn" id="basin">A-Basin</button>
+                        <br/>
+                        <br/>
+                        <button class="btn btn-primary room-btn">Copper Mountain</button>
+                        <br/>
+                        <br/>
+                        <button class="btn btn-primary room-btn">Eldora</button>
+                        <br/>
+                        <br/>
+                        <button class="btn btn-primary room-btn">Vail Resorts</button>
+                        <br/>
+                        <br/>
+                        <button class="btn btn-primary room-btn">Winter Park</button>
+                        <br/>
+                        <br/>
+                        <br/>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+        <!-- Actual chat functionality -->
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            $(function () {
+                var room;
+                var socket = io();
+
+                // makes string for adding elements
+                function buildMsg(data, clientSaid){
+                    var innerCount;
+
+                    // timestamp stuff
+                    var d = new Date();
+                    var h = d.getHours(), m = d.getMinutes(), side = "AM";
+                    if(h > 12){
+                        h -= 12;
+                        side = "PM";
+                    }
+                    var t = h.toString() + ":" + m.toString() + side;
+
+                    if(clientSaid){
+                        // client send message 
+                        innerCount =
+                        '<li class="right list-group-item clearfix">' +
+                            '<div class="chat-body clearfix">' +
+                                '<div class="header">' +
+                                    '<small class="text-muted">' +
+                                        '<img src="resources/imgs/si-glyph-clock.svg" />' + t +
+                                    '</small>' +
+                                    '<strong class="float-right primary-font">' + data.name + '</strong>' +
+                                '</div>' +
+                                '<p class="card-text">' +
+                                    data.msg +
+                                '</p>' +
+                            '</div>' +
+                        '</li>';
+                    }
+                    else{
+                        innerCount =
+                        '<li class="left list-group-item clearfix">' +
+                            '<div class="chat-body clearfix">' +
+                                '<div class="header">' +
+                                    '<strong class="primary-font">' + data.name + '</strong>' +
+                                    '<small class="float-right text-muted">' +
+                                        '<img src="resources/imgs/si-glyph-clock.svg" />' + t +
+                                    '</small>' +
+                                '</div>' +
+                                '<p class="card-text">' +
+                                    data.msg +
+                                '</p>' +
+                            '</div>' +
+                        '</li>';
+                    }
+                    return innerCount;
+                }
+
+                // sending socket message
+                $('form').submit(function(e){
+                    e.preventDefault(); // prevents page reloading
+                    var data = {name:"<%= user %>", msg:$('#chat-input').val(), rm:room};
+                    $('#messages').append(buildMsg(data, true));
+                    socket.emit('chat message', data);
+
+                    $('#chat-input').val('');
+                    return false;
+                });
+
+                // receiving message from other people
+                socket.on('chat message', function(data){
+                    $('#messages').append(buildMsg(data, false));
+                });
+
+
+                // changing server room functionality
+                $(".room-btn").click(function(){
+                    var t = $(this).text();
+                    $.post('http://localhost:3000/room-select', {rname:$(this).text()}, function(data){
+                        if(data === 'success'){
+                            console.log('Room changed successfully to ' + t);
+                            room = t;
+                        }
+                        else{
+                            console.log('Room change failed');
+                        }
+                    });
+
+                });
+            });
+        </script>
+    </body>
+</html>

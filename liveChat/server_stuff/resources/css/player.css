@@ -6,7 +6,7 @@ footer {
 body {
     font-family: Arial;
 }
-nav .darkBlue body{
+nav, .darkBlue, body{
     background-color: #19222B;
 }
 * {
@@ -23,8 +23,6 @@ form.example input[type=text] {
 }
 
 form.example button {
-    float: left;
-    width: 20%;
     padding: 10px;
     background: #2196F3;
     color: white;

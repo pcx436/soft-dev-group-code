@@ -1,6 +1,6 @@
 0. ~~wack it~~
-1. ACTUALLY MAKE THE FUCKING CHAT SYSTEM HOLY GOD FUCKING DAMN IT
-2. Comment code so the other people in the group can read it with minimal difficulty.
+1. ~~Create the chat system~~
+2. ~~Comment code so the other people in the group can read it with minimal difficulty.~~
    2.1 Ongoing process, have done a lot though
 3. ~~Implement sign-out functionality. Shouldn't be too hard...~~
 4. Integrate with spotify shiz
