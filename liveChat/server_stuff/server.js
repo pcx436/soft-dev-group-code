@@ -62,7 +62,7 @@ app.use(session({
 // home page 
 app.get('/', function(req, res) {
 	// user is logged in, show them the home page
-	if(req.session && req.session.user){
+	if(!(!req.session || !req.session.user || req.session == {} || req.session.user == undefined)){
 		res.render('pages/home', { 
 			page_title:"Home",
 			custom_style:"resources/css/home.css",
@@ -81,11 +81,7 @@ app.get('/', function(req, res) {
 app.get('/login', function(req, res) {
 
 	// if user is already logged in, redirect them to the homepage
-	if(req.session && req.session.user){
-		res.redirect('/');
-	}
-	else{
-		// user not logged in, show them the home page
+	if(!req.session || !req.session.user || req.session == {} || req.session.user == undefined){
 		res.render('pages/login',{ 
 			page_title:"Login",
 			custom_style:"resources/css/login.css",
@@ -93,13 +89,17 @@ app.get('/login', function(req, res) {
 			active: 'login-nav'
 		});
 	}
+	else{
+		res.redirect('/');
+		// user not logged in, show them the home page
+	}
 });
 
 // MODIFY TO PREVENT SQL INJECTION ATTACKS
 // Also follow along with the managing session stuff, that looks real helpful!
 app.post('/login', function(req, res){
 
-	if(req.session && req.session.user){
+	if(!(!req.session || !req.session.user || req.session == {} || req.session.user == undefined)){
 		// already logged in, tried to post again.
 		// will only occur with deliberate tampering (i think)
 		res.redirect('/');
@@ -151,7 +151,7 @@ app.get('/logout', function(req, res){
 });
 
 app.get('/player', function(req, res){
-	if(!req.session && !req.session.user){
+	if(!req.session || !req.session.user || req.session == {} || req.session.user == undefined){
 		res.redirect('/login');
 	}
 	else{
@@ -164,14 +164,16 @@ app.get('/player', function(req, res){
 	}
 });
 
-
-
 // migrating to bootstrap 4
 app.get('/widget', function(req, res){
-	if(!req.session && !req.session.user){
+	if(!req.session || !req.session.user || req.session == {} || req.session.user == undefined){
 		res.redirect('/login');
+		console.log('how...');
 	}
 	else{
+		console.log(req.session);
+		console.log(req.session.user);
+		console.log('wigii');
 		res.render('pages/widget', {
 			page_title: 'Widget Test',
 			custom_style: 'resources/css/widget.css',
@@ -231,21 +233,17 @@ app.post('/room-select', function(req, res){
 
 // registration page, going to need this eventually
 app.get('/signup', function(req, res) {
-	if(!req.session && !req.session.user){
-		res.render('pages/signup',{
-			page_title:"Registration Page",
-			custom_style: "resources/css/home.css",
-			user: '',
-			active: 'signup-nav'
-		});	
-	}
-	else{
-		res.redirect('/');
-	}
+	res.render('pages/signup',{
+		page_title:"Registration Page",
+		custom_style: "resources/css/home.css",
+		user: '',
+		active: 'signup-nav'
+	});	
+	
 });
 
 app.post('/signup', function(req, res){
-	if(!req.session && !req.session.user && req.body.uname && req.body.pwOne && req.body.email && req.body.pwTwo){
+	if((!req.session || !req.session.user || req.session == {} || req.session.user == undefined) && req.body.uname && req.body.pwOne && req.body.email && req.body.pwTwo){
 		var createQuery, query = "SELECT uid FROM users WHERE username = \'" + req.body.uname + "\' OR email = \'" + req.body.email + "\';";
 
 

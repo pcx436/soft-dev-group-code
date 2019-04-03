@@ -181,7 +181,7 @@
                 // changing server room functionality
                 $(".room-btn").click(function(){
                     var t = $(this).text();
-                    $.post('http://localhost:3000/room-select', {rname:$(this).text()}, function(data){
+                    $.post('http://' + location.host + ':3000/room-select', {rname:$(this).text()}, function(data){
                         if(data === 'success'){
                             console.log('Room changed successfully to ' + t);
                             room = t;

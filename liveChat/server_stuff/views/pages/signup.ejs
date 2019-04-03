@@ -50,9 +50,9 @@
             </div>
         </div>
         <script>
-            use strict;
             // form validation jazz
             $(function(){
+                console.log(location.host);
                 var lowerCaseLetters = /[a-z]/g; // : Fill in the regular experssion for lowerCaseLetters
                 var upperCaseLetters = /[A-Z]/g; // : Fill in the regular experssion for upperCaseLetters
                 var numbers = /\d/g; // : Fill in the regular experssion for digits
@@ -77,16 +77,16 @@
                     if(uname.val().length <= 0 || email.val().length <= 0 || pwOne.val().length <= 0 || pwTwo.val().length <= 0){
                         bad = 1;
                     }
-                    if(!(pwOne.val() === pwTwo.val())){
+                    if(pwOne.val() !== pwTwo.val()){
                         bad += 2;
                     }
 
-                    if(bad !=== 0){
+                    if(bad !== 0){
                         $('#alertMessage').text(msgs[bad - 1]);
                         $('#badAlert').show();
                     }
                     else{
-                        $.post('http://localhost:3000/signup', {uname:unameEle.val(), email:emailEle.val(), pwOne:pwOneEle.val(), pwTwo:pwTwoEle.val()}, function(data){
+                        $.post('http://' + location.host + '/signup', {uname:unameEle.val(), email:emailEle.val(), pwOne:pwOneEle.val(), pwTwo:pwTwoEle.val()}, function(data){
                             if(data === 'success'){
                                 $('#goodAlert').show()
                                 $('#badAlert').hide();
@@ -94,8 +94,7 @@
                                 setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, 1000);
                                 setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, 2000);
                                 setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, 3000);
-                                setTimeout(function(){window.location.replace('http://localhost:3000/');}, 3000);
-
+                                setTimeout(function(){window.location.replace('http://' + location.host + '/');}, 3000);
                             }
                             else{
                                 $('#goodAlert').hide();

@@ -2,7 +2,7 @@
 		<script>
 			$(function(){
 				var uname, pass, both;
-
+				console.log('http://' + location.host + '/');
 				// Form has been submitted, initiate validation proceedure
 				$("form").submit(function(e){
 					var bad = false;
@@ -33,7 +33,7 @@
 						console.log('No formatting errors, sending to server');
 
 						// initiate post requst to server, attempt to login
-						$.post("http://localhost:3000/login", {user:uname.val(), pwOne:pass.val()}, function(data){
+						$.post("http://" + location.host + "/login", {user:uname.val(), pwOne:pass.val()}, function(data){
 							if(data === 'success'){ // user logged in successfully
 								
 								console.log('ya boi logged in');
@@ -50,7 +50,7 @@
 								setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, 3000);
 								setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, 4000);
 								setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, 5000);
-								setTimeout(function(){window.location.replace('http://localhost:3000/');}, 5000);
+								setTimeout(function(){window.location.replace('http://' + location.host + '/');}, 5000);
 							}
 							else{
 								// user couldn't login, display bad message
