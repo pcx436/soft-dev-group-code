@@ -1,105 +1,196 @@
 <% include ../partials/header %>
-
-    <div class="bgimg w3-display-container w3-animate-opacity w3-text-black">
-        <div class="w3-display-topleft w3-padding-large w3-large">
-            <div class="container">
-                <!-- Length error alert box -->
-                <div class="alert alert-danger alert-dismissible" style="display: none;" role="alert" id="lengthAlert">
-                    Uh oh! Your username and/or password were incorrect. Please try again.
-                    <button type="button" class="close" onClick='$("#lengthAlert").hide();' data-dismiss="alert" aria-label="Close">
+        <div class="container pt-sm-3">
+            <!-- Modal -->
+            <div class="modal fade" id="pwReq" tabindex="-1" role="dialog" aria-labelledby="pwReqLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="pwReqLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
                     </button>
+                  </div>
+                  <div class="modal-body">
+                    Your password must:
+                    <ul class="list-group">
+                        <li class="list-group-item">Be at least 8 characters long</li>
+                        <li class="list-group-item">Have at least 1 uppercase letter</li>
+                        <li class="list-group-item">Have at least 1 lowercase letter</li>
+                        <li class="list-group-item">Have at least 1 number</li>
+                    </ul>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  </div>
                 </div>
-                <form>
-                    <!--Username group-->
-                    <div class="form-group row">
-                        <label  class="col-sm-2 col-form-label" for="usernameChoice">Enter Username</label>
-                        <div class="col-sm-10">
-                            <input type="username" class="form-control" id="usernameChoice" name="usernameChoice" placeholder="Username" required>
-                        </div>
-                    </div>
-                    <!--Email group-->
-                    <div class="form-group row">
-                        <label  class="col-sm-2 col-form-label" for="mailAddr">Enter Email</label>
-                        <div class="col-sm-10">
-                            <input type="username" class="form-control" id="mailAddr" name="mailAddr" placeholder="example@website.com" required>
-                        </div>
-                    </div>
-                    <!--First password group-->
-                    <div class="form-group row">
-                        <label  class="col-sm-2 col-form-label" for="pwOne">Enter Password</label>
-                        <div class="col-sm-10">
-                            <input type="password" class="form-control" id="pwOne" name="pwOne" placeholder="Password" required>
-                        </div>
-                    </div>
-
-                    <!--Password confirmation group-->
-                    <div class="form-group row">
-                        <label  class="col-sm-2 col-form-label" for="pwTwo">Confirm Password</label>
-                        <div class="col-sm-10">
-                            <input type="password" class="form-control" id="pwTwo" name="pwTwo" placeholder="Password" required>
-                        </div>
-                    </div>
-
-                    <!-- Successful login alert box -->
-                    <div class="alert alert-success" style="display: none;" role="alert" id="goodAlert">
-                        Successful signup! Redirecting to the login page in <span id="countdown">3</span>...
-                    </div>
-                    <input type="submit" value="login" class="btn btn-primary btn-block">
-                </form>
-                Aleady A Member?<a href="/login"> Login</a>
+              </div>
             </div>
+
+            <div id="alerts">
+                <!-- Placeholder for any and all alerts -->
+            </div>
+            <form class="needs-validation" accept-charset="UTF-8" novalidate>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label" for="mailAddr"><h4><b>Email</b></h4></label>
+                    <div class="col-sm-9">
+                        <input type="email" class="form-control my-auto my-sm-auto py-auto py-sm-auto" name="mailAddr" id="mailAddr" placeholder="john@example.com" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label  class="col-sm-3 col-form-label" for="usernameChoice"><h4><b>Username</b></h4></label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control my-auto my-sm-auto py-auto py-sm-auto" id="usernameChoice" name="usernameChoice" placeholder="Username" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label  class="col-sm-3 col-form-label" for="pwOne"><h4><b>Password</b></h4></label>
+                    <div class="col-sm-9">
+                        <input type="password" class="form-control my-auto my-sm-auto py-auto py-sm-auto" id="pwOne" name="pwOne" placeholder="Password" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label  class="col-sm-3 col-form-label" for="pwTwo"><h4><b>Confirm Password</b></h4></label>
+                    <div class="col-sm-9">
+                        <input type="password" class="form-control my-auto my-sm-auto py-auto py-sm-auto" id="pwTwo" name="pwTwo" placeholder="Confirm Password" required>
+                    </div>
+                </div>
+                <input type="submit" value="Sign up!" class="btn btn-primary btn-block">
+            </form>
+            <h3>Already a member? <a href="/login">Login here!</a></h3>
         </div>
         <script>
             // form validation jazz
             $(function(){
-                console.log(location.host);
-                var lowerCaseLetters = /[a-z]/g; // : Fill in the regular experssion for lowerCaseLetters
-                var upperCaseLetters = /[A-Z]/g; // : Fill in the regular experssion for upperCaseLetters
-                var numbers = /\d/g; // : Fill in the regular experssion for digits
-                var minLength = 8; // : Change the minimum length to what what it needs to be in the question 
-                $('#pwOne').keyup(function(){
-                    var v = $(this).val();
-                    if(v.match(lowerCaseLetters) && v.match(upperCaseLetters) && v.match(numbers) && v.length >= minLength){
-                        $(this).removeClass('invalid');
-                        $(this).addClass('valid');
+                // builds messages to add to the alerts box
+                function buildAlert(id, msg, bad){
+                    return '<div class="alert alert-' + (bad ? 'danger alert-dismissible' : 'success') + '" role="alert" id="' + id + '">' +
+                        msg +
+                        '<button type="button" class="close" onClick=\'$("#' + id + '").remove();\' data-dismiss="alert" aria-label="Close">' +
+                            '<span aria-hidden="true">&times;</span>' +
+                        '</button>' +
+                    '</div>';
+                }
+
+                function makeValid(ele, dir, msg = ''){
+                    if(dir){
+                        $(ele).removeClass('invalid');
+                        $(ele).addClass('valid');
                     }
                     else{
-                        $(this).removeClass('valid');
-                        $(this).addClass('invalid');
+                        $(ele).removeClass('valid');
+                        $(ele).addClass('invalid');
+                        
+                    }
+                    $(ele).get(0).setCustomValidity(msg);
+                }
+
+                function goodPass(v){
+                    var lowerCaseLetters = /[a-z]/g; // : Fill in the regular experssion for lowerCaseLetters
+                    var upperCaseLetters = /[A-Z]/g; // : Fill in the regular experssion for upperCaseLetters
+                    var numbers = /\d/g; // : Fill in the regular experssion for digits
+                    var minLength = 8; // : Change the minimum length to what what it needs to be in the question
+
+                    return (v.match(lowerCaseLetters) && v.match(upperCaseLetters) && v.match(numbers) && v.length >= minLength);
+                }
+
+                //console.log(location.host);
+                
+                // ensures pwOne matches regex requirements
+                $('#pwOne').keyup(function(){
+                    var v = $(this).val();
+                    if(goodPass(v)){
+                        makeValid($(this), true);
+                    }
+                    else{
+                        makeValid($(this), false);
                     }
                 });
 
-                $('form').submit(function(e){
-                    e.preventDefault();
-                    var unameEle = $('#usernameChoice'), emailEle = $('#mailAddr'), pwOneEle = $('#pwOne'), pwTwoEle = $('#pwTwo');
-                    var bad = 0, msgs = ['You did not submit one or more fields', 'Your passwords do not match', 'You did not submit one or more required fields and your passwords do not match.'];
-
-                    if(uname.val().length <= 0 || email.val().length <= 0 || pwOne.val().length <= 0 || pwTwo.val().length <= 0){
-                        bad = 1;
-                    }
-                    if(pwOne.val() !== pwTwo.val()){
-                        bad += 2;
-                    }
-
-                    if(bad !== 0){
-                        $('#alertMessage').text(msgs[bad - 1]);
-                        $('#badAlert').show();
+                // makes pwTwo valid or invalid depending on if it matches pwOne
+                $('#pwTwo').keyup(function(){
+                    if($(this).val() !== $('#pwOne').val()){
+                        makeValid($(this), false);
                     }
                     else{
-                        $.post('http://' + location.host + '/signup', {uname:unameEle.val(), email:emailEle.val(), pwOne:pwOneEle.val(), pwTwo:pwTwoEle.val()}, function(data){
-                            if(data === 'success'){
-                                $('#goodAlert').show()
-                                $('#badAlert').hide();
+                        makeValid($(this), true);
+                    }
+                });
 
-                                setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, 1000);
-                                setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, 2000);
-                                setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, 3000);
-                                setTimeout(function(){window.location.replace('http://' + location.host + '/');}, 3000);
+                // called upon form submission
+                $('form').submit(function(e){
+                    e.preventDefault();
+                    var uname = $('#usernameChoice'), email = $('#mailAddr'), pwOne = $('#pwOne'), pwTwo = $('#pwTwo'), alerts = $('#alerts');
+                    var lenError = false, otherError = false;
+                    alerts.html('');
+                    $(this).addClass('was-validated');
+                    // missing some inputs
+
+                    // checking length stuff
+                    if(uname.val().length <= 0){
+                        makeValid(uname, false);
+                        lenError = true;
+                    }
+                    else{
+                        makeValid(uname, true);
+                    }
+
+                    if(email.val().length <= 0){
+                        makeValid(email, false);
+                        lenError = true;
+                    }
+                    else{
+                        makeValid(email, true);
+                    }
+
+                    if(pwOne.val().length <= 0){
+                        makeValid(pwOne, false);
+                        lenError = true;
+                    }
+                    else if(!goodPass(pwOne.val())){
+                        var msg = 'Your password does not fullfill the <a href="#" data-toggle="modal" data-target="#pwReq" class="alert-link">password requirements</a>';
+                        alerts.append(buildAlert('badPass', msg, true));
+                        makeValid(pwOne, false, msg);
+                        otherError = true;
+                    }
+                    else{
+                        makeValid(pwOne, true);
+                    }
+
+                    if(pwTwo.val().length <= 0){
+                        makeValid(pwTwo, false);
+                        lenError = true;
+                    }
+                    // passwords don't match
+                    else if(pwOne.val() !== pwTwo.val()){
+                        var msg = 'Your passwords do not match';
+                        alerts.append(buildAlert('noMatch', msg, true));
+                        makeValid(pwTwo, false, msg);
+                        otherError = true;
+                    }
+                    else{
+                        makeValid(pwTwo, true);
+                    }
+
+                    // adding length alert
+                    if(lenError){
+                        alerts.append(buildAlert('missingSub', 'You did not submit one or more fields', true));
+                    }
+
+                    if(!lenError && !otherError){
+                        $.post('http://' + location.host + '/signup', {uname:uname.val(), email:email.val(), pwOne:pwOne.val(), pwTwo:pwTwo.val()}, function(data){
+                            if(data === 'success'){
+                                var aler = buildAlert('goodAlert', 'Success! Redirecting you to the homepage in <span id="countdown">5</span>...', false);
+                                alerts.html(aler);
+                                
+                                var count = 1000;
+                                for(; count < 5 * 1000; count += 1000){
+                                    setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, count);
+                                }
+
+                                setTimeout(function(){window.location.replace('http://' + location.host + '/');}, count);
                             }
                             else{
-                                $('#goodAlert').hide();
-                                $('#alertMessage').text('Uhhh... something went wrong???');
-                                $('#badAlert').show();
+                                alerts.html(buildAlert('subError', 'An error occured with the server: ' + data, true));
                             }
                         });
                     }

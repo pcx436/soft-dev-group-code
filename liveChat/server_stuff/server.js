@@ -235,7 +235,7 @@ app.post('/room-select', function(req, res){
 app.get('/signup', function(req, res) {
 	res.render('pages/signup',{
 		page_title:"Registration Page",
-		custom_style: "resources/css/home.css",
+		custom_style: "resources/css/signup.css",
 		user: '',
 		active: 'signup-nav'
 	});	
@@ -244,53 +244,57 @@ app.get('/signup', function(req, res) {
 
 app.post('/signup', function(req, res){
 	if((!req.session || !req.session.user || req.session == {} || req.session.user == undefined) && req.body.uname && req.body.pwOne && req.body.email && req.body.pwTwo){
-		var createQuery, query = "SELECT uid FROM users WHERE username = \'" + req.body.uname + "\' OR email = \'" + req.body.email + "\';";
-
+		var query = 'INSERT INTO users(username, email, hash) VALUES (\'' + req.body.uname + '\', \'' + req.body.email + '\', \'' + req.body.pwOne + '\');';
 
 		db.task('get-everything', task => {
-			return task.any(query);
+			return task.none(query);
 		})
 		.then(info => {
-			// we found someone, that's not okay
+			// inserted successfully
+			req.session.user = req.body.uname;
+			res.end('success');
+			/*console.log('Search result: ' + info);
 			if(info[0]){
 				console.log('Someone tried to make a user that already exists (' + req.body.uname + ').');
+				createQuery = false;
 				res.end('failure');
 			}
 			else{
-				console.log('User found and will be created');
-				createQuery = 'INSERT INTO users(username, email, hash) VALUES (\'' + req.body.uname + '\', \'' + req.body.email + '\', \''
-				 + req.body.pwOne + '\');';
-			}
-		})
-		.catch(error => {
-			console.log(error);
-			console.log('User lookup threw an error');
-			res.end('failure');
-		})
+				console.log('User doesn\'t already exist, creating...');
 
-		// if user not found, try to insert
-		db.task('get-everything', task => {
-			return task.any(query);
-		})
-		.then(info => {
-			// we found someone, that's not okay
-			if(info[0]){
-				console.log('User \'' + req.body.uname + '\' inserted successfully.');
-				res.end('success');
-			}
-			else{
-				console.log('Failed to insert?');
-				res.end('failure');
-			}
+				var 
+				console.log(createQuery);
+				
+				db.task('get-everything', taskr => {
+					return taskr.any(createQuery);
+				})
+				.then(infob => {
+					if(infob[0]){
+						console.log('User \'' + req.body.uname + '\' inserted successfully.');
+						res.end('success');
+					}
+					else{
+						console.log(infob)
+						console.log('Failed to insert?');
+						res.end('Insertion error');
+					}
+				})
+				.catch(errorb => {
+					console.log(errorb);
+					console.log('User insertion threw an error');
+					res.end('Insertion error, check server output');
+				})
+			}*/
 		})
 		.catch(error => {
 			console.log(error);
 			console.log('User insertion threw an error');
-			res.end('failure');
+			res.end(error.detail);
 		})
 	}
 	else{
-		res.end('failure');
+		console.log('Requiste field(s) missing from signup POST');
+		res.end('Missing fields');
 	}
 
 });
