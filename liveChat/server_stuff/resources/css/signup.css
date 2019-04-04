@@ -1,0 +1,11 @@
+footer {
+  background-color: #655;
+  color: white;
+  padding: 15px;
+}
+body {
+  font-family: Arial;
+}
+* {
+  box-sizing: border-box;
+}
