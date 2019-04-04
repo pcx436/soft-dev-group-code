@@ -1,14 +1,19 @@
 <!DOCTYPE html>
+<!--transfer to bootstrap 4 -->
 <html>
 <head>
   <title>Player Page</title>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-  <body style="background-color:#19222B">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="
+  sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  <body style="background-color: white">
   <style>    
     /* Set black background color, white text and some padding */
 footer {
@@ -49,32 +54,38 @@ form.example::after {
   clear: both;
   display: table;
 }
-.panel {
-  border: 0;
-}
   </style>
 </head>
 <body>
 <script src="https://sdk.scdn.co/spotify-player.js"></script>
 <script src="playback.js"></script>
 
-<nav class="navbar navbar-inverse" style = "background-color: #19222B">
+<nav class="navbar navbar-expand-lg navbar-dark navbar-full" style="background-color: #19222B">
   <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="home_page">Tracked Out</a>
+    <div class="navbar-nav">
+      <a class="navbar-brand" href="home_page.html">Tracked Out</a>
+       <li class="nav-item">
+        <a class="nav-link" href="home_page.html">Home</a>
+      </li>
+         <li class="nav-item">
+        <a class="nav-link" href="player_page.html">Play</a>
+      </li>
     </div>
-    <ul class="nav navbar-nav">
-      <li class="active"><a href="home_page.html">Home</a></li>
 
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-      <li><a href="signup_page.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-      <li><a href="login_page.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+ <ul class="nav navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="login_page.html">Login<i class="fa fa-user"></i></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="signup_page.html">Sign Up<i class= "fa fa-user-plus"></i></a>
+      </li>
     </ul>
   </div>
+</div>
 </nav>
-
-<div class="container text-center" style ="background-color:#19222B">    
+<br/>
+<br/>
+<div class="container text-center" style ="background-color:white">    
   <div class="row">
     <div class="col-sm-3 well">
       <div class="well">
@@ -84,7 +95,7 @@ form.example::after {
       <input type="text" placeholder="Search.." name="search2">
       <button type="submit"><i class="fa fa-search"></i></button>
     </form></p>
-       
+    
       </div>
       <div class="well" >
         <p><a href="#">Queue</a></p>
@@ -109,22 +120,13 @@ form.example::after {
         };
         </script>
           <button type="button" class="btn btn-default btn-sm" id='up' onclick="thumbs_up()">
-                <span class="glyphicon glyphicon-thumbs-up"></span>
+                <i class = "fa fa-thumbs-up" aria-hidden = "true"></i>
                 <button type="button" class="btn btn-default btn-sm" id='down' onclick="thumbs_down()">
-                <span class="glyphicon glyphicon-thumbs-down"></span>
+                <i class = "fa fa-thumbs-down" aria-hidden = "true"></i>
             </button>
         </button>
         <p>Votes: <a id="clicks">0</a></p>
 
-        <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
         <br/> 
         <br/> 
         <br/> 
@@ -159,20 +161,6 @@ form.example::after {
           </div>
         </div>
       </div>
-
-      <div class="row">
-        <div class="col-sm-3">
-          <div class="well">
-           <p>John:</p>
-          </div>
-        </div>
-        <div class="col-sm-9">
-          <div class="well">
-            <p>Chat Box</p>
-          </div>
-        </div>
-      </div>
-
 </div>
   <div class="col-sm-2 well">
       <div class="thumbnail">
@@ -192,28 +180,12 @@ form.example::after {
         <br/> 
       </div>  
   </div>
-  <div class="col-sm-2 well">    
-      <div class="well">
-        <p>Users</p>
+
 
         <br/> 
         <br/> 
         <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
       </div>
-      </div>
-
 
 
 </body>
