@@ -157,7 +157,7 @@ app.get('/player', function(req, res){
 	else{
 		res.render('pages/player', {
 			page_title: 'Player',
-			custom_style: 'resources/css/player.css',
+			custom_style: 'resources/css/home.css',
 			user: req.session.user,
 			active: 'listen-nav'
 		});
@@ -195,7 +195,6 @@ io.on('connection', function(socket){
 		// socket.to(data.rm).emit('chat message', data.msg);
 		socket.broadcast.emit('chat message', data);
 	})
-
 });
 
 // MODIFY TO PREVENT SQL INJECTION
@@ -218,7 +217,6 @@ app.post('/room-select', function(req, res){
 				console.log('Room join query failed');
 				res.end('failure');
 			}
-			
 		})
 		.catch(error => {
 			// login failed for some reason
@@ -226,10 +224,7 @@ app.post('/room-select', function(req, res){
 		  	res.end('Room join query threw an error');
 		})
 	}
-
-
 });
-
 
 // registration page, going to need this eventually
 app.get('/signup', function(req, res) {
@@ -253,38 +248,6 @@ app.post('/signup', function(req, res){
 			// inserted successfully
 			req.session.user = req.body.uname;
 			res.end('success');
-			/*console.log('Search result: ' + info);
-			if(info[0]){
-				console.log('Someone tried to make a user that already exists (' + req.body.uname + ').');
-				createQuery = false;
-				res.end('failure');
-			}
-			else{
-				console.log('User doesn\'t already exist, creating...');
-
-				var 
-				console.log(createQuery);
-				
-				db.task('get-everything', taskr => {
-					return taskr.any(createQuery);
-				})
-				.then(infob => {
-					if(infob[0]){
-						console.log('User \'' + req.body.uname + '\' inserted successfully.');
-						res.end('success');
-					}
-					else{
-						console.log(infob)
-						console.log('Failed to insert?');
-						res.end('Insertion error');
-					}
-				})
-				.catch(errorb => {
-					console.log(errorb);
-					console.log('User insertion threw an error');
-					res.end('Insertion error, check server output');
-				})
-			}*/
 		})
 		.catch(error => {
 			console.log(error);
@@ -296,7 +259,6 @@ app.post('/signup', function(req, res){
 		console.log('Requiste field(s) missing from signup POST');
 		res.end('Missing fields');
 	}
-
 });
 
 

@@ -1,193 +1,98 @@
-<!DOCTYPE html>
-<!--transfer to bootstrap 4 -->
-<html>
-<head>
-  <title>Player Page</title>
-  <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="
-  sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-  <body style="background-color: white">
-  <style>    
-    /* Set black background color, white text and some padding */
-footer {
-  background-color: #655;
-  color: white;
-  padding: 15px;
-}
-body {
-  font-family: Arial;
-}
-* {
-  box-sizing: border-box;
-}
-form.example input[type=text] {
-  padding: 10px;
-  font-size: 17px;
-  border: 1px solid grey;
-  float: left;
-  width: 80%;
-  background: #white;
-}
-form.example button {
-  float: left;
-  width: 20%;
-  padding: 10px;
-  background: #2196F3;
-  color: white;
-  font-size: 17px;
-  border: 1px solid grey;
-  border-left: none;
-  cursor: pointer;
-}
-form.example button:hover {
-  background: #0b7dda;
-}
-form.example::after {
-  content: "";
-  clear: both;
-  display: table;
-}
-  </style>
-</head>
-<body>
-<script src="https://sdk.scdn.co/spotify-player.js"></script>
-<script src="playback.js"></script>
-
-<nav class="navbar navbar-expand-lg navbar-dark navbar-full" style="background-color: #19222B">
-  <div class="container-fluid">
-    <div class="navbar-nav">
-      <a class="navbar-brand" href="home_page.html">Tracked Out</a>
-       <li class="nav-item">
-        <a class="nav-link" href="home_page.html">Home</a>
-      </li>
-         <li class="nav-item">
-        <a class="nav-link" href="player_page.html">Play</a>
-      </li>
-    </div>
-
- <ul class="nav navbar-nav ml-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="login_page.html">Login<i class="fa fa-user"></i></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="signup_page.html">Sign Up<i class= "fa fa-user-plus"></i></a>
-      </li>
-    </ul>
-  </div>
-</div>
-</nav>
-<br/>
-<br/>
-<div class="container text-center" style ="background-color:white">    
-  <div class="row">
-    <div class="col-sm-3 well">
-      <div class="well">
-        <p><a href="#">Song Search</a>
-
-    <form class="example" action="/action_page.php" style="margin:auto;max-width:300px">
-      <input type="text" placeholder="Search.." name="search2">
-      <button type="submit"><i class="fa fa-search"></i></button>
-    </form></p>
-    
-      </div>
-      <div class="well" >
-        <p><a href="#">Queue</a></p>
-        <p>
-         <script type="text/javascript">
-
-          var clicks = 0;
-          function thumbs_up() {
-            clicks += 1;
-            document.getElementById("clicks").innerHTML = clicks;
-            up.disabled = true;
-            down.disabled = false;
-
-          };
-          function thumbs_down() {
-            if (clicks >0){
-            clicks -= 1;
-            document.getElementById("clicks").innerHTML = clicks;
-            down.disabled = true;
-            up.disabled = false;
-          };
-        };
-        </script>
-          <button type="button" class="btn btn-default btn-sm" id='up' onclick="thumbs_up()">
-                <i class = "fa fa-thumbs-up" aria-hidden = "true"></i>
-                <button type="button" class="btn btn-default btn-sm" id='down' onclick="thumbs_down()">
-                <i class = "fa fa-thumbs-down" aria-hidden = "true"></i>
-            </button>
-        </button>
-        <p>Votes: <a id="clicks">0</a></p>
-
-        <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
-        </p>
-
-    </div>
-
-</p>
-</div>
-
-  <div class="col-sm-7" >
-    
-      <div class="row">
-        <div class="col-sm-12">
-          <div class="panel panel-default text-center">
-            <div class="panel-body" style = "background-color: #19222B">
-               <img id= "album" src = 'zep.jpg' width = "560px" height="560px">
+<% include ../partials/header %>
+        <div class="container text-center" style ="background-color:white">
+            <div class="row">
+                <div class="col-sm-3 well">
+                    <div class="well">
+                        <p>
+                            Song Search
+                            <form class="example" action="/action_page.php" style="margin: auto; max-width: 300px;">
+                                <input type="text" placeholder="Search.." name="search2">
+                                <button type="submit"><i class="fa fa-search"></i></button>
+                            </form>
+                        </p>
+                    </div>
+                    <div class="well">
+                        <p>
+                            <a href="#">Queue</a>
+                        </p>
+                        <p>
+                            <script type="text/javascript">
+                                var clicks = 0;
+                                function thumbs_up() {
+                                    clicks += 1;
+                                    $("#clicks").text(clicks);
+                                    up.disabled = true;
+                                    down.disabled = false;
+                                }
+                                function thumbs_down() {
+                                    if (clicks > 0){
+                                        clicks -= 1;
+                                        $("#clicks").text(clicks);
+                                        down.disabled = true;
+                                        up.disabled = false;
+                                    }
+                                }
+                            </script>
+                            <button type="button" class="btn btn-default btn-sm" id='up' onclick="thumbs_up()">
+                            <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                            <button type="button" class="btn btn-default btn-sm" id='down' onclick="thumbs_down()">
+                            <i class = "fa fa-thumbs-down" aria-hidden = "true"></i>
+                            </button>
+                            </button>
+                            <p>Votes: <span id="clicks">0</span></p>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                        </p>
+                    </div>
+                </p>
             </div>
-          </div>
+            <div class="col-sm-7" >
+                
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="panel panel-default text-center">
+                            <div class="panel-body" style = "background-color: #19222B">
+                                <img id= "album" src = 'zep.jpg' width = "560px" height="560px">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="well">
+                            <h3 id="song_title">Song Title</h3>
+                            <p id="artist_name">Artist</p>
+                            <button class="btn btn-primary" onclick="playPause()">Play/Pause</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2 well">
+                <div class="thumbnail">
+                    <p>Server List:</p>
+                    <button class="btn btn-primary">Keystone</button>
+                    <br/>
+                    <br/>
+                    <button class="btn btn-primary">Winter Park</button>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                </div>
+            </div>
+            <br/>
+            <br/>
+            <br/>
         </div>
-      </div>
-      
-      <div class="row">
-        <div class="col-sm-12">
-          <div class="well">
-            <h3 id="song_title">Song Title</h3>
-            <p id="artist_name">Artist</p>
-            <button class="btn btn-primary" onclick="playPause()">Play/Pause</button>
-          </div>
-        </div>
-      </div>
-</div>
-  <div class="col-sm-2 well">
-      <div class="thumbnail">
-        <p>Server List:</p>
-        <button class="btn btn-primary">Keystone</button>
-        <br/>
-      <br/>
-        <button class="btn btn-primary">Winter Park</button>
-          <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
-        <br/> 
-      </div>  
-  </div>
-
-
-        <br/> 
-        <br/> 
-        <br/> 
-      </div>
-
-
-</body>
-
+    </body>
 </html>

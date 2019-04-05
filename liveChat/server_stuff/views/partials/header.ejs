@@ -24,8 +24,15 @@
 
 		<%# custom stylings on a per-page basis%>
 		<link rel="stylesheet" href="<%= custom_style %>">
-		
-		<!--Resizing icons-->
+	<%
+		if(page_title === 'Player'){
+			var msg = '<script src="resources/js/playback.js"></script>';
+	%>
+			<%- msg %>
+		<%}%>
+
+
+		<!--Resizing navbar icons-->
 		<style>
 			.custo-icon{
 				width: 16px;
@@ -35,13 +42,12 @@
 
 		<!--used to mark one of the links in the navbar as active-->
 		<script>
-			function makeActive(ele){
-				$("#" + ele).addClass('active');
-			}
-
+			$(function(){
+				$("#<% active %>").addClass('active');
+			});
 		</script>
 	</head>
-	<body onload='makeActive("<%- active %>")'>
+	<body>
 		<!-- New navbar code -->
 		<nav class="navbar navbar-expand-lg navbar-dark text-white" style="background-color: black;">
 			<div class="container-fluid">
