@@ -5,9 +5,11 @@
                     <div class="card">
                         <p>
                             Song Search
-                            <form class="example" action="/action_page.php" style="margin: auto; max-width: 300px;">
+                            <form class="example m-auto m-sm-auto" action="/action_page.php" style="max-width: 300px;">
                                 <input type="text" placeholder="Search.." name="search2">
-                                <button type="submit"><i class="fa fa-search"></i></button>
+                                <button type="submit">
+                                    <i class="fa fa-search"></i>
+                                </button>
                             </form>
                         </p>
                     </div>
@@ -21,23 +23,23 @@
                                 function thumbs_up() {
                                     clicks += 1;
                                     $("#clicks").text(clicks);
-                                    up.disabled = true;
-                                    down.disabled = false;
+                                    $('#up').disabled = true;
+                                    $('#down').disabled = false;
                                 }
                                 function thumbs_down() {
                                     if (clicks > 0){
                                         clicks -= 1;
                                         $("#clicks").text(clicks);
-                                        down.disabled = true;
-                                        up.disabled = false;
+                                        $('#down').prop('disabled', true);
+                                        $('#up').prop('disabled', false);
                                     }
                                 }
                             </script>
                             <button type="button" class="btn btn-default btn-sm" id='up' onclick="thumbs_up()">
-                            <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                            <button type="button" class="btn btn-default btn-sm" id='down' onclick="thumbs_down()">
-                            <i class = "fa fa-thumbs-down" aria-hidden = "true"></i>
+                                <i class="fa fa-thumbs-up" aria-hidden="true"></i>
                             </button>
+                            <button type="button" class="btn btn-default btn-sm" id='down' onclick="thumbs_down()">
+                                <i class = "fa fa-thumbs-down" aria-hidden = "true"></i>
                             </button>
                             <p>Votes: <span id="clicks">0</span></p>
                             <br/>
@@ -50,7 +52,7 @@
                     </div>
                 </p>
             </div>
-            <div class="col-sm-7" >
+            <div class="col-sm-7">
                 
                 <div class="row">
                     <div class="col-sm-12">
@@ -61,7 +63,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="card">

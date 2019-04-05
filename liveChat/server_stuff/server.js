@@ -8,11 +8,25 @@
 //var flash = require('express-flash');
 var express = require('express'); //Ensure our express framework has been added
 var app = express();
+
+// spotify jazz
+var request = require('request'); // "Request" library
+var cors = require('cors');
+var querystring = require('querystring');
+var cookieParser = require('cookie-parser');
+// spotify vars
+var client_id = '50253af00a8749f2bb5330d1f3a44382'; // Your client id
+var client_secret = '01f9c2d6866d410ea25d0e1702dde56a'; // Your secret
+var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
+var stateKey = 'spotify_auth_state';
+
 var bodyParser = require('body-parser'); //Ensure our body-parser tool has been added
 app.use(bodyParser.json());              // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+
+app.use(cors()).use(cookieParser());
 
 //Create Database Connection
 var pgp = require('pg-promise')();
@@ -52,34 +66,147 @@ app.use(session({
 	activeDuration: 1000 * 60 * 5
 })); //instantiate session
 
-/*********************************
- Below we'll add the get & post requests which will handle:
-   - Database access
-   - Parse parameters from get (URL) and post (data package)
-   - Render Views - This will decide where the user will go after the get/post request has been processed
-************************************/
+
+/**
+ * Generates a random string containing numbers and letters
+ * @param  {number} length The length of the string
+ * @return {string} The generated string
+ */
+var generateRandomString = function(length) {
+  var text = '';
+  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+  for (var i = 0; i < length; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
+};
 
 // home page 
 app.get('/', function(req, res) {
 	// user is logged in, show them the home page
 	if(!(!req.session || !req.session.user || req.session == {} || req.session.user == undefined)){
-		res.render('pages/home', { 
+		var state = generateRandomString(16);
+		res.cookie(stateKey, state);
+
+		// your application requests authorization
+		var scope = 'user-read-private user-read-email user-modify-playback-state';
+		res.redirect('https://accounts.spotify.com/authorize?' +
+			querystring.stringify({
+				response_type: 'code',
+				client_id: client_id,
+				scope: scope,
+				redirect_uri: redirect_uri,
+				state: state
+		}));
+
+		// original code for homepage
+		/*res.render('pages/home', { 
 			page_title:"Home",
 			custom_style:"resources/css/home.css",
 			user: req.session.user,
 			active: 'home-nav'
-		});
+		});*/
 	}
 	else{
 		// user isn't logged in, redirect them to the homepage
 		res.redirect('/login');
 	}
+});
+
+// spotify stuff
+app.get('/callback', function(req, res) {
+	// your application requests refresh and access tokens
+	// after checking the state parameter
+
+	var code = req.query.code || null;
+	var state = req.query.state || null;
+	var storedState = req.cookies ? req.cookies[stateKey] : null;
 	
+	console.log('State: ' + state);
+	console.log('Stored State: ' + storedState);
+
+	if (state === null || state !== storedState) {
+		res.redirect('/player#' + querystring.stringify({error: 'state_mismatch'}));
+	}
+	else {
+		res.clearCookie(stateKey);
+		var authOptions = {
+			url: 'https://accounts.spotify.com/api/token',
+			form: {
+				code: code,
+				redirect_uri: redirect_uri,
+				grant_type: 'authorization_code'
+			},
+			headers: {
+				'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+			},
+			json: true
+		};
+
+		request.post(authOptions, function(error, response, body) {
+
+			if (!error && response.statusCode === 200) {
+				var access_token = body.access_token,
+				refresh_token = body.refresh_token;
+				console.log('ACCESS TOKEN: ' + access_token);
+				console.log('REFRESH TOKEN: ' + refresh_token);
+
+				var options = {
+					url: 'https://api.spotify.com/v1/me',
+					headers: { 'Authorization': 'Bearer ' + access_token },
+					json: true
+				};
+
+				// use the access token to access the Spotify Web API
+				request.get(options, function(error, response, body) {
+					console.log(body);
+				});
+
+				// we can also pass the token to the browser to make requests from there
+				res.redirect('/player#' +
+					querystring.stringify({
+						access_token: access_token,
+						refresh_token: refresh_token
+				}));
+			}
+			else {
+				res.redirect('/player#' +
+					querystring.stringify({
+					error: 'invalid_token'
+				}));
+			}
+		});
+	}
+});
+
+// get new refresh token procedure
+app.get('/refresh_token', function(req, res) {
+
+	// requesting access token from refresh token
+	var refresh_token = req.query.refresh_token;
+	var authOptions = {
+		url: 'https://accounts.spotify.com/api/token',
+		headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
+		form: {
+			grant_type: 'refresh_token',
+			refresh_token: refresh_token
+		},
+		json: true
+	};
+
+	request.post(authOptions, function(error, response, body) {
+		if (!error && response.statusCode === 200) {
+			var access_token = body.access_token;
+			res.send({
+				'access_token': access_token
+			});
+		}
+	});
 });
 
 // login page GET
 app.get('/login', function(req, res) {
-
 	// if user is already logged in, redirect them to the homepage
 	if(!req.session || !req.session.user || req.session == {} || req.session.user == undefined){
 		res.render('pages/login',{ 
@@ -264,10 +391,10 @@ app.post('/signup', function(req, res){
 
 
 
-// start server on port 3000
-server.listen(3000);
-console.log('http://localhost:3000 is the home page');
-console.log('http://localhost:3000/login is the login page');
-console.log('http://localhost:3000/signup is the signup page');
-console.log('http://localhost:3000/widget is the widget test page');
-console.log('http://localhost:3000/player is the player test page');
+// start server on port 8888
+server.listen(8888);
+console.log('http://localhost:8888 is the home page');
+console.log('http://localhost:8888/login is the login page');
+console.log('http://localhost:8888/signup is the signup page');
+console.log('http://localhost:8888/widget is the widget test page');
+console.log('http://localhost:8888/player is the player test page');

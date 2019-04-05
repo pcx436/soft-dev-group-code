@@ -43,7 +43,7 @@
 		<!--used to mark one of the links in the navbar as active-->
 		<script>
 			$(function(){
-				$("#<% active %>").addClass('active');
+				$("#<%- active %>").addClass('active');
 			});
 		</script>
 	</head>
@@ -54,7 +54,7 @@
 				<a class="navbar-brand" href="#">Tracked Out</a>
 				<div class="collapse navbar-collapse" id="yaBoi">
 					<ul class="navbar-nav mr-auto">
-						<li class="nav-item" id="home-nav"><a class="nav-link" href="/home">Home</a></li>
+						<li class="nav-item" id="home-nav"><a class="nav-link" href="/">Home</a></li>
 						<li class="nav-item" id="listen-nav"><a class="nav-link" href="/player">Listen</a></li>
 					</ul>
 					<ul class="nav navbar-nav">
