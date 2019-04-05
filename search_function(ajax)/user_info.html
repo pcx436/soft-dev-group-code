@@ -1,0 +1,39 @@
+<html>
+  <head>
+    <title>Basic User Information</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  </head>
+  <body>
+
+      <form method = "post" action = "" >
+
+            Song: <input type="text" id="songSearchId" name="songSearch"> <br>
+                  <input type="submit" value="submit">  
+
+      </form>
+   
+      <script type="text/javascript">
+  var song = document.getElementById('songSearchId').value;
+  console.log(song);
+  var accessToken = 'BQCRHn0XGZu4rEVwWnJbmpkHO9Yju7pb_sYqWHyoR_9KPifLBXEai34KDV7UIQpgrSOBZk6ozBTmI6iMX6j9mZ57yVocNYEhzqyD_Ht2aH1HTnL8-wIhh4kubahPSsVlLzTfS_2u2Amn7GCx8jNR2Fuv_frJ1qUBkJV4dQ'
+$.ajax({
+   url:"https://api.spotify.com/v1/search?q=" + song + "&type=track&limit=1",
+   type: 'GET',
+   dataType: "text json",
+   headers: {
+       'Authorization': 'Bearer ' + accessToken
+   },
+   success: function(data) {
+       console.log(data.tracks.items[0].id);
+       console.log(data.tracks.items[0].name);
+    }
+   });
+  
+
+      </script>
+  </body>
+</html>  
+
+
+
+
