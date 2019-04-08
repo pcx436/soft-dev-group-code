@@ -19,13 +19,12 @@
                         </p>
                         <p>
                             <script type="text/javascript">
-                                console.log(window.location.hash);
                                 var clicks = 0;
                                 function thumbs_up() {
                                     clicks += 1;
                                     $("#clicks").text(clicks);
-                                    $('#up').disabled = true;
-                                    $('#down').disabled = false;
+                                    $('#up').prop('disabled', true);
+                                    $('#down').prop('disabled', false);
                                 }
                                 function thumbs_down() {
                                     if (clicks > 0){

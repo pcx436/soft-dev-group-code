@@ -17,6 +17,8 @@ var cookieParser = require('cookie-parser');
 // spotify vars
 var client_id = '50253af00a8749f2bb5330d1f3a44382'; // Your client id
 var client_secret = '01f9c2d6866d410ea25d0e1702dde56a'; // Your secret
+var buf = Buffer.from(client_id + ':' + client_secret).toString('base64');
+
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 var stateKey = 'spotify_auth_state';
 
@@ -151,7 +153,7 @@ app.get('/callback', function(req, res) {
 				grant_type: 'authorization_code'
 			},
 			headers: {
-				'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+				'Authorization': 'Basic ' + buf
 			},
 			json: true
 		};
@@ -220,7 +222,7 @@ app.get('/refresh_token', function(req, res) {
 	var refresh_token = req.query.refresh_token;
 	var authOptions = {
 		url: 'https://accounts.spotify.com/api/token',
-		headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
+		headers: { 'Authorization': 'Basic ' + buf },
 		form: {
 			grant_type: 'refresh_token',
 			refresh_token: refresh_token
@@ -231,6 +233,7 @@ app.get('/refresh_token', function(req, res) {
 	request.post(authOptions, function(error, response, body) {
 		if (!error && response.statusCode === 200) {
 			var access_token = body.access_token;
+			req.session.access_token = access_token;
 			res.send({
 				'access_token': access_token
 			});
