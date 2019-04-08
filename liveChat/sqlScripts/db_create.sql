@@ -19,7 +19,7 @@ CREATE TABLE users (
  email TEXT NOT NULL UNIQUE,
  username TEXT NOT NULL PRIMARY KEY UNIQUE,
  hash TEXT NOT NULL,
- current_room UUID
+ refresh TEXT
 );
 
 -- Begin automatic hashing content
@@ -49,7 +49,6 @@ CREATE TRIGGER insertHash
   EXECUTE PROCEDURE autoHash();
 -- end automatic hashing content
 
-
 -- done creating stuff, time to insert
 INSERT INTO users(email, username, hash)
  VALUES('bob@example.com', 'iAmBob', 'rwvzyJs7');
@@ -67,6 +66,8 @@ INSERT INTO users(email, username, hash)
 INSERT INTO users(email, username, hash)
  VALUES('thomas@example.com', 'thomasTheTank', 'thomasWillKillAgain');
 
+INSERT INTO users(email, username, hash)
+ VALUES('testUser@example.com', 'testuser', 'Malcy436!');
 
 -- showing change password worked + new users
 SELECT * FROM users;

@@ -82,15 +82,35 @@ var generateRandomString = function(length) {
   return text;
 };
 
+// return true if they're logged in, return false if otherwise
+function loggedIn(req){	return !(!req.session || !req.session.uid || req.session == {} || req.session.uid == undefined); }
+
 // home page 
 app.get('/', function(req, res) {
 	// user is logged in, show them the home page
-	if(!(!req.session || !req.session.user || req.session == {} || req.session.user == undefined)){
+	if(loggedIn(req)){
+		// original code for homepage
+		res.render('pages/home', { 
+			page_title:"Home",
+			custom_style:"resources/css/home.css",
+			user: req.session.user,
+			active: 'home-nav'
+		});
+	}
+	else{
+		// user isn't logged in, redirect them to the homepage
+		res.redirect('/login');
+	}
+});
+
+app.get('/spotify-auth', function(req, res){
+	if(loggedIn(req) && !req.session.access_token){
 		var state = generateRandomString(16);
 		res.cookie(stateKey, state);
 
 		// your application requests authorization
-		var scope = 'user-read-private user-read-email user-modify-playback-state';
+		//var scope = 'user-read-private user-read-email user-modify-playback-state';
+		var scope = 'user-read-private user-modify-playback-state';
 		res.redirect('https://accounts.spotify.com/authorize?' +
 			querystring.stringify({
 				response_type: 'code',
@@ -99,17 +119,8 @@ app.get('/', function(req, res) {
 				redirect_uri: redirect_uri,
 				state: state
 		}));
-
-		// original code for homepage
-		/*res.render('pages/home', { 
-			page_title:"Home",
-			custom_style:"resources/css/home.css",
-			user: req.session.user,
-			active: 'home-nav'
-		});*/
 	}
 	else{
-		// user isn't logged in, redirect them to the homepage
 		res.redirect('/login');
 	}
 });
@@ -127,6 +138,7 @@ app.get('/callback', function(req, res) {
 	console.log('Stored State: ' + storedState);
 
 	if (state === null || state !== storedState) {
+		// not entirely sure what the point of this really is but its here
 		res.redirect('/player#' + querystring.stringify({error: 'state_mismatch'}));
 	}
 	else {
@@ -145,7 +157,7 @@ app.get('/callback', function(req, res) {
 		};
 
 		request.post(authOptions, function(error, response, body) {
-
+			// everything is good!
 			if (!error && response.statusCode === 200) {
 				var access_token = body.access_token,
 				refresh_token = body.refresh_token;
@@ -163,14 +175,35 @@ app.get('/callback', function(req, res) {
 					console.log(body);
 				});
 
+				req.session.access_token = access_token;
+				req.session.refresh_token = refresh_token;
+
+				// adding refresh token to db
+				var refreshQuery = 'UPDATE users SET refresh = \'' + req.session.refresh_token + '\' WHERE uid = \'' + req.session.uid + '\';';
+				db.task('update-refresh-token', task => {
+					return task.none(refreshQuery);
+				})
+				.then(info => {
+					// successful login, add username to session for persistent login capabilities
+					console.log('Refresh update info: ' + info);
+				})
+				.catch(error => {
+					// login failed for some reason
+					console.log('Refresh failure: ' + error);
+				  	res.end('failure');
+				})
+
 				// we can also pass the token to the browser to make requests from there
-				res.redirect('/player#' +
+				/*res.redirect('/player#' +
 					querystring.stringify({
 						access_token: access_token,
 						refresh_token: refresh_token
-				}));
+				}));*/
+
+				res.redirect('/player');
 			}
 			else {
+				console.log('Invalid token occured');
 				res.redirect('/player#' +
 					querystring.stringify({
 					error: 'invalid_token'
@@ -205,10 +238,26 @@ app.get('/refresh_token', function(req, res) {
 	});
 });
 
+app.get('/player', function(req, res){
+	if(!loggedIn(req)){
+		res.redirect('/login');
+	}
+	else{
+		res.render('pages/player', {
+			page_title: 'Player',
+			custom_style: 'resources/css/home.css',
+			user: req.session.user,
+			active: 'listen-nav',
+			refresh: req.session.refresh_token,
+			access: req.session.access_token
+		});
+	}
+});
+
 // login page GET
 app.get('/login', function(req, res) {
-	// if user is already logged in, redirect them to the homepage
-	if(!req.session || !req.session.user || req.session == {} || req.session.user == undefined){
+	// user not logged in, allow to proceed
+	if(!loggedIn(req)){
 		res.render('pages/login',{ 
 			page_title:"Login",
 			custom_style:"resources/css/login.css",
@@ -217,23 +266,21 @@ app.get('/login', function(req, res) {
 		});
 	}
 	else{
+		// if user is already logged in, redirect them to the homepage
 		res.redirect('/');
-		// user not logged in, show them the home page
 	}
 });
 
-// MODIFY TO PREVENT SQL INJECTION ATTACKS
 // Also follow along with the managing session stuff, that looks real helpful!
 app.post('/login', function(req, res){
 
-	if(!(!req.session || !req.session.user || req.session == {} || req.session.user == undefined)){
+	if(loggedIn(req)){
 		// already logged in, tried to post again.
 		// will only occur with deliberate tampering (i think)
 		res.redirect('/');
 	}
 	else if(req.body.user && req.body.pwOne){
 		// both a username and password have been submitted to us
-		console.log('we loggin, my dudes');
 
 		// sanitize inputs (just a little bit)
 		var cleanName = escape(req.body.user);
@@ -241,16 +288,18 @@ app.post('/login', function(req, res){
 
 		// query to send to server
 		var existQuery = 'SELECT uid FROM users WHERE username=\'' + cleanName + '\' AND hash = crypt(\'' + cleanPW + '\', hash);';
-		db.task('get-everything', task => {
+		db.task('get-uid', task => {
 			return task.any(existQuery);
 		})
 		.then(info => {
 			// successful login, add username to session for persistent login capabilities
-			console.log(info);
+			//console.log("Login post info: " + info + '\n' + info[0]);
+			console.log('UID: ' + info[0].uid);
 			if(info[0]){
+				req.session.uid = info[0].uid;
 				req.session.user = cleanName;
 				console.log('user seems to exist');
-				res.end('success');	
+				res.end('success');
 			}
 			else{
 				console.log('user login failure');
@@ -260,7 +309,7 @@ app.post('/login', function(req, res){
 		})
 		.catch(error => {
 			// login failed for some reason
-			console.log(error);
+			console.log('User login catch: ' + error);
 		  	res.end('failure');
 		})
 	}
@@ -268,6 +317,42 @@ app.post('/login', function(req, res){
 		res.end('failure');
 	}
 });
+
+// registration page, going to need this eventually
+app.get('/signup', function(req, res) {
+	res.render('pages/signup',{
+		page_title:"Registration Page",
+		custom_style: "resources/css/signup.css",
+		user: '',
+		active: 'signup-nav'
+	});	
+	
+});
+
+app.post('/signup', function(req, res){
+	if(!loggedIn(req) && req.body.uname && req.body.pwOne && req.body.email && req.body.pwTwo){
+		var query = 'INSERT INTO users(username, email, hash) VALUES (\'' + req.body.uname + '\', \'' + req.body.email + '\', \'' + req.body.pwOne + '\');';
+
+		db.task('insert-user', task => {
+			return task.none(query);
+		})
+		.then(info => {
+			// inserted successfully
+			req.session.user = req.body.uname;
+			res.end('success');
+		})
+		.catch(error => {
+			console.log(error);
+			console.log('User insertion threw an error');
+			res.end(error.detail);
+		})
+	}
+	else{
+		console.log('Requiste field(s) missing from signup POST');
+		res.end('Missing fields');
+	}
+});
+
 
 // logout functionality. Destroys session and redirects to login page
 app.get('/logout', function(req, res){
@@ -277,30 +362,14 @@ app.get('/logout', function(req, res){
 	}
 });
 
-app.get('/player', function(req, res){
-	if(!req.session || !req.session.user || req.session == {} || req.session.user == undefined){
-		res.redirect('/login');
-	}
-	else{
-		res.render('pages/player', {
-			page_title: 'Player',
-			custom_style: 'resources/css/home.css',
-			user: req.session.user,
-			active: 'listen-nav'
-		});
-	}
-});
 
 // migrating to bootstrap 4
 app.get('/widget', function(req, res){
-	if(!req.session || !req.session.user || req.session == {} || req.session.user == undefined){
+	if(!loggedIn(req)){
 		res.redirect('/login');
-		console.log('how...');
 	}
 	else{
-		console.log(req.session);
-		console.log(req.session.user);
-		console.log('wigii');
+		//console.log('wigii');
 		res.render('pages/widget', {
 			page_title: 'Widget Test',
 			custom_style: 'resources/css/widget.css',
@@ -313,24 +382,26 @@ app.get('/widget', function(req, res){
 // kinda bad since it doesn't rely on session cookies. Can't reliably tell who's doing what
 io.on('connection', function(socket){
 	console.log("Some user has established a socket connection to the server");
+
 	socket.on('disconnect', function(){
 		console.log("Someone has terminated a socket connection");
 	});
+	
 	socket.on('chat message', function(data){
 		// poorly designed, doesn't rely on session cookies and therefore inherently allows for impersenation.
 		console.log('Message "' + data.msg + '" received from ' + data.name + " in room \"" + data.rm + "\"");
 		// socket.to(data.rm).emit('chat message', data.msg);
 		socket.broadcast.emit('chat message', data);
-	})
+	});
 });
 
 // MODIFY TO PREVENT SQL INJECTION
 // essentially does nothing, cant figure out how to integrate session and socket.io
 app.post('/room-select', function(req, res){
-	if(req.session && req.session.user && req.body.rname){
+	if(loggedIn(req) && req.body.rname){
 		var query = "SELECT rid FROM rooms WHERE r_name = \'" + req.body.rname + "\';";
 
-		db.task('get-everything', task => {
+		db.task('room-exist-check', task => {
 			return task.any(query);
 		})
 		.then(info => {
@@ -352,44 +423,6 @@ app.post('/room-select', function(req, res){
 		})
 	}
 });
-
-// registration page, going to need this eventually
-app.get('/signup', function(req, res) {
-	res.render('pages/signup',{
-		page_title:"Registration Page",
-		custom_style: "resources/css/signup.css",
-		user: '',
-		active: 'signup-nav'
-	});	
-	
-});
-
-app.post('/signup', function(req, res){
-	if((!req.session || !req.session.user || req.session == {} || req.session.user == undefined) && req.body.uname && req.body.pwOne && req.body.email && req.body.pwTwo){
-		var query = 'INSERT INTO users(username, email, hash) VALUES (\'' + req.body.uname + '\', \'' + req.body.email + '\', \'' + req.body.pwOne + '\');';
-
-		db.task('get-everything', task => {
-			return task.none(query);
-		})
-		.then(info => {
-			// inserted successfully
-			req.session.user = req.body.uname;
-			res.end('success');
-		})
-		.catch(error => {
-			console.log(error);
-			console.log('User insertion threw an error');
-			res.end(error.detail);
-		})
-	}
-	else{
-		console.log('Requiste field(s) missing from signup POST');
-		res.end('Missing fields');
-	}
-});
-
-
-
 
 // start server on port 8888
 server.listen(8888);
