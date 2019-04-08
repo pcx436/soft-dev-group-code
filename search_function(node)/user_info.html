@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <title>Basic User Information</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  </head>
+  <body>
+      <form action="http://localhost:8888/process_get" method="GET">
+            Song: <input type="text" name="songSearch"> <br>
+                  <input type="submit" value="submit">  
+
+      </form>
+      <script type="text/javascript">
+         $.ajax({
+        url: "https://api.spotify.com/v1/search?q=" + "Float On" + "%20" + "Modest Mouse" + "&type=track&limit=1",
+        dataType: "json",
+        success: function(data) {
+
+            //data downloaded so we call parseJSON function 
+            //and pass downloaded data
+            var json = $.parseJSON(data);
+            //now json variable contains data in json format
+            //let's display a few items
+            var trackName = json.items.name;
+        },
+
+        error: function() {
+          console.log("Error retrieving spotify API");
+        }
+    });
+
+
+
+
+
+
+
+
+
+      </script>
+  </body>
+</html>
