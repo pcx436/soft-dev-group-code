@@ -3,10 +3,13 @@ var player;
 window.onSpotifyWebPlaybackSDKReady = () => {
     //token is used to connect with spotify connect leaving this undone not sure how we want to authorize this
     //have to have spotify premium and get a code which expires every hour
-    var token = 'BQB0apmU6rgGHmiOIdCDQhi_W0Zkq1OjRsYUKzexF18C2o6A8YrPHr40J5fDiGeSW5OAZ-jJkR5cJp8GEgqz6HpAKHA5XetwFvC0zmsyWt0O7gdP4h1iYUjhRlbz1ORGoc5jyGi-JSLmX8WT9Tteg5Sp1JTjWdVEOMX0';
+    var token = document.access;
     player = new Spotify.Player({
     name: 'Tracked Out',
-    getOAuthToken: cb => { cb(token); }
+    getOAuthToken: cb => { 
+      
+      
+      cb(token); }
     });
     // Error handling
     player.addListener('initialization_error', ({ message }) => { console.error(message); });
