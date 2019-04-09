@@ -5,7 +5,6 @@
   Body-Parser  - A tool to help use parse the data in a post request
   Pg-Promise   - A database tool to help use connect to our PostgreSQL database
 ***********************/
-//var flash = require('express-flash');
 var express = require('express'); //Ensure our express framework has been added
 var app = express();
 
