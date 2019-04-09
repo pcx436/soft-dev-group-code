@@ -10,3 +10,4 @@
 7. ~~create signup page (low priority, someone else can handle that shit)~~
 8. prevent SQL injection with username and passwords (also maybe room names?)
    8.1 there's something in pg-promise (the database library) that will be useful for this. Look into documentation.
+9. Integrate chat system with database for persistent chat logs
