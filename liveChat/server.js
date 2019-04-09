@@ -298,7 +298,7 @@ app.post('/login', function(req, res){
 			// successful login, add username to session for persistent login capabilities
 			//console.log("Login post info: " + info + '\n' + info[0]);
 			console.log('UID: ' + info[0].uid);
-			if(info[0]){
+			if(info[0].uid){
 				req.session.uid = info[0].uid;
 				req.session.user = cleanName;
 				console.log('user seems to exist');
