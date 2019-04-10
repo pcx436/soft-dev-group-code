@@ -5,7 +5,7 @@
 DROP TABLE IF EXISTS rooms;
 
 CREATE TABLE rooms (
- rid UUID UNIQUE NOT NULL,
+ rid UUID NOT NULL DEFAULT gen_random_uuid(),
  r_name TEXT NOT NULL PRIMARY KEY,
  songs TEXT[50][3]
 );
@@ -13,8 +13,8 @@ CREATE TABLE rooms (
 -- songs is a 2-D array which can hold 50 songs and holds the song ID, number of votes,
 -- and time in which it was added
 
-INSERT INTO rooms(rid, r_name)
- VALUES (gen_random_uuid(), 'Eldora'), (gen_random_uuid(), 'Winter Park'), (gen_random_uuid(), 'A-Basin'), (gen_random_uuid(), 'Copper Mountain'), (gen_random_uuid(), 'Vail Resorts');
+INSERT INTO rooms(r_name)
+ VALUES ('Eldora'), ('Winter Park'), ('A-Basin'), ('Copper Mountain'), ('Vail Resorts');
 
 -- creating getrid function
 CREATE OR REPLACE FUNCTION getrid(name TEXT)

@@ -15,10 +15,12 @@ DROP TABLE IF EXISTS users;
 
 -- add table
 CREATE TABLE users (
- uid UUID UNIQUE NOT NULL,
+ uid UUID NOT NULL DEFAULT gen_random_uuid(),
  email TEXT NOT NULL UNIQUE,
  username TEXT NOT NULL PRIMARY KEY UNIQUE,
  hash TEXT NOT NULL,
+ current_room UUID,
+ sock_id TEXT DEFAULT 'a',
  refresh TEXT
 );
 
@@ -31,7 +33,6 @@ DECLARE
  sal TEXT := gen_salt('bf');
 BEGIN
  NEW.hash = crypt(NEW.hash, sal);
- NEW.uid = gen_random_uuid();
  
  RETURN NEW;
 END;

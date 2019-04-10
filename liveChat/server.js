@@ -54,7 +54,6 @@ var db = pgp(dbConfig);
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/'));//This line is necessary for us to use relative paths and access our resources directory
 
-
 var escape = require('escape-html'); // used for cleaning up user input.
 var session = require('client-sessions'); // includes ability to actually use sessions.
 
@@ -84,13 +83,14 @@ var generateRandomString = function(length) {
 };
 
 // return true if they're logged in, return false if otherwise
-function loggedIn(req){	return !(!req.session || !req.session.uid || req.session == {} || req.session.uid == undefined); }
+function loggedIn(req){	return !(!req.session || !req.session.uid || !req.session.user || req.session.user === undefined || req.session == {} || req.session.uid == undefined); }
 
 // home page 
 app.get('/', function(req, res) {
 	// user is logged in, show them the home page
 	if(loggedIn(req)){
 		// original code for homepage
+		console.log(req.session);
 		res.render('pages/home', { 
 			page_title:"Home",
 			custom_style:"resources/css/home.css",
@@ -241,6 +241,7 @@ app.get('/refresh_token', function(req, res) {
 });
 
 app.get('/player', function(req, res){
+	console.log(req.session);
 	if(!loggedIn(req)){
 		res.redirect('/login');
 	}
@@ -258,6 +259,7 @@ app.get('/player', function(req, res){
 
 // login page GET
 app.get('/login', function(req, res) {
+	console.log(req.session);
 	// user not logged in, allow to proceed
 	if(!loggedIn(req)){
 		res.render('pages/login',{ 
@@ -275,7 +277,6 @@ app.get('/login', function(req, res) {
 
 // Also follow along with the managing session stuff, that looks real helpful!
 app.post('/login', function(req, res){
-
 	if(loggedIn(req)){
 		// already logged in, tried to post again.
 		// will only occur with deliberate tampering (i think)
@@ -291,31 +292,24 @@ app.post('/login', function(req, res){
 		// query to send to server
 		var existQuery = 'SELECT uid FROM users WHERE username=\'' + cleanName + '\' AND hash = crypt(\'' + cleanPW + '\', hash);';
 		db.task('get-uid', task => {
-			return task.any(existQuery);
+			return task.one(existQuery);
 		})
 		.then(info => {
 			// successful login, add username to session for persistent login capabilities
-			//console.log("Login post info: " + info + '\n' + info[0]);
-			console.log('UID: ' + info[0].uid);
-			if(info[0].uid){
-				req.session.uid = info[0].uid;
-				req.session.user = cleanName;
-				console.log('user seems to exist');
-				res.end('success');
-			}
-			else{
-				console.log('user login failure');
-				res.end('failure');
-			}
-			
+			console.log('UID ' + info.uid + ' has logged in successfully');
+			req.session.uid = info.uid;
+			req.session.user = cleanName;
+			res.end('success');			
 		})
 		.catch(error => {
 			// login failed for some reason
-			console.log('User login catch: ' + error);
+			console.log('Failed login attempt against ' + cleanName);
+			console.log(error);
 		  	res.end('failure');
 		})
 	}
-	else{// somehow posted without username and/or password. Shouldn't have happened.
+	else{
+		// somehow posted without username and/or password. Shouldn't have happened.
 		res.end('failure');
 	}
 });
@@ -327,10 +321,10 @@ app.get('/signup', function(req, res) {
 		custom_style: "resources/css/signup.css",
 		user: '',
 		active: 'signup-nav'
-	});	
-	
+	});
 });
 
+// post for signup page
 app.post('/signup', function(req, res){
 	if(!loggedIn(req) && req.body.uname && req.body.pwOne && req.body.email && req.body.pwTwo){
 		var query = 'INSERT INTO users(username, email, hash) VALUES (\'' + req.body.uname + '\', \'' + req.body.email + '\', \'' + req.body.pwOne + '\');';
@@ -355,75 +349,118 @@ app.post('/signup', function(req, res){
 	}
 });
 
-
 // logout functionality. Destroys session and redirects to login page
 app.get('/logout', function(req, res){
-	if(req.session && req.session.user){
+	if(req.session){
 		req.session.reset();
 		res.redirect('/login');
 	}
 });
 
-
-// migrating to bootstrap 4
+// Chat test page
 app.get('/widget', function(req, res){
 	if(!loggedIn(req)){
 		res.redirect('/login');
 	}
 	else{
-		//console.log('wigii');
 		res.render('pages/widget', {
 			page_title: 'Widget Test',
 			custom_style: 'resources/css/widget.css',
 			user: req.session.user,
-			active: 'listen-nav'
+			active: 'listen-nav',
 		});
 	}
 });
 
-// kinda bad since it doesn't rely on session cookies. Can't reliably tell who's doing what
+// Manages the chat system and room changes
 io.on('connection', function(socket){
-	console.log("Some user has established a socket connection to the server");
 
-	socket.on('disconnect', function(){
-		console.log("Someone has terminated a socket connection");
+	// Initialize connection details, update database with current socket ID
+	db.task('init-sock-id', task => {
+		return task.one('UPDATE users SET sock_id = \'' + socket.id + '\' WHERE username = \'' + socket.handshake.query.name + '\' RETURNING username;');
+	})
+	.then(info => {
+		console.log(info.username + ' has established a socket connection to the server!');
+		console.log('Registered ' + info.username + '\'s sock_id as ' + socket.id + ' in DB');
+	})
+	.catch(error => {
+		console.log('Initialization of socket-id threw error:');
+		console.log(error);
+	})
+
+	// Server has received a message, will now decide where to send it
+	socket.on('chat message', function(msg){
+		db.task('retrive-identity', task => {
+			return task.one('SELECT username, current_room FROM users WHERE sock_id=\'' + socket.id + '\';'); // grab the username and room associated with the current socket
+		})
+		.then(info => {
+			socket.to(info.current_room).emit('chat message', {
+				msg:msg,
+				name:info.username
+			}); // send the message to the other people in the room
+		})
+		.catch(error => {
+			console.log('Message receive error:');
+			console.log(error);
+		})
+		
 	});
-	
-	socket.on('chat message', function(data){
-		// poorly designed, doesn't rely on session cookies and therefore inherently allows for impersenation.
-		console.log('Message "' + data.msg + '" received from ' + data.name + " in room \"" + data.rm + "\"");
-		// socket.to(data.rm).emit('chat message', data.msg);
-		socket.broadcast.emit('chat message', data);
-	});
-});
 
-// MODIFY TO PREVENT SQL INJECTION
-// essentially does nothing, cant figure out how to integrate session and socket.io
-app.post('/room-select', function(req, res){
-	if(loggedIn(req) && req.body.rname){
-		var query = "SELECT rid FROM rooms WHERE r_name = \'" + req.body.rname + "\';";
-
-		db.task('room-exist-check', task => {
-			return task.any(query);
+	// manages user joining a room
+	socket.on('room join', function(crname, rname, fn){
+		// changes your current room in the db
+		db.task('room-change-query', task => {
+			return task.one("SELECT getrid(\'" + rname + "\');")
+				.then(retInfo => {
+					var q = 'UPDATE users SET current_room=\'' + retInfo.getrid + '\'::UUID WHERE sock_id=\'' + socket.id + '\' RETURNING username;';
+					//console.log(q);
+					return task.one(q)
+						.then(secInfo => {
+							return [retInfo.getrid, secInfo.username]
+						})
+				});
 		})
 		.then(info => {
 			// successful login, add username to session for persistent login capabilities
-			if(info[0]){
-				console.log('User ' + req.session.user + ' is joining room ' + req.body.rname + '.');
-				req.session.croom = req.body.rname; //croom = current room				
-				res.end('success');	
+			var rooms = Object.keys(socket.rooms);
+
+			for(var i = 1; i < rooms.length; i++){ // if the user is in any rooms currently (besides the one they start out with), make them leave it
+				if(crname){
+					console.log('Leaving room ' + crname + ' (' + rooms[i] + ')');	
+				}
+				else{
+					console.log('Leaving room ' + rooms[i]);
+				}
+				
+				socket.leave(rooms[i]);
 			}
-			else{
-				console.log('Room join query failed');
-				res.end('failure');
-			}
+			socket.join(info[0]);// join the room!
+			console.log(info[1] + ' joined room ' + rname + ' (' + info[0] + ')!');
+			
+			fn(0); // send all clear back to client
 		})
 		.catch(error => {
-			// login failed for some reason
+			console.log('Room join query threw an error:');
 			console.log(error);
-		  	res.end('Room join query threw an error');
+		  	
+		  	fn(1); // send failure to client
 		})
-	}
+	});
+
+	// handles updating the db when a user disconnects
+	socket.on('disconnect', function(){
+		// removes the current_room from the user since they're disconnecting
+		db.task('remove-room', task => {
+			return task.one('UPDATE users SET current_room=NULL WHERE sock_id=\'' + socket.id + '\' RETURNING username;');
+		})
+		.then(info => {
+			console.log(info.username + ' disconnected, DB updated');
+		})
+		.catch(error => {
+			console.log('Socket information erasure threw an error:');
+			console.log(error);
+		})
+	});
 });
 
 // start server on port 8888

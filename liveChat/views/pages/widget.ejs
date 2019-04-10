@@ -17,7 +17,7 @@
                                 <div class="input-group input-group-sm">
                                     <input id="chat-input" type="text" class="form-control" placeholder="Type your message here..." autocomplete="off"/>
                                     <div class="input-group-append">
-                                        <input type="submit" class="btn btn-warning btn-sm" id="chat-submit" value="Send">
+                                        <input type="submit" class="btn btn-warning btn-sm" id="chat-submit" value="Send!">
                                     </div>
                                 </div>
                             </form>
@@ -32,16 +32,16 @@
                         <button class="btn btn-primary room-btn" id="basin">A-Basin</button>
                         <br/>
                         <br/>
-                        <button class="btn btn-primary room-btn">Copper Mountain</button>
+                        <button class="btn btn-primary room-btn" id="copper">Copper Mountain</button>
                         <br/>
                         <br/>
-                        <button class="btn btn-primary room-btn">Eldora</button>
+                        <button class="btn btn-primary room-btn" id="eldora">Eldora</button>
                         <br/>
                         <br/>
-                        <button class="btn btn-primary room-btn">Vail Resorts</button>
+                        <button class="btn btn-primary room-btn" id="vail">Vail Resorts</button>
                         <br/>
                         <br/>
-                        <button class="btn btn-primary room-btn">Winter Park</button>
+                        <button class="btn btn-primary room-btn" id="winPark">Winter Park</button>
                         <br/>
                         <br/>
                         <br/>
@@ -52,11 +52,18 @@
         <!-- Actual chat functionality -->
         <script src="/socket.io/socket.io.js"></script>
         <script>
+            // TODO: Disabled text field and submit button until a room is chosen
             $(function () {
-                var room;
-                var socket = io();
+                var room; // represents the current room the user is in
 
-                // makes string for adding elements
+                // establishes socket connection to the server while sending the username as the parameter
+                var socket = io({
+                    query: {
+                        name: '<%= user %>'
+                    }
+                });
+
+                // makes string for adding elements to the chat log
                 function buildMsg(data, clientSaid){
                     var innerCount;
 
@@ -105,36 +112,42 @@
                     return innerCount;
                 }
 
-                // sending socket message
+                // sending chat message
                 $('form').submit(function(e){
                     e.preventDefault(); // prevents page reloading
-                    var data = {name:"<%= user %>", msg:$('#chat-input').val(), rm:room};
-                    $('#messages').append(buildMsg(data, true));
-                    socket.emit('chat message', data);
+                    
+                    $('#messages').append(buildMsg({name:"<%= user %>", msg:$('#chat-input').val()}, true)); // add message to local chat log
 
-                    $('#chat-input').val('');
-                    return false;
+                    socket.emit('chat message', $('#chat-input').val()); // send message to all other room participants
+
+                    $('#chat-input').val(''); // clear input field
+                    
+                    return false; // not sure why this is here tbh, was in an example
                 });
 
                 // receiving message from other people
                 socket.on('chat message', function(data){
-                    $('#messages').append(buildMsg(data, false));
+                    $('#messages').append(buildMsg(data, false)); // add to the message log
                 });
 
 
                 // changing server room functionality
                 $(".room-btn").click(function(){
-                    var t = $(this).text();
-                    $.post('http://' + location.host + ':3000/room-select', {rname:$(this).text()}, function(data){
-                        if(data === 'success'){
-                            console.log('Room changed successfully to ' + t);
-                            room = t;
+                    var rname = $(this).text();// stores the name of the room
+
+                    // actually attempting to change rooms
+                    socket.emit('room join', room, rname, function(status){
+                        if(status === 0){
+                            console.log('Room change successful!');
+                            
+                            room = rname; // used for console logs, not very important
+
+                            $('#messages').html('');// wipe message log when changing rooms
                         }
                         else{
-                            console.log('Room change failed');
+                            console.log('Room change failed, status ' + status);
                         }
                     });
-
                 });
             });
         </script>
