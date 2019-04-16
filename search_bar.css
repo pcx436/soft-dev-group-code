@@ -1,0 +1,259 @@
+
+    body,html{
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: #19222B !important;
+    }
+
+    .searchbar{
+    margin-bottom: auto;
+    margin-top: auto;
+    height: 60px;
+    background-color: #353b48;
+    border-radius: 30px;
+    padding: 10px;
+    }
+
+    .search_input{
+    color: white;
+    border: 0;
+    outline: 0;
+    background: none;
+    width: 0;
+    caret-color:transparent;
+    line-height: -10px;
+    transition: width 0.4s linear;
+    }
+
+    .searchbar:hover > .search_input{
+    padding: 10px;
+    width: 200px;
+    caret-color:red;
+    transition: width 0.4s linear;
+    }
+
+    .searchbar:hover > .search_icon{
+    background: white;
+    color: #3b5772;
+    }
+
+    .search_icon{
+    height: 40px;
+    width: 40px;
+    float: right;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    color:white;
+    }
+
+    .container1{
+        display: none;
+        flex-direction: row;
+        width: 350px;
+        transition: background-color 0.5s;
+        background-color: #19222B;
+        border-bottom-color: black;
+        border-bottom-width: thin;
+        border-bottom-style: solid;
+    }
+
+    .container2{
+        display: none;
+        flex-direction: column;
+        width: 250px;
+
+
+    }
+
+    .s1{
+        display: none;
+        border-bottom-color: black;
+        font-size: 12px;
+        color: white;
+        padding-left: 25px;
+        padding-top: 5px;
+
+
+    }
+
+    .s2{
+        display: none;
+        padding-left: 25px;
+        padding-top: 5px;
+        color: white;
+        font-size: 12px;
+    
+
+    }
+    .container1:hover{
+        background-color: white;
+        color:#19222B;
+    }
+
+    .container1:hover .s1{
+        color:#19222B;
+    }
+
+    .container1:hover .s2{
+        color:#19222B;
+    }
+
+
+
+
+
+    .containerA{
+        display: flex;
+        flex-direction: row;
+        width: 350px;
+        transition: background-color 0.5s;
+        background-color: #19222B;
+        border-bottom-color: black;
+        border-bottom-width: thin;
+        border-bottom-style: solid;
+    }
+
+    .containerB{
+        display: flex;
+        flex-direction: column;
+        width: 250px;
+
+
+    }
+
+    .sA{
+        display: flex;
+        border-bottom-color: black;
+        font-size: 12px;
+        color: white;
+        padding-left: 25px;
+        padding-top: 5px;
+
+
+    }
+
+    .sB{
+        display: flex;
+        padding-left: 25px;
+        padding-top: 5px;
+        color: white;
+        font-size: 12px;
+    
+    }
+
+    .containerA:hover{
+        background-color: white;
+        color:#19222B;
+    }
+
+    .containerA:hover .sA{
+        color:#19222B;
+    }
+
+    .containerA:hover .sB{
+        color:#19222B;
+    }
+
+    .col-sm-4{
+        margin-left:-50px;
+
+    }
+
+    .col-sm-6{
+        margin-left: 30px;
+    }
+
+    .col-sm-12{
+        margin-left: -40px;
+    }
+
+    .col-sm-1{
+        margin-left: -20px;
+
+        border-right-color:purple;
+        border-right-style:solid;
+    }
+
+
+    .fas.fa-thumbs-up{
+        color:white;
+
+    }
+
+     .containerA:hover .fas.fa-thumbs-up{
+        color:black;
+    }
+
+    .fas.fa-thumbs-down{
+        color:white;
+
+    }
+
+     .containerA:hover .fas.fa-thumbs-down{
+        color:black;
+    }
+
+    .buttonPlace{
+        margin-left: 55px;
+        border-style:solid;
+        border-color:white;
+        border-width:thin; 
+    }
+     .buttonPlace2{
+        margin-left: 55px;
+        border-style:solid;
+        border-color:white;
+        border-width:thin;  
+    }
+
+     .containerA:hover .buttonPlace{
+        border-color:black;
+    }
+
+     .containerA:hover .buttonPlace2{
+        border-color:black;
+    }
+
+    .btn.btn-default.btn-sm{
+        padding-left: 90px;
+        padding-right: 90px;
+    }
+
+    .server{
+        text-align:justify;
+        padding-right: -25px;
+
+    }
+
+    .UserCont{
+        display: flex;
+        color: white;
+        border-right-color:white;
+        border-right-style:solid;
+        padding-right:150px;
+    }
+
+    .UserContInner{
+        border-right-color:red;
+        border-right-style:solid;
+        padding-right:90px;
+        margin-right:50px;
+       
+    }
+    .userBox{
+        color:white;
+        border-right-color:blue;
+        border-right-style:solid;
+        padding-right:75px;
+
+    }
+
+
+    .thumbnail{
+         border-right-color:orange;
+        border-right-style:solid;
+    }
