@@ -32,7 +32,7 @@
 						console.log('No formatting errors, sending to server');
 
 						// initiate post requst to server, attempt to login
-						$.post("http://" + location.host + "/login", {user:uname.val(), pwOne:pass.val()}, function(data){
+						$.post(location.proto + location.host + "/login", {user:uname.val(), pwOne:pass.val()}, function(data){
 							if(data === 'success'){ // user logged in successfully
 								
 								console.log('ya boi logged in');
