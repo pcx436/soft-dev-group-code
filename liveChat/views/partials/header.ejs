@@ -26,7 +26,7 @@
 		<link rel="stylesheet" href="<%= custom_style %>">
 	<%
 		if(page_title === 'Player'){
-			var msg = '<script src="resources/js/playback.js"></script>';
+			var msg = '<script src="resources/js/playback.js"></script>\n<script src="https://sdk.scdn.co/spotify-player.js"></script>';
 	%>
 			<%- msg %>
 		<%}%>
@@ -48,7 +48,7 @@
 		</script>
 	</head>
 	<body>
-		<script src="https://sdk.scdn.co/spotify-player.js"></script>
+		
 		<!-- New navbar code -->
 		<nav class="navbar navbar-expand-lg navbar-dark text-white" style="background-color: black;">
 			<div class="container-fluid">
