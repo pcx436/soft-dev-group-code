@@ -1,594 +1,137 @@
 <% include ../partials/header %>
-<html>
-<head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-</head>
-<style>
-
-
-     .searchbar{
-    margin-bottom: auto;
-    margin-top: auto;
-    height: 60px;
-    background-color: #353b48;
-    border-radius: 30px;
-    padding: 10px;
-    }
-
-    .search_input{
-    color: white;
-    border: 0;
-    outline: 0;
-    background: none;
-    width: 0;
-    caret-color:transparent;
-    line-height: -10px;
-    transition: width 0.4s linear;
-    }
-
-    .searchbar:hover > .search_input{
-    padding: 10px;
-    width: 200px;
-    caret-color:red;
-    transition: width 0.4s linear;
-    }
-
-    .searchbar:hover > .search_icon{
-    background: white;
-    color: #3b5772;
-    }
-
-    .search_icon{
-    height: 40px;
-    width: 40px;
-    float: right;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-    color:white;
-    }
-
-    .container.text-center{
-      padding-bottom: 720px;
-      padding-right:50px;
-      padding-left:50px;
-
-    }
-
-
-    .container1{
-        display: flex;
-        flex-direction: row;
-        width: 300px;
-        transition: background-color 0.5s;
-        background-color: #19222B;
-        border-bottom-color: black;
-        border-bottom-width: thin;
-        border-bottom-style: solid;
-    }
-
-    .container2{
-        display: none;
-        flex-direction: column;
-        width: 250px;
-
-
-    }
-
-    .s1{
-        display: none;
-        border-bottom-color: black;
-        font-size: 12px;
-        color: white;
-        padding-left: 25px;
-        padding-top: 5px;
-
-
-    }
-
-    .s2{
-        display: none;
-        padding-left: 25px;
-        padding-top: 5px;
-        color: white;
-        font-size: 12px;
-    
-
-    }
-    .container1:hover{
-        background-color: white;
-        color:#19222B;
-    }
-
-    .container1:hover .s1{
-        color:#19222B;
-    }
-
-    .container1:hover .s2{
-        color:#19222B;
-    }
-
-    .wellA{
-      margin-left: -25px;
-    }
-
-    .col-sm-12{
-      margin-left:-40px;
-    }
-
-    .col-sm-2{
-      margin-left:-50px;
-    }
-
-    .queue_border{
-      border-bottom-color:white;
-      border-bottom-width:thin;
-      border-bottom-style:solid;
-    }
-
-
-
-    .containerA{
-        display: flex;
-        flex-direction: row;
-        width: 350px;
-        transition: background-color 0.5s;
-        background-color: #19222B;
-        border-bottom-color: black;
-        border-bottom-width: thin;
-        border-bottom-style: solid;
-    }
-
-    .containerB{
-        display: flex;
-        flex-direction: column;
-        width: 250px;
-
-
-    }
-
-    .sA{
-        display: flex;
-        border-bottom-color: black;
-        font-size: 12px;
-        color: white;
-        padding-left: 25px;
-        padding-top: 5px;
-
-
-    }
-
-    .sB{
-        display: flex;
-        padding-left: 25px;
-        padding-top: 5px;
-        color: white;
-        font-size: 12px;
-    
-    }
-
-    .containerA:hover{
-        background-color: white;
-        color:#19222B;
-    }
-
-    .containerA:hover .sA{
-        color:#19222B;
-    }
-
-    .containerA:hover .sB{
-        color:#19222B;
-    }
-
-        .fas.fa-thumbs-up{
-        color:white;
-
-    }
-
-     .containerA:hover .fas.fa-thumbs-up{
-        color:black;
-    }
-
-    .fas.fa-thumbs-down{
-        color:white;
-
-    }
-
-     .containerA:hover .fas.fa-thumbs-down{
-        color:black;
-    }
-
-    .buttonPlace{
-        margin-left: 55px;
-        border-style:solid;
-        border-color:white;
-        border-width:thin; 
-    }
-     .buttonPlace2{
-        margin-left: 55px;
-        border-style:solid;
-        border-color:white;
-        border-width:thin;  
-    }
-
-     .containerA:hover .buttonPlace{
-        border-color:black;
-    }
-
-     .containerA:hover .buttonPlace2{
-        border-color:black;
-    }
-
-    .btn.btn-default.btn-sm{
-        padding-left: 90px;
-        padding-right: 90px;
-    }
-
-    .wellB{
-      margin-left:-25px;
-    }
-
-</style>
-
-<div class="container text-center" style ="background-color: #19222B">    
-  <div class="row">
-    <div class="col-sm-4">
-      <div class="wellA">
-      </br>
-        <div class = "queue_border">
-          <p> <font color = "white">Queue a Song</font> </p>
-        </div>
-            <form method = "post" id = "form_search">
-              <div class="d-flex flex-column" >
-                <div class="p-2"> <div class="d-flex">
-                  <div class="searchbar">
-                    <input class="search_input" type="text" id="songSearch" placeholder="Search...">
-                      <a href="#" class="search_icon" id= "songButton"><i class="fas fa-search"></i></a>
-                  </div>
-                  </div>
-                </div>
-                </div>
-            </form>
-            <!--Result 1-->
-            <div class = "container1" id="contOne" onclick = 'clicker(0)'>
-              <img id = "myImg" width = "65" height = "65" align = "right"> 
-                <div class = "container2" id= "cont1in">
-                  <div class="s1" id = 'item1a'>Song</div>
-                  <div class="s2" id = 'item1b'>Album Name</div>
-                </div>
-            </div>
-
-            <!--Result 2-->
-            <div class = "container1" id="contTwo" onclick = 'clicker(1)'>
-              <img id = "myImg2" width = "65" height = "65" align = "right"> 
-                <div class = "container2" id= "cont2in">
-                  <div class="s1" id = 'item2a'>Song</div>
-                  <div class="s2" id = 'item2b'>Album Name</div>
-                </div>
-            </div>
-
-            <!--Result 3-->
-            <div class = "container1" id="contThree" onclick = 'clicker(2)'>
-              <img id = "myImg3" width = "65" height = "65" align = "right"> 
-                <div class = "container2" id= "cont3in">
-                  <div class="s1" id = 'item3a'>Song</div>
-                  <div class="s2" id = 'item3b'>Album Name</div>
-                </div>
-            </div>
-
-            <!--Result 4-->
-            <div class = "container1" id="contFour" onclick = 'clicker(3)'>
-              <img id = "myImg4" width = "65" height = "65" align = "right"> 
-              <div class = "container2" id= "cont4in">
-                <div class="s1" id = 'item4a'>Song</div>
-                <div class="s2" id = 'item4b'>Album Name</div>
-              </div>
-            </div> 
-            <!--Result 5-->
-            <div class = "container1" id="contFive" onclick = 'clicker(4)'>
-              <img id = "myImg5" width = "65" height = "65" align = "right"> 
-              <div class = "container2" id= "cont5in">
-                <div class="s1" id = 'item5a'>Song</div>
-                <div class="s2" id = 'item5b'>Album Name</div>
-              </div>
-            </div> 
-
-      </div>  
-    </br>
-    </br>
-
-      <div class="wellB" >
-          <div class = "queue_border">
-            <p><font color = "white"> Queue </font></p>
-          </div>
-      <!--Item 1-->
-      <div class = "containerA" id="contA">
-          <img id = "myImgA" width = "65" height = "65" align = "right">
-        <div class = "containerB" id= "contAinner">
-          <div class="sA" id = 'itemA1'>Song</div>
-          <div class="sB" id = 'itemB1'>Album Name</div>
-
-           <div class ="buttonPlace">
-            <button type="button" class="btn btn-default btn-sm" id='up1' onclick="thumbs_up(1)">
-              <i class="fas fa-thumbs-up"> : 0</i>
-          </div>
-            </button>
-          <div class = "buttonPlace2">
-                <button type="button" class="btn btn-default btn-sm" id='down1' onclick="thumbs_down(1)">
-              <i class = "fas fa-thumbs-down"> : 0</i>
-          </div>
-              </button>
-      
-      </div>
-      </div>
-
-      <!--Item 2-->
-      <div class = "containerA" id="contB">
-          <img id = "myImgB" width = "65" height = "65" align = "right">
-        <div class = "containerB" id= "contBinner">
-          <div class="sA" id = 'itemA2'>Song</div>
-          <div class="sB" id = 'itemB2'>Album Name</div>
-          <div class ="buttonPlace">
-            <button type="button" class="btn btn-default btn-sm" id='up2' onclick="thumbs_up(2)">
-              <i class="fas fa-thumbs-up"> : 0</i>
-          </div>
-        </button>
-          <div class = "buttonPlace2"f>
-                <button type="button" class="btn btn-default btn-sm" id='down2' onclick="thumbs_down(2)"> 
-              <i class = "fas fa-thumbs-down"> : 0</i>
-        </div>
-        </button>
-      
-      </div>
-      </div>
-
-      <!--Item 3-->
-        <div class = "containerA" id="contC">
-          <img id = "myImgC" width = "65" height = "65" align = "right">
-        <div class = "containerB" id= "contCinner">
-          <div class="sA" id = 'itemA3'>Song</div>
-          <div class="sB" id = 'itemB3'>Album Name</div>
-          <div class ="buttonPlace">
-            <button type="button" class="btn btn-default btn-sm" id='up3' onclick="thumbs_up(3)">
-              <i class="fas fa-thumbs-up"> : 0</i>
-          </div>
-        </button>
-          <div class = "buttonPlace2"f>
-                <button type="button" class="btn btn-default btn-sm" id='down3' onclick="thumbs_down(3)"> 
-              <i class = "fas fa-thumbs-down"> : 0</i>
-        </div>
-        </button>
-      
-      </div>
-      </div>
-
-        <!--Item 4-->
-        <div class = "containerA" id="contD">
-          <img id = "myImgD" width = "65" height = "65" align = "right">
-        <div class = "containerB" id= "contDinner">
-          <div class="sA" id = 'itemA4'>Song</div>
-          <div class="sB" id = 'itemB4'>Album Name</div>
-          <div class ="buttonPlace">
-            <button type="button" class="btn btn-default btn-sm" id='up4' onclick="thumbs_up(4)">
-              <i class="fas fa-thumbs-up"> : 0</i>
-          </div>
-        </button>
-          <div class = "buttonPlace2">
-                <button type="button" class="btn btn-default btn-sm" id='down4' onclick="thumbs_down(4)"> 
-              <i class = "fas fa-thumbs-down"> : 0</i>
-        </div>
-        </button>
-      
-      </div>
-      </div>
-
-      <!--Item 5-->
-        <div class = "containerA" id="contE">
-          <img id = "myImgE" width = "65" height = "65" align = "right">
-        <div class = "containerB" id= "contEinner">
-          <div class="sA" id = 'itemA5'>Song</div>
-          <div class="sB" id = 'itemB5'>Album Name</div>
-          <div class ="buttonPlace">
-            <button type="button" class="btn btn-default btn-sm" id='up5' onclick="thumbs_up(5)">
-              <i class="fas fa-thumbs-up"> : 0</i>
-          </div>
-        </button>
-          <div class = "buttonPlace2">
-                <button type="button" class="btn btn-default btn-sm" id='down5' onclick="thumbs_down(5)"> 
-              <i class = "fas fa-thumbs-down"> : 0</i>
-        </div>
-        </button>
-      
-      </div>
-      </div>
-
-
-      </div>
-      </div>
-    <div class="col-sm-6" >
-    </br>    
-      <div class="row">
-        <div class="col-sm-10">
-          <div class="panel panel-default text-center">
-            <div class="panel-body" style = "background-color: #19222B">
-               <img id= "albumImg"  width = "300px" height="290px">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-      <div class="col-sm-12">
-        <div class="well">
-          <h3 id="song_title" style = "color:white" >Song Title</h3>
-            <p id="artist_name" style = "color:white">Artist</p>
-              <button class="btn btn-primary" onclick="playPause()">Play/Pause</button>
-        </div>
-      </div>
-      </div>
-
-    </div>
-
-  <div class="col-sm-2">
-  </br>
-    <div class="thumbnail">
-        <div class = "queue_border">
-          <font class ="server" color = "white" >Server List</font>
-        </div>
-                    <br/>
-                    <button class="btn btn-primary room-btn" id="basin">A-Basin</button>
-                    <br/>
-                    <br/>
-                    <button class="btn btn-primary room-btn">Copper Mountain</button>
-                    <br/>
-                    <br/>
-                    <button class="btn btn-primary room-btn">Eldora</button>
-                    <br/>
-                    <br/>
-                    <button class="btn btn-primary room-btn">Vail Resorts</button>
-                    <br/>
-                    <br/>
-                    <button class="btn btn-primary room-btn">Winter Park</button>
-                    <br/>
-                    <br/>
-
-    </div>
-
-  </div>
-</div>
-</div>
-
-<script type="text/javascript">
-var accessToken = 'BQCk94oiJAjF0vpA9aFQ5eES12oQCjwDy6COhNbIteZ1-4R4HDbDHGnQ1HEflqBYaxDmKdWzwW_kKo3PcCPnQWmA2EheQz1tJc4ta3AJP0sYerKFwgVao3_j88o-2vNpkufZp-sfrsrylLNMDOUKGDVOk1Bf9JOwyxLW8w'
-
-  var temp;
-  function callback(response){ //required to access JSON data outside of ajax request
-    temp = response; 
-
-    //result 1
-    document.getElementById('item1a').innerHTML = (temp.tracks.items[0].name) + ' - ' + (temp.tracks.items[0].album.artists[0].name); //song name + artist name
-    document.getElementById('item1b').innerHTML = (temp.tracks.items[0].album.name); //album name 
-    document.getElementById('myImg').src = (temp.tracks.items[0].album.images[0].url); //album image
-
-    document.getElementById('contOne').style.display = 'flex'; 
-    document.getElementById('cont1in').style.display = 'flex';
-    document.getElementById('item1a').style.display = 'flex';
-    document.getElementById('item1b').style.display = 'flex';
-
-    //result 2
-    document.getElementById('item2a').innerHTML = (temp.tracks.items[1].name) + ' - ' + (temp.tracks.items[1].artists[0].name); //song name + artist name
-    document.getElementById('item2b').innerHTML = (temp.tracks.items[1].album.name); //album name
-    document.getElementById('myImg2').src = (temp.tracks.items[1].album.images[0].url); //album image
-
-    document.getElementById('contTwo').style.display = 'flex';
-    document.getElementById('cont2in').style.display = 'flex'; 
-    document.getElementById('item2a').style.display = 'flex';
-    document.getElementById('item2b').style.display = 'flex';
-
-    //result 3
-    document.getElementById('item3a').innerHTML = (temp.tracks.items[2].name) + ' - ' + (temp.tracks.items[2].artists[0].name); //song name + artist name 
-    document.getElementById('item3b').innerHTML = (temp.tracks.items[2].album.name); //album name 
-    document.getElementById('myImg3').src = (temp.tracks.items[2].album.images[0].url); //album image 
-
-    document.getElementById('contThree').style.display = 'flex';
-    document.getElementById('cont3in').style.display = 'flex'; 
-    document.getElementById('item3a').style.display = 'flex';
-    document.getElementById('item3b').style.display = 'flex';
-
-    //result 4
-    document.getElementById('item4a').innerHTML = (temp.tracks.items[3].name) + ' - ' + (temp.tracks.items[3].artists[0].name); //song name + artist name 
-    document.getElementById('item4b').innerHTML = (temp.tracks.items[3].album.name); //album name 
-    document.getElementById('myImg4').src = (temp.tracks.items[3].album.images[0].url); //album image 
-
-    document.getElementById('contFour').style.display = 'flex';
-    document.getElementById('cont4in').style.display = 'flex'; 
-    document.getElementById('item4a').style.display = 'flex';
-    document.getElementById('item4b').style.display = 'flex';
-
-    //result 5
-    document.getElementById('item5a').innerHTML = (temp.tracks.items[4].name) + ' - ' + (temp.tracks.items[4].artists[0].name); //song name + artist name 
-    document.getElementById('item5b').innerHTML = (temp.tracks.items[4].album.name); //album name
-    document.getElementById('myImg5').src = (temp.tracks.items[4].album.images[0].url); //album image 
-
-    document.getElementById('contFive').style.display = 'flex';
-    document.getElementById('cont5in').style.display = 'flex'; 
-    document.getElementById('item5a').style.display = 'flex';
-    document.getElementById('item5b').style.display = 'flex';
-
-  }
-
-$(function(){ //spotify ajax request 
-  $(':text').bind('keydown',function(e){
-    if(e.keyCode == 13) //prevents page from rerendering after 'enter' key is pressed 
-    {
-      e.preventDefault();        
-      var song = $('#songSearch').val();
-
-      $.ajax({
-         url:"https://api.spotify.com/v1/search?q=" + song + "&type=track&limit=8",
-         type: 'GET',
-         dataType: "text json",
-         //async: false,
-         headers: {
-             'Authorization': 'Bearer ' + accessToken
-         },
-         success: function(data) {
-            callback(data);
-
-            //console.log(data.tracks.items[0].href);
-            //console.log(data.tracks.items[0].uri);
-            //console.log(data.tracks.items[0].name);
-            //console.log(data.tracks.items[0].album.images[0].url);
-            //console.log(data.tracks.items[0].album.name);
-         },
-         error: function() {
-          console.log('fail');
-         }
-      });
-
-    }
-  });
-});
-
-function clicker(i){ //lets us know which song index was chosen, use index to get specific song uri
-  console.log(temp.tracks.items[i].uri);
-/*
-  document.getElementById('song_title').innerHTML = temp.tracks.items[i].name;
-  document.getElementById('artist_name').innerHTML = temp.tracks.items[i].artists[0].name;
-  document.getElementById('albumImg').src = temp.tracks.items[0].album.images[0].uri;
-*/
-    document.getElementById('contOne').style.display = 'none'; //collapse search results after selection
-    document.getElementById('contTwo').style.display = 'none';  
-    document.getElementById('contThree').style.display = 'none'; 
-    document.getElementById('contFour').style.display = 'none'; 
-    document.getElementById('contFive').style.display = 'none'; 
-
-};
-
-
-            var clicks = 0;
-            function thumbs_up() {
-                clicks += 1;
-                $("#clicks").text(clicks);
-                $('#up').prop('disabled', true);
-                $('#down').prop('disabled', false);
+        <style>
+            .s1, .s2{
+                word-wrap: inherit;
             }
-            function thumbs_down() {
-                if (clicks > 0){
-                    clicks -= 1;
-                    $("#clicks").text(clicks);
-                    $('#down').prop('disabled', true);
-                    $('#up').prop('disabled', false);
-                }
-            }
-</script>
-<!--
+        </style>
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-sm-3 card">
+                    <div class="card">
+                        <p>
+                            Song Search
+                            <form class="example" action="/action_page.php" style="max-width: 300px;">
+                                <input type="text" placeholder="Search.." name="search2">
+                                <div class="dropdown">
+                                    <!-- <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Dropdown button
+                                    </button> -->
+                                    <button type="button" id="dropButton" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropButton">
+                                        <a class="dropdown-item pr-5" href="#">
+                                            <div class = "container" id="contOne" onclick = 'clicker(0)'>
+                                                <img id = "myImg" src="resources/imgs/meme.png" width = "65" height = "65" align = "left"> 
+                                                <div class = "container" id= "cont1in">
+                                                  <div class="s1" id = 'item1a'>Hello i am song name dude</div>
+                                                  <div class="s2" id = 'item1b'>Burger boi</div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a class="dropdown-item" href="#">
+                                            <div class = "container" id="contOne" onclick = 'clicker(0)'>
+                                                <img id = "myImg" src="resources/imgs/meme.png" width = "65" height = "65" align = "left"> 
+                                                <div class = "container" id= "cont1in">
+                                                  <div class="s1" id = 'item1a'>Song Name</div>
+                                                  <div class="s2" id = 'item1b'>Album Name</div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a class="dropdown-item" href="#">
+                                            <div class = "container" id="contOne" onclick = 'clicker(0)'>
+                                                <img id = "myImg" src="resources/imgs/meme.png" width = "65" height = "65" align = "left"> 
+                                                <div class = "container" id= "cont1in">
+                                                  <div class="s1" id = 'item1a'>Song Name</div>
+                                                  <div class="s2" id = 'item1b'>Album Name</div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a class="dropdown-item" href="#">
+                                            <div class = "container" id="contOne" onclick = 'clicker(0)'>
+                                                <img id = "myImg" src="resources/imgs/meme.png" width = "65" height = "65" align = "left"> 
+                                                <div class = "container" id= "cont1in">
+                                                  <div class="s1" id = 'item1a'>Song Name</div>
+                                                  <div class="s2" id = 'item1b'>Album Name</div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a class="dropdown-item" href="#">
+                                            <div class = "container" id="contOne" onclick = 'clicker(0)'>
+                                                <img id = "myImg" src="resources/imgs/meme.png" width = "65" height = "65" align = "left"> 
+                                                <div class = "container" id= "cont1in">
+                                                  <div class="s1" id = 'item1a'>Song Name</div>
+                                                  <div class="s2" id = 'item1b'>Album Name</div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+                            
+                        </p>
+                    </div>
+                    <div class="card">
+                        <p>
+                            <a href="#">Queue</a>
+                        </p>
+                        <p>
+                            <script type="text/javascript">
+                                var clicks = 0;
+                                function thumbs_up() {
+                                    clicks += 1;
+                                    $("#clicks").text(clicks);
+                                    $('#up').prop('disabled', true);
+                                    $('#down').prop('disabled', false);
+                                }
+                                function thumbs_down() {
+                                    if (clicks > 0){
+                                        clicks -= 1;
+                                        $("#clicks").text(clicks);
+                                        $('#down').prop('disabled', true);
+                                        $('#up').prop('disabled', false);
+                                    }
+                                }
+                            </script>
+                            <button type="button" class="btn btn-default btn-sm" id='up' onclick="thumbs_up()">
+                                <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="btn btn-default btn-sm" id='down' onclick="thumbs_down()">
+                                <i class = "fa fa-thumbs-down" aria-hidden = "true"></i>
+                            </button>
+                            <p>Votes: <span id="clicks">0</span></p>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                        </p>
+                    </div>
+                </p>
+            </div>
+            <div class="col-sm-7">
+                
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="panel panel-default text-center">
+                            <div class="panel-body" style = "background-color: #19222B">
+                                <img id= "album" src = 'zep.jpg' width = "560px" height="560px">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <h3 id="song_title">Song Title</h3>
+                            <p id="artist_name">Artist</p>
+                            <button class="btn btn-primary" onclick="playPause()">Play/Pause</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="col-sm-2 card">
                 <div class="thumbnail">
                     <p>Server List:</p>
@@ -613,7 +156,6 @@ function clicker(i){ //lets us know which song index was chosen, use index to ge
             <br/>
             <br/>
             <br/>
-          -->
         </div>
     </body>
 </html>
