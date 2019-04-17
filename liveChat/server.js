@@ -380,16 +380,20 @@ io.on('connection', function(socket){
 		return task.one('UPDATE users SET sock_id = \'' + socket.id + '\' WHERE username = \'' + socket.handshake.query.name + '\' RETURNING username;');
 	})
 	.then(info => {
+		// all is well, the query didn't fail
 		console.log(info.username + ' has established a socket connection to the server!');
 		console.log('Registered ' + info.username + '\'s sock_id as ' + socket.id + ' in DB');
 	})
 	.catch(error => {
+		// something went wrong in either the db.task section or the then(info=> )
 		console.log('Initialization of socket-id threw error:');
 		console.log(error);
 	})
 
 	// Server has received a message, will now decide where to send it
 	socket.on('chat message', function(msg){
+		console.log('Server has received a chat message: ' + msg);
+
 		db.task('retrive-identity', task => {
 			return task.one('SELECT username, current_room FROM users WHERE sock_id=\'' + socket.id + '\';'); // grab the username and room associated with the current socket
 		})
@@ -413,7 +417,7 @@ io.on('connection', function(socket){
 			return task.one("SELECT getrid(\'" + rname + "\');")
 				.then(retInfo => {
 					var q = 'UPDATE users SET current_room=\'' + retInfo.getrid + '\'::UUID WHERE sock_id=\'' + socket.id + '\' RETURNING username;';
-					//console.log(q);
+					console.log(q);
 					return task.one(q)
 						.then(secInfo => {
 							return [retInfo.getrid, secInfo.username]
@@ -424,16 +428,13 @@ io.on('connection', function(socket){
 			// successful login, add username to session for persistent login capabilities
 			var rooms = Object.keys(socket.rooms);
 
-			for(var i = 1; i < rooms.length; i++){ // if the user is in any rooms currently (besides the one they start out with), make them leave it
-				if(crname){
-					console.log('Leaving room ' + crname + ' (' + rooms[i] + ')');	
-				}
-				else{
-					console.log('Leaving room ' + rooms[i]);
-				}
+			// if the user is in any rooms currently (besides the one they start out with), make them leave it
+			for(var i = 1; i < rooms.length; i++){ 
+				console.log('Leaving room ' + rooms[i]);
 				
 				socket.leave(rooms[i]);
 			}
+
 			socket.join(info[0]);// join the room!
 			console.log(info[1] + ' joined room ' + rname + ' (' + info[0] + ')!');
 			
