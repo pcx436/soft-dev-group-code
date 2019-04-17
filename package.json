@@ -1,6 +1,9 @@
 {
     "name": "node-ejs",
     "main": "liveChat/server.js",
+	"scripts": {
+		"start": "node liveChat/server.js"
+	},
     "dependencies": {
         "client-sessions": "^0.8.0",
         "cookie-parser": "^1.4.4",
