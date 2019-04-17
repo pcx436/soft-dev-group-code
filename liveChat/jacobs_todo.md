@@ -4,3 +4,4 @@
 3. Disable the input box in the chat system until the user picks a room
 4. Limit username length to something like 30 characters
 5. Limit password to 72 characters (maximum the hash algo allows for)
+6. Room change error where one user can receive messages but the other cannot
