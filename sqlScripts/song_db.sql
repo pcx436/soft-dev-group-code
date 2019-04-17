@@ -1,0 +1,17 @@
+\c mountain_db
+
+CREATE TABLE songs (
+ sid TEXT UNIQUE,
+ inBasin BOOLEAN DEFAULT FALSE,
+ inCopper BOOLEAN DEFAULT FALSE,
+ inEldora BOOLEAN DEFAULT FALSE,
+ inVail BOOLEAN DEFAULT FALSE,
+ inPark BOOLEAN DEFAULT FALSE,
+ inTHINGY BOOLEAN DEFAULT FALSE,
+ basinVotes INT DEFAULT 0,
+ copperVotes INT DEFAULT 0,
+ eldoraVotes INT DEFAULT 0,
+ vailVotes INT DEFAULT 0,
+ parkVotes INT DEFAULT 0,
+ thingyVotes INT DEFAULT 0,
+);
