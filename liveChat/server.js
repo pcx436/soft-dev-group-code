@@ -40,7 +40,7 @@ var pgp = require('pg-promise')();
   user: This should be left as postgres, the default user account created when PostgreSQL was installed
   password: This the password for accessing the database.  You'll need to set a password USING THE PSQL TERMINAL THIS IS NOT A PASSWORD FOR POSTGRES USER ACCOUNT IN LINUX!
 **********************/
-const dbConfig = {
+const dbConfig = (process.env.DATABASE_URL) ? process.env.DATABASE_URL : {
 	host: 'localhost',
 	port: 5432,
 	database: 'mountain_db',
@@ -53,6 +53,7 @@ var db = pgp(dbConfig);
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/'));//This line is necessary for us to use relative paths and access our resources directory
+app.set('views', __dirname + '/views/');
 
 var escape = require('escape-html'); // used for cleaning up user input.
 var session = require('client-sessions'); // includes ability to actually use sessions.
@@ -465,9 +466,10 @@ io.on('connection', function(socket){
 });
 
 // start server on port 8888
-server.listen(8888);
-console.log('http://localhost:8888 is the home page');
+var portPort = process.env.port || 8888;
+server.listen(portPort);
+/*console.log('http://localhost:8888 is the home page');
 console.log('http://localhost:8888/login is the login page');
 console.log('http://localhost:8888/signup is the signup page');
 console.log('http://localhost:8888/widget is the widget test page');
-console.log('http://localhost:8888/player is the player test page');
+console.log('http://localhost:8888/player is the player test page');*/
