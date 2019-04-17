@@ -466,7 +466,8 @@ io.on('connection', function(socket){
 });
 
 // start server on port 8888
-var portPort = process.env.port || 8888;
+var portPort = (process.env.port) ? process.env.port : 8888;
+console.log(portPort);
 server.listen(portPort);
 /*console.log('http://localhost:8888 is the home page');
 console.log('http://localhost:8888/login is the login page');
