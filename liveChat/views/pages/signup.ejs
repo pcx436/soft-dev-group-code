@@ -177,7 +177,7 @@
                     }
 
                     if(!lenError && !otherError){
-                        $.post(location.protocol + location.host + '/signup', {uname:uname.val(), email:email.val(), pwOne:pwOne.val(), pwTwo:pwTwo.val()}, function(data){
+                        $.post(location.protocol + "//" + location.host + '/signup', {uname:uname.val(), email:email.val(), pwOne:pwOne.val(), pwTwo:pwTwo.val()}, function(data){
                                 if(data === 'success'){
                                     var aler = buildAlert('goodAlert', 'Success! Redirecting you to the homepage in <span id="countdown">5</span>...', false);
                                     alerts.html(aler);
