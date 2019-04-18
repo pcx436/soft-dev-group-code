@@ -47,7 +47,7 @@ const dbConfig = (process.env.DATABASE_URL) ? process.env.DATABASE_URL : {
 	user: 'postgres',
 	password: 'A2$-pC=U9*0BCp'
 };
-
+console.log(dbConfig);
 var db = pgp(dbConfig);
 
 // set the view engine to ejs
@@ -91,7 +91,6 @@ app.get('/', function(req, res) {
 	// user is logged in, show them the home page
 	if(loggedIn(req)){
 		// original code for homepage
-		console.log(req.session);
 		res.render('pages/home', { 
 			page_title:"Home",
 			custom_style:"resources/css/home.css",
@@ -242,7 +241,6 @@ app.get('/refresh_token', function(req, res) {
 });
 
 app.get('/player', function(req, res){
-	console.log(req.session);
 	if(!loggedIn(req)){
 		res.redirect('/login');
 	}
@@ -260,7 +258,6 @@ app.get('/player', function(req, res){
 
 // login page GET
 app.get('/login', function(req, res) {
-	console.log(req.session);
 	// user not logged in, allow to proceed
 	if(!loggedIn(req)){
 		res.render('pages/login',{ 
@@ -281,6 +278,7 @@ app.post('/login', function(req, res){
 	if(loggedIn(req)){
 		// already logged in, tried to post again.
 		// will only occur with deliberate tampering (i think)
+
 		res.redirect('/');
 	}
 	else if(req.body.user && req.body.pwOne){
