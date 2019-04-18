@@ -187,7 +187,7 @@
                                         setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, count);
                                     }
 
-                                    setTimeout(function(){window.location.replace(location.protocol + location.host + '/');}, count);
+                                    setTimeout(function(){window.location.replace(location.protocol + "//" + location.host + "/");}, count);
                                 }
                                 else{
                                     alerts.html(buildAlert('subError', 'An error occured with the server: ' + data, true));
