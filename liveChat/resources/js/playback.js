@@ -3,7 +3,7 @@ var player;
 window.onSpotifyWebPlaybackSDKReady = () => {
     //token is used to connect with spotify connect leaving this undone not sure how we want to authorize this
     //have to have spotify premium and get a code which expires every hour
-    var token = 'BQB0apmU6rgGHmiOIdCDQhi_W0Zkq1OjRsYUKzexF18C2o6A8YrPHr40J5fDiGeSW5OAZ-jJkR5cJp8GEgqz6HpAKHA5XetwFvC0zmsyWt0O7gdP4h1iYUjhRlbz1ORGoc5jyGi-JSLmX8WT9Tteg5Sp1JTjWdVEOMX0';
+    var token = 'BQCrgW0ek3cVbXp2iDOmvHWP0v76mcv6NA2TY9OpbpnWPyuoDPRoiQd7dp083UZX7IvGAulS7xvszGJUvj6kCyI6lvdmXvK24rznsih6jnjsgJzteppb6oXmWl2Le_msp_gXT_7Oe4LhX9VVIlqyroXlUZekXzPns3HZ';
     player = new Spotify.Player({
     name: 'Tracked Out',
     getOAuthToken: cb => { cb(token); }
@@ -46,11 +46,18 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 
 //play/pause the current playing track. Maybe just have it mute?
 
-var toggle = 0;
+var toggle = 1;
 
-function playPause(){
-    console.log("play/pause button");
-    player.togglePlay().then(() => {
-      console.log('Toggled playback!');
+function mute_button(){
+  if(toggle === 0){
+    player.setVolume(1).then(() => {
+      console.log('Volume');
+      toggle = 1;
     });
+  }else if(toggle === 1){
+    player.setVolume(0).then(() => {
+      console.log('muted');
+      toggle = 0;
+    });
+  }
 }
