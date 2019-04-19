@@ -18,7 +18,13 @@ var client_id = '50253af00a8749f2bb5330d1f3a44382'; // Your client id
 var client_secret = '01f9c2d6866d410ea25d0e1702dde56a'; // Your secret
 var buf = Buffer.from(client_id + ':' + client_secret).toString('base64');
 
-var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
+var redirect_uri;
+if(process.env.PORT){
+	var redirect_uri = 'https://mountain-music.herokuapp.com/callback'; 
+}
+else{
+	var redirect_uri = 'http://localhost:8888/callback';
+}
 var stateKey = 'spotify_auth_state';
 
 var bodyParser = require('body-parser'); //Ensure our body-parser tool has been added
@@ -50,12 +56,12 @@ const dbConfig = (process.env.DATABASE_URL) ? process.env.DATABASE_URL : {
 console.log(dbConfig);
 var db = pgp(dbConfig);
 
-var envKeys = Object.keys(process.env), envVals = Object.values(process.env);
+// var envKeys = Object.keys(process.env), envVals = Object.values(process.env);
 
-console.log('ENV: ');
-for(var i = 0; i < envKeys.length; i++){
-	console.log(envKeys[i] + " = " + envVals[i]);
-}
+// console.log('ENV: ');
+// for(var i = 0; i < envKeys.length; i++){
+// 	console.log(envKeys[i] + " = " + envVals[i]);
+// }
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
