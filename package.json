@@ -19,5 +19,13 @@
         "socket.io": "^2.2.0",
         "socket.io-client": "^2.2.0",
         "util": "^0.11.1"
-    }
+    },
+	"env":{
+	  "HEROKU_APP_NAME": {
+		"required": true
+	  },
+	  "HEROKU_PARENT_APP_NAME": {
+		"required": true
+	  }
+	}
 }
