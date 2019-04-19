@@ -4,9 +4,6 @@
 
 
 -- dropping and/or creating mUserTest database
-DROP DATABASE IF EXISTS mountain_db;
-CREATE DATABASE mountain_db;
-\c mountain_db
 
 -- used for hash security
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
