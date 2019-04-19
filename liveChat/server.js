@@ -50,6 +50,8 @@ const dbConfig = (process.env.DATABASE_URL) ? process.env.DATABASE_URL : {
 console.log(dbConfig);
 var db = pgp(dbConfig);
 
+console.log('ENV: ' + process.env);
+
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/'));//This line is necessary for us to use relative paths and access our resources directory

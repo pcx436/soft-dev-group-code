@@ -26,7 +26,7 @@
 		<link rel="stylesheet" href="<%= custom_style %>">
 	<%
 		if(page_title === 'Player'){
-			var msg = '<script src="resources/js/playback.js"></script>\n<script src="https://sdk.scdn.co/spotify-player.js"></script>';
+			var msg = '<script src="resources/js/playback.js"></script>\n<script src="https://sdk.scdn.co/spotify-player.js"></script>\n<script src="resources/js/chat.js"></script>';
 	%>
 			<%- msg %>
 		<%}%>
@@ -43,7 +43,7 @@
 		<!--used to mark one of the links in the navbar as active-->
 		<script>
 			$(function(){
-				$("#<%- active %>").addClass('active');
+				$("#<%= active %>").addClass('active');
 			});
 		</script>
 	</head>
