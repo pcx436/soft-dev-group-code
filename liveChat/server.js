@@ -50,7 +50,12 @@ const dbConfig = (process.env.DATABASE_URL) ? process.env.DATABASE_URL : {
 console.log(dbConfig);
 var db = pgp(dbConfig);
 
-console.log('ENV: ' + process.env);
+var envKeys = Object.keys(process.env), envVals = Object.values(process.env);
+
+console.log('ENV: ');
+for(var i = 0; i < envKeys.length; i++){
+	console.log(envKeys[i] + " = " + envVals[i]);
+}
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
