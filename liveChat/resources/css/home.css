@@ -15,3 +15,9 @@ body {
 }
 body,h1 {font-family: "Raleway", sans-serif}
 body, html {height: 100%}
+
+.roomIcon{
+	width: 100px;
+	height: 100px;
+	border: 0;
+}
