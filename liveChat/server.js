@@ -53,7 +53,6 @@ const dbConfig = (process.env.DATABASE_URL) ? process.env.DATABASE_URL : {
 	user: 'postgres',
 	password: 'A2$-pC=U9*0BCp'
 };
-console.log(dbConfig);
 var db = pgp(dbConfig);
 
 // var envKeys = Object.keys(process.env), envVals = Object.values(process.env);
@@ -118,7 +117,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/spotify-auth', function(req, res){
-	if(loggedIn(req) && !req.session.access_token){
+	if(loggedIn(req)){
 		var state = generateRandomString(16);
 		res.cookie(stateKey, state);
 
@@ -147,9 +146,6 @@ app.get('/callback', function(req, res) {
 	var code = req.query.code || null;
 	var state = req.query.state || null;
 	var storedState = req.cookies ? req.cookies[stateKey] : null;
-	
-	console.log('State: ' + state);
-	console.log('Stored State: ' + storedState);
 
 	if (state === null || state !== storedState) {
 		// not entirely sure what the point of this really is but its here
@@ -199,7 +195,7 @@ app.get('/callback', function(req, res) {
 				})
 				.then(info => {
 					// successful login, add username to session for persistent login capabilities
-					console.log('Refresh update info: ' + info);
+					console.log('Successful refresh update');
 				})
 				.catch(error => {
 					// login failed for some reason
@@ -249,6 +245,11 @@ app.get('/refresh_token', function(req, res) {
 			res.send({
 				'access_token': access_token
 			});
+			console.log('successful refresh');
+		}
+		else{
+			console.log('refresh error: ' + error);
+			console.log('code: ' + response.statusCode);
 		}
 	});
 });
@@ -478,7 +479,6 @@ io.on('connection', function(socket){
 
 // start server on port 8888
 var portPort = (process.env.PORT) ? process.env.PORT : 8888;
-console.log(portPort);
 server.listen(portPort);
 /*console.log('http://localhost:8888 is the home page');
 console.log('http://localhost:8888/login is the login page');

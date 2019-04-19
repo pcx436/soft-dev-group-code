@@ -10,8 +10,8 @@
                     <div class="card">
                         <p>
                             Song Search
-                            <form class="example" action="/action_page.php" style="max-width: 300px;">
-                                <input type="text" placeholder="Search.." name="search2">
+                            <form id="form_search" style="max-width: 300px;">
+                                <input type="text" placeholder="Search..." name="search2" id="songSearch">
                                 <div class="dropdown">
                                     <!-- <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Dropdown button
@@ -21,47 +21,47 @@
                                     </button>
                                     <div class="dropdown-menu pr-5" aria-labelledby="dropButton">
                                         <a class="dropdown-item" href="#">
-                                            <div class = "container" id="contOne" onclick = 'clicker(0)'>
-                                                <img id = "myImg" src="resources/imgs/meme.png" width = "65" height = "65" align = "left"> 
+                                            <div class = "container search-result" id="result1">
+                                                <img id = "item1a" src="resources/imgs/meme.png" width = "65" height = "65" align = "left"> 
                                                 <div class = "container" id= "cont1in">
-                                                  <div class="s1" id = 'item1a'>Hello i am song name dude</div>
-                                                  <div class="s2" id = 'item1b'>Burger boi</div>
+                                                  <div class="s1" id = 'item1b'>Hello i am song name dude</div>
+                                                  <div class="s2" id = 'item1c'>Burger boi</div>
                                                 </div>
                                             </div>
                                         </a>
                                         <a class="dropdown-item" href="#">
-                                            <div class = "container" id="contOne" onclick = 'clicker(0)'>
-                                                <img id = "myImg" src="resources/imgs/meme.png" width = "65" height = "65" align = "left"> 
+                                            <div class = "container search-result" id="result2">
+                                                <img id = "item2a" src="resources/imgs/meme.png" width = "65" height = "65" align = "left"> 
                                                 <div class = "container" id= "cont1in">
-                                                  <div class="s1" id = 'item1a'>Song Name</div>
-                                                  <div class="s2" id = 'item1b'>Album Name</div>
+                                                  <div class="s1" id = 'item2b'>Song Name</div>
+                                                  <div class="s2" id = 'item2c'>Album Name</div>
                                                 </div>
                                             </div>
                                         </a>
                                         <a class="dropdown-item" href="#">
-                                            <div class = "container" id="contOne" onclick = 'clicker(0)'>
-                                                <img id = "myImg" src="resources/imgs/meme.png" width = "65" height = "65" align = "left"> 
+                                            <div class = "container search-result" id="result3">
+                                                <img id = "item3a" src="resources/imgs/meme.png" width = "65" height = "65" align = "left"> 
                                                 <div class = "container" id= "cont1in">
-                                                  <div class="s1" id = 'item1a'>Song Name</div>
-                                                  <div class="s2" id = 'item1b'>Album Name</div>
+                                                  <div class="s1" id = 'item3b'>Song Name</div>
+                                                  <div class="s2" id = 'item3c'>Album Name</div>
                                                 </div>
                                             </div>
                                         </a>
                                         <a class="dropdown-item" href="#">
-                                            <div class = "container" id="contOne" onclick = 'clicker(0)'>
-                                                <img id = "myImg" src="resources/imgs/meme.png" width = "65" height = "65" align = "left"> 
+                                            <div class = "container search-result" id="result4">
+                                                <img id = "item4a" src="resources/imgs/meme.png" width = "65" height = "65" align = "left"> 
                                                 <div class = "container" id= "cont1in">
-                                                  <div class="s1" id = 'item1a'>Song Name</div>
-                                                  <div class="s2" id = 'item1b'>Album Name</div>
+                                                  <div class="s1" id = 'item4b'>Song Name</div>
+                                                  <div class="s2" id = 'item4c'>Album Name</div>
                                                 </div>
                                             </div>
                                         </a>
                                         <a class="dropdown-item" href="#">
-                                            <div class = "container" id="contOne" onclick = 'clicker(0)'>
-                                                <img id = "myImg" src="resources/imgs/meme.png" width = "65" height = "65" align = "left"> 
+                                            <div class = "container search-result" id="result5">
+                                                <img id = "item5a" src="resources/imgs/meme.png" width = "65" height = "65" align = "left"> 
                                                 <div class = "container" id= "cont1in">
-                                                  <div class="s1" id = 'item1a'>Song Name</div>
-                                                  <div class="s2" id = 'item1b'>Album Name</div>
+                                                  <div class="s1" id = 'item5b'>Song Name</div>
+                                                  <div class="s2" id = 'item5c'>Album Name</div>
                                                 </div>
                                             </div>
                                         </a>
@@ -71,28 +71,11 @@
                             
                         </p>
                     </div>
-                    <div class="card h-100 ">
+                    <div class="card h-100">
                         <p>
                             <a href="#">Queue</a>
                         </p>
                         <p>
-                            <script type="text/javascript">
-                                var clicks = 0;
-                                function thumbs_up() {
-                                    clicks += 1;
-                                    $("#clicks").text(clicks);
-                                    $('#up').prop('disabled', true);
-                                    $('#down').prop('disabled', false);
-                                }
-                                function thumbs_down() {
-                                    if (clicks > 0){
-                                        clicks -= 1;
-                                        $("#clicks").text(clicks);
-                                        $('#down').prop('disabled', true);
-                                        $('#up').prop('disabled', false);
-                                    }
-                                }
-                            </script>
                             <button type="button" class="btn btn-default btn-sm" id='up' onclick="thumbs_up()">
                                 <i class="fa fa-thumbs-up" aria-hidden="true"></i>
                             </button>
@@ -157,5 +140,145 @@
             <br/>
             <br/>
         </div>
+        <script type="text/javascript">
+            $(function(){
+                var accessToken = "<%- access %>";
+                console.log(accessToken);
+
+                var temp;
+                function callback(response){ //required to access JSON data outside of ajax request
+                    temp = response; 
+                    console.log('Results: ' + temp.tracks.items.length);
+                    for(var i = 0; i < 5 && i < temp.tracks.items.length; i++){
+                        console.log('i: ' + i);
+                        console.log(temp.tracks.items[i]);
+                        $('#item' + (i + 1) + 'a').attr('src', temp.tracks.items[i].album.images[0].url); //album image
+                        $('#item' + (i + 1) + 'b').html((temp.tracks.items[i].name) + ' - ' + (temp.tracks.items[i].album.artists[0].name)); //song name + artist name
+                        $('#item' + (i + 1) + 'c').html((temp.tracks.items[i].album.name)); //album name 
+
+                        // document.getElementById('contOne').style.display = 'flex'; 
+                        // document.getElementById('cont1in').style.display = 'flex';
+                        // document.getElementById('item1a').style.display = 'flex';
+                        // document.getElementById('item1b').style.display = 'flex';
+                    }
+
+                    //result 1
+                    /*$('item1a').html((temp.tracks.items[0].name) + ' - ' + (temp.tracks.items[0].album.artists[0].name)); //song name + artist name
+                    $('item1b').html((temp.tracks.items[0].album.name)); //album name 
+                    document.getElementById('myImg').src = (temp.tracks.items[0].album.images[0].url); //album image
+
+                    document.getElementById('contOne').style.display = 'flex'; 
+                    document.getElementById('cont1in').style.display = 'flex';
+                    document.getElementById('item1a').style.display = 'flex';
+                    document.getElementById('item1b').style.display = 'flex';
+
+                    //result 2
+                    $('item2a').html((temp.tracks.items[1].name) + ' - ' + (temp.tracks.items[1].artists[0].name)); //song name + artist name
+                    $('item2b').html((temp.tracks.items[1].album.name)); //album name
+                    document.getElementById('myImg2').src = (temp.tracks.items[1].album.images[0].url); //album image
+
+                    document.getElementById('contTwo').style.display = 'flex';
+                    document.getElementById('cont2in').style.display = 'flex'; 
+                    document.getElementById('item2a').style.display = 'flex';
+                    document.getElementById('item2b').style.display = 'flex';
+
+                    //result 3
+                    $('item3a').html((temp.tracks.items[2].name) + ' - ' + (temp.tracks.items[2].artists[0].name)); //song name + artist name 
+                    $('item3b').html((temp.tracks.items[2].album.name)); //album name 
+                    document.getElementById('myImg3').src = (temp.tracks.items[2].album.images[0].url); //album image 
+
+                    document.getElementById('contThree').style.display = 'flex';
+                    document.getElementById('cont3in').style.display = 'flex'; 
+                    document.getElementById('item3a').style.display = 'flex';
+                    document.getElementById('item3b').style.display = 'flex';
+
+                    //result 4
+                    $('item4a').html((temp.tracks.items[3].name) + ' - ' + (temp.tracks.items[3].artists[0].name)); //song name + artist name 
+                    $('item4b').html((temp.tracks.items[3].album.name)); //album name 
+                    document.getElementById('myImg4').src = (temp.tracks.items[3].album.images[0].url); //album image 
+
+                    document.getElementById('contFour').style.display = 'flex';
+                    document.getElementById('cont4in').style.display = 'flex'; 
+                    document.getElementById('item4a').style.display = 'flex';
+                    document.getElementById('item4b').style.display = 'flex';
+
+                    //result 5
+                    $('item5a').html((temp.tracks.items[4].name) + ' - ' + (temp.tracks.items[4].artists[0].name)); //song name + artist name 
+                    $('item5b').html((temp.tracks.items[4].album.name)); //album name
+                    document.getElementById('myImg5').src = (temp.tracks.items[4].album.images[0].url); //album image 
+
+                    document.getElementById('contFive').style.display = 'flex';
+                    document.getElementById('cont5in').style.display = 'flex'; 
+                    document.getElementById('item5a').style.display = 'flex';
+                    document.getElementById('item5b').style.display = 'flex';*/
+
+                }
+
+                //spotify ajax request 
+                $(':text').bind('keydown',function(e){
+                    if(e.keyCode == 13) //prevents page from rerendering after 'enter' key is pressed 
+                    {
+                        e.preventDefault();        
+                        var song = $('#songSearch').val();
+
+                        $.ajax({
+                            url:"https://api.spotify.com/v1/search?q=" + song + "&type=track&limit=8",
+                            type: 'GET',
+                            dataType: "text json",
+                            //async: false,
+                            headers: {
+                                'Authorization': 'Bearer ' + accessToken
+                            },
+                            success: function(data) {
+                                callback(data);
+                                $('.dropdown-toggle').dropdown('toggle');
+                                //console.log(data.tracks.items[0].href);
+                                //console.log(data.tracks.items[0].uri);
+                                //console.log(data.tracks.items[0].name);
+                                //console.log(data.tracks.items[0].album.images[0].url);
+                                //console.log(data.tracks.items[0].album.name);
+                            },
+                            error: function() {
+                                console.log('fail');
+                            }
+                        });
+
+                    }
+                });
+            
+
+                $('.search-result').click(function(){ //lets us know which song index was chosen, use index to get specific song uri
+                    console.log(temp.tracks.items[this.id[6] - 1].uri);
+                    /*
+                    $('song_title').html(temp.tracks.items[i].name);
+                    $('artist_name').html(temp.tracks.items[i].artists[0].name);
+                    document.getElementById('albumImg').src = temp.tracks.items[0].album.images[0].uri;
+                    */
+                    /*document.getElementById('contOne').style.display = 'none'; //collapse search results after selection
+                    document.getElementById('contTwo').style.display = 'none';  
+                    document.getElementById('contThree').style.display = 'none'; 
+                    document.getElementById('contFour').style.display = 'none'; 
+                    document.getElementById('contFive').style.display = 'none'; */
+
+                });
+
+
+                var clicks = 0;
+                function thumbs_up() {
+                    clicks += 1;
+                    $("#clicks").text(clicks);
+                    $('#up').prop('disabled', true);
+                    $('#down').prop('disabled', false);
+                }
+                function thumbs_down() {
+                    if (clicks > 0){
+                        clicks -= 1;
+                        $("#clicks").text(clicks);
+                        $('#down').prop('disabled', true);
+                        $('#up').prop('disabled', false);
+                    }
+                }
+            });
+            </script>
     </body>
 </html>
