@@ -227,7 +227,7 @@ app.get('/callback', function(req, res) {
 app.get('/refresh_token', function(req, res) {
 
 	// requesting access token from refresh token
-	var refresh_token = req.query.refresh_token;
+	var refresh_token = req.session.refresh_token;
 	var authOptions = {
 		url: 'https://accounts.spotify.com/api/token',
 		headers: { 'Authorization': 'Basic ' + buf },
@@ -263,9 +263,7 @@ app.get('/player', function(req, res){
 			page_title: 'Player',
 			custom_style: 'resources/css/home.css',
 			user: req.session.user,
-			active: 'listen-nav',
-			refresh: req.session.refresh_token,
-			access: req.session.access_token
+			active: 'listen-nav'
 		});
 	}
 });
@@ -312,7 +310,8 @@ app.post('/login', function(req, res){
 			console.log('UID ' + info.uid + ' has logged in successfully');
 			req.session.uid = info.uid;
 			req.session.user = cleanName;
-			res.end('success');			
+			res.redirect('/spotify-auth');
+			res.end('success');
 		})
 		.catch(error => {
 			// login failed for some reason
