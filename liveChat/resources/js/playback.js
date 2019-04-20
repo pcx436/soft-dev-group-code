@@ -24,6 +24,9 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         duration,
         track_window: { current_track }
     }) => {
+        if(position === 0){
+            console.log('end of song'); //when the song ends do something
+        }
         console.log('Currently Playing', current_track);
         console.log('Position in Song', position);
         console.log('Duration of Song', duration);
