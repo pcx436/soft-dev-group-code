@@ -1,5 +1,8 @@
 var player;
 
+// WHAT DO WHEN TOKEN EXPIRES??
+
+
 $(function(){
     window.onSpotifyWebPlaybackSDKReady = () => {
         //token is used to connect with spotify connect leaving this undone not sure how we want to authorize this
