@@ -452,16 +452,22 @@ io.on('connection', function(socket){
 		db.task('check-room', task => {
 			return task.one('SELECT current_room FROM users WHERE sock_id=\'' + socket.id + '\';') // grab current 
 				.then(roomInfo => {
-					var nameToColumn = roomInfo.current_room.replace('-', '_').replace(' ', '_'); // format room name to be a column name
-					return task.oneOrNone('SELECT ' + nameToColumn + ' FROM songs WHERE uri = \'' + uri + '\';') // check if the song is already in the db
-						.then(songResults => {
-							if(!songResults || songResults == {}){ // song not in db
-								return task.none('INSERT INTO songs (uri, ' + nameToColumn + ') VALUES (\'' + uri + '\', true);'); // insert song into db
-							}
-							else{
-								console.log('songResults false: ' + songResults);
-							}
+					return task.one('SELECT r_name FROM rooms WHERE rid = \'' + roomInfo.current_room + '\'::UUID;')
+						.then(roomName => {
+							console.log('ROOM NAME: ' + roomName.r_name);
+
+							var nameToColumn = roomName.current_room.replace('-', '_').replace(' ', '_'); // format room name to be a column name
+							return task.oneOrNone('SELECT ' + nameToColumn + ' FROM songs WHERE uri = \'' + uri + '\';') // check if the song is already in the db
+								.then(songResults => {
+									if(!songResults || songResults == {}){ // song not in db
+										return task.none('INSERT INTO songs (uri, ' + nameToColumn + ') VALUES (\'' + uri + '\', true);'); // insert song into db
+									}
+									else{
+										console.log('songResults false: ' + songResults);
+									}
+								})
 						})
+					
 				})
 		})
 		.then(uselessInfo => {
