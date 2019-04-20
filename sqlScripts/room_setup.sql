@@ -6,8 +6,7 @@ DROP TABLE IF EXISTS rooms;
 
 CREATE TABLE rooms (
  rid UUID NOT NULL DEFAULT gen_random_uuid(),
- r_name TEXT NOT NULL PRIMARY KEY,
- songs TEXT[50][3]
+ r_name TEXT NOT NULL PRIMARY KEY
 );
 
 -- songs is a 2-D array which can hold 50 songs and holds the song ID, number of votes,

@@ -437,7 +437,34 @@ io.on('connection', function(socket){
 			console.log('Message receive error:');
 			console.log(error);
 		})
-		
+	});
+
+	socket.on('queue song', function(uri){
+		console.log('Server received song to add: ' + uri);
+
+		// check that they're in a room, then check that the song hasn't already been added
+		db.task('check-room', task => {
+			return task.one('SELECT current_room FROM users WHERE sock_id=\'' + socket.id + '\';') // grab current 
+				.then(roomInfo => {
+					var nameToColumn = roomInfo.current_room.replace('-', '_').replace(' ', '_'); // format room name to be a column name
+					return task.oneOrNone('SELECT ' + nameToColumn + ' FROM songs WHERE uri = \'' + uri + '\';') // check if the song is already in the db
+						.then(songResults => {
+							if(!songResults || songResults == {}){ // song not in db
+								return task.none('INSERT INTO songs (uri, ' + nameToColumn + ') VALUES (\'' + uri + '\', true);'); // insert song into db
+							}
+							else{
+								console.log('songResults false: ' + songResults);
+							}
+						})
+				})
+		})
+		.then(uselessInfo => {
+			console.log(uri + ' inserted');
+		})
+		.catch(error => {
+			console.log('check-room error:');
+			console.log(error);
+		})
 	});
 
 	// manages user joining a room
