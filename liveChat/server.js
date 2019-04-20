@@ -158,7 +158,9 @@ app.post('/login', function(req, res){
 
 			// setting cookie
 			res.clearCookie('uid');
+			res.clearCookie('user');
 			res.cookie('uid', info.uid);
+			res.cookie('user', cleanName);
 
 			res.end('success');
 		})
@@ -199,10 +201,13 @@ app.post('/signup', function(req, res){
 			// inserted successfully
 			req.session.user = req.body.uname;
 			req.session.uid = info.uid;
+			req.session.user = req.body.uname;
 
 			// set UUID cookie
-			req.clearCookie('uid');
-			req.cookie('uid', info.uid);
+			res.clearCookie('uid');
+			res.clearCookie('user');
+			res.cookie('uid', info.uid);
+			res.cookie('user', cleanName);
 			
 			res.end('success');
 		})
@@ -224,6 +229,7 @@ app.get('/logout', function(req, res){
 		req.session.reset();
 		res.clearCookie(stateKey);
 		res.clearCookie('uid');
+		res.clearCookie('user');
 		res.clearCookie('access_token');
 		res.redirect('/login');
 	}

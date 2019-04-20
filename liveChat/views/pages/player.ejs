@@ -176,6 +176,34 @@
             <br/>
             <br/>
         </div>
+        
+        <!-- Chat box adapted from BhaumikPatel https://bootsnipp.com/snippets/r1KW -->
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 float-center">
+                    <div class="card">
+                        <div class="card-header bg-primary bog text-white">
+                            <h5 class="card-title"><img src="resources/imgs/si-glyph-bubble-message-text.svg" /> Chat</h5>
+                        </div>
+                        <div class="card-body pt-lg-0 px-lg-1">
+                            <ul id="messages" class="chat list-group list-group-flush">
+                                <!-- Chat messages go here -->
+                            </ul>
+                        </div>
+                        <div class="card-footer">
+                            <form>
+                                <div class="input-group input-group-sm">
+                                    <input id="chat-input" type="text" class="form-control" placeholder="Type your message here..." autocomplete="off"/>
+                                    <div class="input-group-append">
+                                        <input type="submit" class="btn btn-warning btn-sm" id="chat-submit" value="Send!">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <script type="text/javascript">
             $(function(){
                 // jQuery to refresh the Spotify WebAPI access token
