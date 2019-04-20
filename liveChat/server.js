@@ -222,6 +222,9 @@ app.post('/signup', function(req, res){
 app.get('/logout', function(req, res){
 	if(req.session){
 		req.session.reset();
+		res.clearCookie(stateKey);
+		res.clearCookie('uid');
+		res.clearCookie('access_token');
 		res.redirect('/login');
 	}
 });
@@ -240,6 +243,7 @@ app.get('/player', function(req, res){
 	}
 });
 
+
 app.get('/spotify-auth', function(req, res){
 	if(loggedIn(req)){
 		var state = generateRandomString(16);
@@ -247,7 +251,7 @@ app.get('/spotify-auth', function(req, res){
 
 		// your application requests authorization
 		//var scope = 'user-read-private user-read-email user-modify-playback-state';
-		var scope = 'user-read-private user-modify-playback-state';
+		var scope = 'user-read-private streaming user-modify-playback-state';
 		res.redirect('https://accounts.spotify.com/authorize?' +
 			querystring.stringify({
 				response_type: 'code',
