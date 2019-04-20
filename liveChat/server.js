@@ -12,7 +12,10 @@ var app = express();
 var request = require('request'); // "Request" library
 var cors = require('cors');
 var querystring = require('querystring');
+
 var cookieParser = require('cookie-parser');
+// var Cookies = require('cookies');
+
 // spotify vars
 var client_id = '50253af00a8749f2bb5330d1f3a44382'; // Your client id
 var client_secret = '01f9c2d6866d410ea25d0e1702dde56a'; // Your secret
@@ -20,10 +23,10 @@ var buf = Buffer.from(client_id + ':' + client_secret).toString('base64');
 
 var redirect_uri;
 if(process.env.PORT){
-	var redirect_uri = 'https://mountain-music.herokuapp.com/callback'; 
+	redirect_uri = 'https://mountain-music.herokuapp.com/callback'; 
 }
 else{
-	var redirect_uri = 'http://localhost:8888/callback';
+	redirect_uri = 'http://localhost:8888/callback';
 }
 var stateKey = 'spotify_auth_state';
 
@@ -33,7 +36,8 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
-app.use(cors()).use(cookieParser());
+
+app.use(cors()).use(cookieParser('dy=({SFp569O_PG9U.TZ[KE-53f1M'));
 
 //Create Database Connection
 var pgp = require('pg-promise')();
@@ -54,13 +58,6 @@ const dbConfig = (process.env.DATABASE_URL) ? process.env.DATABASE_URL : {
 	password: 'A2$-pC=U9*0BCp'
 };
 var db = pgp(dbConfig);
-
-// var envKeys = Object.keys(process.env), envVals = Object.values(process.env);
-
-// console.log('ENV: ');
-// for(var i = 0; i < envKeys.length; i++){
-// 	console.log(envKeys[i] + " = " + envVals[i]);
-// }
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
@@ -113,6 +110,133 @@ app.get('/', function(req, res) {
 	else{
 		// user isn't logged in, redirect them to the homepage
 		res.redirect('/login');
+	}
+});
+
+// login page GET
+app.get('/login', function(req, res) {
+	// user not logged in, allow to proceed
+	if(!loggedIn(req)){
+		res.render('pages/login',{ 
+			page_title:"Login",
+			custom_style:"resources/css/login.css",
+			user: '',
+			active: 'login-nav'
+		});
+	}
+	else{
+		// if user is already logged in, redirect them to the homepage
+		res.redirect('/');
+	}
+});
+
+// Also follow along with the managing session stuff, that looks real helpful!
+app.post('/login', function(req, res){
+	if(loggedIn(req)){
+		// already logged in, tried to post again.
+		// will only occur with deliberate tampering (i think)
+
+		res.redirect('/');
+	}
+	else if(req.body.user && req.body.pwOne){
+		// both a username and password have been submitted to us
+
+		// sanitize inputs (just a little bit)
+		var cleanName = escape(req.body.user);
+		var cleanPW = escape(req.body.pwOne);
+
+		// query to send to server
+		var existQuery = 'SELECT uid FROM users WHERE username=\'' + cleanName + '\' AND hash = crypt(\'' + cleanPW + '\', hash);';
+		db.task('get-uid', task => {
+			return task.one(existQuery);
+		})
+		.then(info => {
+			// successful login, add username to session for persistent login capabilities
+			console.log('UID ' + info.uid + ' has logged in successfully');
+			req.session.uid = info.uid;
+			req.session.user = cleanName;
+
+			// setting cookie
+			res.clearCookie('uid');
+			res.cookie('uid', info.uid);
+
+			res.end('success');
+		})
+		.catch(error => {
+			// login failed for some reason
+			console.log('Failed login attempt against ' + cleanName);
+			console.log(error);
+		  	res.end('failure');
+		})
+	}
+	else{
+		// somehow posted without username and/or password. Shouldn't have happened.
+		res.end('failure');
+	}
+});
+
+// registration page, going to need this eventually
+app.get('/signup', function(req, res) {
+	res.render('pages/signup',{
+		page_title:"Registration Page",
+		custom_style: "resources/css/signup.css",
+		user: '',
+		active: 'signup-nav'
+	});
+});
+
+// post for signup page
+app.post('/signup', function(req, res){
+	if(!loggedIn(req) && req.body.uname && req.body.pwOne && req.body.email && req.body.pwTwo){
+		var query = 'INSERT INTO users(username, email, hash) VALUES (\'' + req.body.uname + '\', \'' + req.body.email + '\', \'' + req.body.pwOne + '\');';
+
+		db.task('insert-user', task => {
+			return task.none(query).then(info =>{
+				return task.one('SELECT uid FROM users WHERE username = \'' + req.body.uname + '\';');
+			})
+		})
+		.then(info => {
+			// inserted successfully
+			req.session.user = req.body.uname;
+			req.session.uid = info.uid;
+
+			// set UUID cookie
+			req.clearCookie('uid');
+			req.cookie('uid', info.uid);
+			
+			res.end('success');
+		})
+		.catch(error => {
+			console.log(error);
+			console.log('User insertion threw an error');
+			res.end(error.detail);
+		})
+	}
+	else{
+		console.log('Requiste field(s) missing from signup POST');
+		res.end('Missing fields');
+	}
+});
+
+// logout functionality. Destroys session and redirects to login page
+app.get('/logout', function(req, res){
+	if(req.session){
+		req.session.reset();
+		res.redirect('/login');
+	}
+});
+
+app.get('/player', function(req, res){
+	if(!loggedIn(req)){
+		res.redirect('/login');
+	}
+	else{
+		res.render('pages/player', {
+			page_title: 'Player',
+			custom_style: 'resources/css/player.css',
+			user: req.session.user,
+			active: 'listen-nav'
+		});
 	}
 });
 
@@ -242,6 +366,10 @@ app.get('/refresh_token', function(req, res) {
 		if (!error && response.statusCode === 200) {
 			var access_token = body.access_token;
 			req.session.access_token = access_token;
+
+			res.clearCookie('access_token');
+			res.cookie('access_token', req.session.access_token);
+
 			res.send({
 				'access_token': access_token
 			});
@@ -252,121 +380,6 @@ app.get('/refresh_token', function(req, res) {
 			console.log('code: ' + response.statusCode);
 		}
 	});
-});
-
-app.get('/player', function(req, res){
-	if(!loggedIn(req)){
-		res.redirect('/login');
-	}
-	else{
-		res.render('pages/player', {
-			page_title: 'Player',
-			custom_style: 'resources/css/home.css',
-			user: req.session.user,
-			active: 'listen-nav'
-		});
-	}
-});
-
-// login page GET
-app.get('/login', function(req, res) {
-	// user not logged in, allow to proceed
-	if(!loggedIn(req)){
-		res.render('pages/login',{ 
-			page_title:"Login",
-			custom_style:"resources/css/login.css",
-			user: '',
-			active: 'login-nav'
-		});
-	}
-	else{
-		// if user is already logged in, redirect them to the homepage
-		res.redirect('/');
-	}
-});
-
-// Also follow along with the managing session stuff, that looks real helpful!
-app.post('/login', function(req, res){
-	if(loggedIn(req)){
-		// already logged in, tried to post again.
-		// will only occur with deliberate tampering (i think)
-
-		res.redirect('/');
-	}
-	else if(req.body.user && req.body.pwOne){
-		// both a username and password have been submitted to us
-
-		// sanitize inputs (just a little bit)
-		var cleanName = escape(req.body.user);
-		var cleanPW = escape(req.body.pwOne);
-
-		// query to send to server
-		var existQuery = 'SELECT uid FROM users WHERE username=\'' + cleanName + '\' AND hash = crypt(\'' + cleanPW + '\', hash);';
-		db.task('get-uid', task => {
-			return task.one(existQuery);
-		})
-		.then(info => {
-			// successful login, add username to session for persistent login capabilities
-			console.log('UID ' + info.uid + ' has logged in successfully');
-			req.session.uid = info.uid;
-			req.session.user = cleanName;
-			res.redirect('/spotify-auth');
-			res.end('success');
-		})
-		.catch(error => {
-			// login failed for some reason
-			console.log('Failed login attempt against ' + cleanName);
-			console.log(error);
-		  	res.end('failure');
-		})
-	}
-	else{
-		// somehow posted without username and/or password. Shouldn't have happened.
-		res.end('failure');
-	}
-});
-
-// registration page, going to need this eventually
-app.get('/signup', function(req, res) {
-	res.render('pages/signup',{
-		page_title:"Registration Page",
-		custom_style: "resources/css/signup.css",
-		user: '',
-		active: 'signup-nav'
-	});
-});
-
-// post for signup page
-app.post('/signup', function(req, res){
-	if(!loggedIn(req) && req.body.uname && req.body.pwOne && req.body.email && req.body.pwTwo){
-		var query = 'INSERT INTO users(username, email, hash) VALUES (\'' + req.body.uname + '\', \'' + req.body.email + '\', \'' + req.body.pwOne + '\');';
-
-		db.task('insert-user', task => {
-			return task.none(query);
-		})
-		.then(info => {
-			// inserted successfully
-			req.session.user = req.body.uname;
-			res.end('success');
-		})
-		.catch(error => {
-			console.log(error);
-			console.log('User insertion threw an error');
-			res.end(error.detail);
-		})
-	}
-	else{
-		console.log('Requiste field(s) missing from signup POST');
-		res.end('Missing fields');
-	}
-});
-
-// logout functionality. Destroys session and redirects to login page
-app.get('/logout', function(req, res){
-	if(req.session){
-		req.session.reset();
-		res.redirect('/login');
-	}
 });
 
 // Chat test page
@@ -389,7 +402,8 @@ io.on('connection', function(socket){
 
 	// Initialize connection details, update database with current socket ID
 	db.task('init-sock-id', task => {
-		return task.one('UPDATE users SET sock_id = \'' + socket.id + '\' WHERE username = \'' + socket.handshake.query.name + '\' RETURNING username;');
+		console.log(console.log(socket.headers));
+		return task.one('UPDATE users SET sock_id = \'' + socket.id + '\' WHERE uid = \'' + socket.handshake.query.uid + '\'::UUID RETURNING username;');
 	})
 	.then(info => {
 		// all is well, the query didn't fail

@@ -44,12 +44,8 @@
 								$('#goodAlert').show(); // show success message
 
 								// begin 5 second countdown till redirection. Yeah, i realize it's nasty
-								setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, 1000);
-								setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, 2000);
-								setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, 3000);
-								setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, 4000);
-								setTimeout(function(){$('#countdown').text($('#countdown').text() - 1);}, 5000);
-								setTimeout(function(){window.location.replace(location.protocol + "//" + location.host + "/");}, 5000);
+								setInterval(function(){$('#countdown').text($('#countdown').text() - 1);}, 1000);
+								setTimeout(function(){window.location.replace(location.protocol + "//" + location.host + "/spotify-auth");}, 5000);
 							}
 							else{
 								// user couldn't login, display bad message

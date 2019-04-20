@@ -1,10 +1,5 @@
 <% include ../partials/header %>
-        <style>
-            .s1, .s2{
-                word-wrap: inherit;
-            }
-        </style>
-        <div class="container text-center">
+        <div class="container text-center my-auto my-sm-auto">
             <div class="row">
                 <div class="col-sm-3 card">
                     <div class="card">
@@ -142,131 +137,60 @@
         </div>
         <script type="text/javascript">
             $(function(){
-              function refreshTheToken(){
+                // jQuery to refresh the Spotify WebAPI access token
+                function refreshTheToken(){
                     $.ajax({url: location.protocol + "//" + location.host + "/refresh_token", success: function(result){
-                      console.log('new access token: ' + result.access_token);
-                      accessToken = result.access_token;
+                        console.log('new access token: ' + result.access_token);
+                        accessToken = result.access_token;
                     }});
-              }
-                var accessToken = refreshTheToken();
-                console.log(accessToken);
-                var temp;
+                }
 
-                setInterval(function(){ refreshTheToken() }, 1800000);
+                // immediately get the access token
+                var accessToken = refreshTheToken();
+                
+                var temp; // stores songs
+
+                setInterval(function(){ refreshTheToken(); }, 1800000); // refresh the access token every 30 minutes
+
                 function callback(response){ //required to access JSON data outside of ajax request
                     temp = response;
-                    console.log('Results: ' + temp.tracks.items.length);
+
+                    // fill out the 5 dropdown search results
                     for(var i = 0; i < 5 && i < temp.tracks.items.length; i++){
-                        console.log('i: ' + i);
-                        console.log(temp.tracks.items[i]);
                         $('#item' + (i + 1) + 'a').attr('src', temp.tracks.items[i].album.images[0].url); //album image
                         $('#item' + (i + 1) + 'b').html((temp.tracks.items[i].name) + ' - ' + (temp.tracks.items[i].album.artists[0].name)); //song name + artist name
                         $('#item' + (i + 1) + 'c').html((temp.tracks.items[i].album.name)); //album name
-
-                        // document.getElementById('contOne').style.display = 'flex';
-                        // document.getElementById('cont1in').style.display = 'flex';
-                        // document.getElementById('item1a').style.display = 'flex';
-                        // document.getElementById('item1b').style.display = 'flex';
                     }
-
-                    //result 1
-                    /*$('item1a').html((temp.tracks.items[0].name) + ' - ' + (temp.tracks.items[0].album.artists[0].name)); //song name + artist name
-                    $('item1b').html((temp.tracks.items[0].album.name)); //album name
-                    document.getElementById('myImg').src = (temp.tracks.items[0].album.images[0].url); //album image
-
-                    document.getElementById('contOne').style.display = 'flex';
-                    document.getElementById('cont1in').style.display = 'flex';
-                    document.getElementById('item1a').style.display = 'flex';
-                    document.getElementById('item1b').style.display = 'flex';
-
-                    //result 2
-                    $('item2a').html((temp.tracks.items[1].name) + ' - ' + (temp.tracks.items[1].artists[0].name)); //song name + artist name
-                    $('item2b').html((temp.tracks.items[1].album.name)); //album name
-                    document.getElementById('myImg2').src = (temp.tracks.items[1].album.images[0].url); //album image
-
-                    document.getElementById('contTwo').style.display = 'flex';
-                    document.getElementById('cont2in').style.display = 'flex';
-                    document.getElementById('item2a').style.display = 'flex';
-                    document.getElementById('item2b').style.display = 'flex';
-
-                    //result 3
-                    $('item3a').html((temp.tracks.items[2].name) + ' - ' + (temp.tracks.items[2].artists[0].name)); //song name + artist name
-                    $('item3b').html((temp.tracks.items[2].album.name)); //album name
-                    document.getElementById('myImg3').src = (temp.tracks.items[2].album.images[0].url); //album image
-
-                    document.getElementById('contThree').style.display = 'flex';
-                    document.getElementById('cont3in').style.display = 'flex';
-                    document.getElementById('item3a').style.display = 'flex';
-                    document.getElementById('item3b').style.display = 'flex';
-
-                    //result 4
-                    $('item4a').html((temp.tracks.items[3].name) + ' - ' + (temp.tracks.items[3].artists[0].name)); //song name + artist name
-                    $('item4b').html((temp.tracks.items[3].album.name)); //album name
-                    document.getElementById('myImg4').src = (temp.tracks.items[3].album.images[0].url); //album image
-
-                    document.getElementById('contFour').style.display = 'flex';
-                    document.getElementById('cont4in').style.display = 'flex';
-                    document.getElementById('item4a').style.display = 'flex';
-                    document.getElementById('item4b').style.display = 'flex';
-
-                    //result 5
-                    $('item5a').html((temp.tracks.items[4].name) + ' - ' + (temp.tracks.items[4].artists[0].name)); //song name + artist name
-                    $('item5b').html((temp.tracks.items[4].album.name)); //album name
-                    document.getElementById('myImg5').src = (temp.tracks.items[4].album.images[0].url); //album image
-
-                    document.getElementById('contFive').style.display = 'flex';
-                    document.getElementById('cont5in').style.display = 'flex';
-                    document.getElementById('item5a').style.display = 'flex';
-                    document.getElementById('item5b').style.display = 'flex';*/
-
                 }
 
                 //spotify ajax request
-                $(':text').bind('keydown',function(e){
-                    if(e.keyCode == 13) //prevents page from rerendering after 'enter' key is pressed
-                    {
-                        e.preventDefault();
-                        var song = $('#songSearch').val();
+                $('#form_search').submit(function(e){
+                    e.preventDefault(); //prevents page from rerendering after 'enter' key is pressed
+                    var song = $('#songSearch').val(); 
 
-                        $.ajax({
-                            url:"https://api.spotify.com/v1/search?q=" + song + "&type=track&limit=8",
-                            type: 'GET',
-                            dataType: "text json",
-                            //async: false,
-                            headers: {
-                                'Authorization': 'Bearer ' + accessToken
-                            },
-                            success: function(data) {
-                                callback(data);
-                                $('.dropdown-toggle').dropdown('toggle');
-                                //console.log(data.tracks.items[0].href);
-                                //console.log(data.tracks.items[0].uri);
-                                //console.log(data.tracks.items[0].name);
-                                //console.log(data.tracks.items[0].album.images[0].url);
-                                //console.log(data.tracks.items[0].album.name);
-                            },
-                            error: function() {
-                                console.log('fail');
-                            }
-                        });
+                    $.ajax({
+                        url:"https://api.spotify.com/v1/search?q=" + song + "&type=track&limit=8",
+                        type: 'GET',
+                        dataType: "text json",
+                        //async: false,
+                        headers: {
+                            'Authorization': 'Bearer ' + accessToken
+                        },
+                        success: function(data) {
+                            callback(data);
+                            $('.dropdown-toggle').dropdown('toggle'); // open the dropdown to show the results
+                        },
+                        error: function() {
+                            console.log('fail');
+                        }
+                    });
 
-                    }
                 });
 
 
                 $('.search-result').click(function(){ //lets us know which song index was chosen, use index to get specific song uri
-                    console.log(temp.tracks.items[this.id[6] - 1].uri);
-                    /*
-                    $('song_title').html(temp.tracks.items[i].name);
-                    $('artist_name').html(temp.tracks.items[i].artists[0].name);
-                    document.getElementById('albumImg').src = temp.tracks.items[0].album.images[0].uri;
-                    */
-                    /*document.getElementById('contOne').style.display = 'none'; //collapse search results after selection
-                    document.getElementById('contTwo').style.display = 'none';
-                    document.getElementById('contThree').style.display = 'none';
-                    document.getElementById('contFour').style.display = 'none';
-                    document.getElementById('contFive').style.display = 'none'; */
-
+                    console.log(temp.tracks.items[this.id[6] - 1].uri); // logs URI of the song
+                    $('.dropdown-toggle').dropdown('toggle'); // removes the dropdown from view
                 });
 
 
@@ -285,7 +209,23 @@
                         $('#up').prop('disabled', false);
                     }
                 }
+
+                var toggle = 1;
+
+                function mute_button(){
+                    if(toggle === 0){
+                        player.setVolume(1).then(() => {
+                            console.log('Volume');
+                            toggle = 1;
+                        });
+                    }else if(toggle === 1){
+                        player.setVolume(0).then(() => {
+                            console.log('muted');
+                            toggle = 0;
+                        });
+                    }
+                }
             });
-            </script>
+        </script>
     </body>
 </html>

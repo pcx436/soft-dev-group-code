@@ -18,6 +18,9 @@
 		<!--Bootsrap 4.3.1 CSS-->
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
+		<!--JS-Cookie-->
+		<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+
 		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -26,7 +29,7 @@
 		<link rel="stylesheet" href="<%= custom_style %>">
 	<%
 		if(page_title === 'Player'){
-			var msg = 'fd';
+			var msg = '<script src="resources/js/playback.js"></script>\n<script src="https://sdk.scdn.co/spotify-player.js"></script>\n<script src="resources/js/chat.js"></script>\n<script src="/socket.io/socket.io.js"></script>';
 	%>
 			<%- msg %>
 		<%}%>
@@ -48,7 +51,7 @@
 		</script>
 	</head>
 	<body>
-
+		
 		<!-- New navbar code -->
 		<nav class="navbar navbar-expand-lg navbar-dark text-white" style="background-color: black;">
 			<div class="container-fluid">
@@ -61,7 +64,7 @@
 					<ul class="nav navbar-nav">
 					<%# If the user is logged in, display a welcome message. If they're not, display the signin/signup buttons%>
 					<%
-						if(user){
+						if(user){ 
 							var message = '<li class="nav-item py-auto my-auto py-sm-auto my-sm-auto">Welcome, ' + user + '</li>';
 							var messageTwo = '<li class="nav-item"><a class="nav-link" href="/logout"><img class="custo-icon" src="resources/imgs/si-glyph-sign-out.svg" /> Logout</a></li>';
 					%>
@@ -72,7 +75,7 @@
 						else{
 							var message = '<li class="nav-item" id="signup-nav"><a class="nav-link" href="/signup"><img class="custo-icon" src="resources/imgs/si-glyph-person-2.svg" /> Sign Up</a></li>';%>
 							<%- message _%>
-					<%
+					<%	
 							message = '<li class="nav-item" id="login-nav"><a class="nav-link" href="/login"><img class="custo-icon" src="resources/imgs/si-glyph-sign-in.svg" /> Login</a></li>';%>
 							<%- message _%>
 					<% 	}%>
