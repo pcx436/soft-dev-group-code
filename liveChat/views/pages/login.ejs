@@ -45,7 +45,7 @@
 
 								// begin 5 second countdown till redirection. Yeah, i realize it's nasty
 								setInterval(function(){$('#countdown').text($('#countdown').text() - 1);}, 1000);
-								setTimeout(function(){window.location.replace(location.protocol + "//" + location.host + "/spotify-auth");}, 5000);
+								setTimeout(function(){window.location.replace(location.protocol + "//" + location.host + "/spotify-auth");}, 3000);
 							}
 							else{
 								// user couldn't login, display bad message
@@ -84,7 +84,7 @@
 
 			<!-- Successful login alert box -->
 			<div class="alert alert-success" style="display: none;" role="alert" id="goodAlert">
-				Successful login! Redirecting to the homepage in <span id="countdown">5</span>...
+				Successful login! Redirecting to the homepage in <span id="countdown">3</span>...
 			</div>
 
 			<!-- Failed login alert box -->
