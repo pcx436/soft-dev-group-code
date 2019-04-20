@@ -29,7 +29,7 @@ $(function () {
                 '<div class="chat-body clearfix">' +
                     '<div class="header">' +
                         '<small class="text-muted">' +
-                            '<img src="resources/imgs/si-glyph-clock.svg" />' + t +
+                            '<img class="widgetImg" src="resources/imgs/si-glyph-clock.svg" />' + t +
                         '</small>' +
                         '<strong class="float-right primary-font">' + data.name + '</strong>' +
                     '</div>' +
@@ -46,7 +46,7 @@ $(function () {
                     '<div class="header">' +
                         '<strong class="primary-font">' + data.name + '</strong>' +
                         '<small class="float-right text-muted">' +
-                            '<img src="resources/imgs/si-glyph-clock.svg" />' + t +
+                            '<img class="widgetImg" src="resources/imgs/si-glyph-clock.svg" />' + t +
                         '</small>' +
                     '</div>' +
                     '<p class="card-text">' +
@@ -62,7 +62,7 @@ $(function () {
     $('form').submit(function(e){
         e.preventDefault(); // prevents page reloading
         
-        $('#messages').append(buildMsg({name:"<%= user %>", msg:$('#chat-input').val()}, true)); // add message to local chat log
+        $('#messages').append(buildMsg({name:Cookies.get('user'), msg:$('#chat-input').val()}, true)); // add message to local chat log
 
         socket.emit('chat message', $('#chat-input').val()); // send message to all other room participants
 

@@ -24,6 +24,9 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         duration,
         track_window: { current_track }
     }) => {
+        if(position === 0){
+            console.log('end of song'); //when the song ends do something
+        }
         console.log('Currently Playing', current_track);
         console.log('Position in Song', position);
         console.log('Duration of Song', duration);
@@ -55,11 +58,13 @@ function mute_button(){
         player.setVolume(1).then(() => {
             console.log('Volume');
             toggle = 1;
+            $('#mute_button').html('<i class="fas fa-volume-up"></i>');
         });
     }else if(toggle === 1){
         player.setVolume(0).then(() => {
             console.log('muted');
             toggle = 0;
+            $('#mute_button').html('<i class="fas fa-volume-mute"></i>');
         });
     }
 }

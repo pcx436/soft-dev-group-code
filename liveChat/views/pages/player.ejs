@@ -36,12 +36,16 @@
             margin-left:-10px;
         }
 
+        .col-sm-7{
+            width: 100px;
+        }
+
 
         </style>
 
         <div class="container text-center my-auto my-sm-auto">
             <div class="row">
-                <div class="col-sm-3 card">
+                <div class="col-sm-3 card" style = "margin-right: 100px">
                     <div class="card">
                         <p>
                             Song Search
@@ -125,24 +129,24 @@
                     </div>
                 </p>
             </div>
-            <div class="col-sm-7">
+            <div class="col-sm-5">
 
                 <div class="row">
-                    <div class="col-sm-12">
+                    <div class="col-sm-5">
                         <div class="panel panel-default text-center">
                             <div class="panel-body" style = "background-color: #19222B">
                                 <img id= "album" src = 'resources/imgs/zep.jpg' width = "300px" height="300px">
                             </div>
-                        </div>
+                    </div>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-sm-12">
-                        <div class="card">
-                            <h3 id="song_title">Song Title</h3>
-                            <p id="artist_name">Artist</p>
-                            <button class="btn btn-primary" onclick="mute_button()">Mute</button>
+                    <div class="col-sm-5">
+                        <div class="card" style = "margin-right: -132px">
+                            <h4 id="song_title">Song Title </h4>
+                            <p id="artist_name">Artist <button id= "mute_button" class="btn btn-default btn-sm" aria-expanded="false" onclick="mute_button()"><i class="fas fa-volume-up" aria-hidden="true"></i></button></p>
+
                         </div>
                     </div>
                 </div>
@@ -171,6 +175,34 @@
             <br/>
             <br/>
             <br/>
+        </div>
+        
+        <!-- Chat box adapted from BhaumikPatel https://bootsnipp.com/snippets/r1KW -->
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 float-center">
+                    <div class="card">
+                        <div class="card-header bg-primary bog text-white">
+                            <h5 class="card-title"><img class="widgetImg" src="resources/imgs/si-glyph-bubble-message-text.svg" /> Chat</h5>
+                        </div>
+                        <div class="card-body pt-lg-0 px-lg-1">
+                            <ul id="messages" class="chat list-group list-group-flush">
+                                <!-- Chat messages go here -->
+                            </ul>
+                        </div>
+                        <div class="card-footer">
+                            <form>
+                                <div class="input-group input-group-sm">
+                                    <input id="chat-input" type="text" class="form-control" placeholder="Type your message here..." autocomplete="off"/>
+                                    <div class="input-group-append">
+                                        <input type="submit" class="btn btn-warning btn-sm" id="chat-submit" value="Send!">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <script type="text/javascript">
             $(function(){
