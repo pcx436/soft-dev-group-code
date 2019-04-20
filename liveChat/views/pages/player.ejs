@@ -59,10 +59,10 @@
                                         <a class="dropdown-item" href="#">
                                             <div class = "container search-result" id="result1">
                                                 <img class = "albimg1" id = "item1a" src="resources/imgs/meme.png" width = "65" height = "65" align = "left">
-                                                
+
                                                   <div class="s1" id = 'item1b'>Hello i am song name dude</div>
                                                   <div class="s2" id = 'item1c'>Burger boi</div>
-                                                
+
                                             </div>
                                         </a>
                                         <a class="dropdown-item" href="#">
@@ -154,19 +154,19 @@
             <div class="col-sm-2 card">
                 <div class="thumbnail">
                     <p>Server List:</p>
-                    <button class="btn btn-primary room-btn" id="basin">A-Basin</button>
+                    <button class="btn btn-secondary room-btn color-btn" id="basin">A-Basin</button>
                     <br/>
                     <br/>
-                    <button class="btn btn-primary room-btn">Copper Mountain</button>
+                    <button class="btn btn-secondary room-btn color-btn" id="copper">Copper Mountain</button>
                     <br/>
                     <br/>
-                    <button class="btn btn-primary room-btn">Eldora</button>
+                    <button class="btn btn-secondary room-btn color-btn" id="dora">Eldora</button>
                     <br/>
                     <br/>
-                    <button class="btn btn-primary room-btn">Vail Resorts</button>
+                    <button class="btn btn-secondary room-btn color-btn" id="vail">Vail Resorts</button>
                     <br/>
                     <br/>
-                    <button class="btn btn-primary room-btn">Winter Park</button>
+                    <button class="btn btn-secondary room-btn color-btn" id="winterpark">Winter Park</button>
                     <br/>
                     <br/>
                     <br/>
@@ -176,7 +176,7 @@
             <br/>
             <br/>
         </div>
-        
+
         <!-- Chat box adapted from BhaumikPatel https://bootsnipp.com/snippets/r1KW -->
         <div class="container">
             <div class="row">
@@ -216,7 +216,7 @@
 
                 // immediately get the access token
                 var accessToken = refreshTheToken();
-                
+
                 var temp; // stores songs
 
                 setInterval(function(){ refreshTheToken(); }, 1800000); // refresh the access token every 30 minutes
@@ -232,10 +232,27 @@
                     }
                 }
 
+                var count = 1;
+                var oldButton;
+
+                $('.color-btn').click(function(){
+                  console.log('WHERE');
+
+                  if (oldButton) {
+                    oldButton.removeClass('btn-primary').addClass('btn-secondary');
+                  }
+
+                  $(this).removeClass('btn-secondary').addClass('btn-primary');
+
+                  oldButton = $(this);
+
+                });
+
+
                 function getSearchResults(e){
                     console.log('getSearchResults function called');
                     e.preventDefault(); //prevents page from rerendering after 'enter' key is pressed
-                    var song = $('#songSearch').val(); 
+                    var song = $('#songSearch').val();
 
                     $.ajax({
                         url:"https://api.spotify.com/v1/search?q=" + song + "&type=track&limit=8",
