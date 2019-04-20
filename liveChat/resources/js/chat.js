@@ -29,7 +29,7 @@ $(function () {
                 '<div class="chat-body clearfix">' +
                     '<div class="header">' +
                         '<small class="text-muted">' +
-                            '<img src="resources/imgs/si-glyph-clock.svg" />' + t +
+                            '<img class="widgetImg" src="resources/imgs/si-glyph-clock.svg" />' + t +
                         '</small>' +
                         '<strong class="float-right primary-font">' + data.name + '</strong>' +
                     '</div>' +
@@ -46,7 +46,7 @@ $(function () {
                     '<div class="header">' +
                         '<strong class="primary-font">' + data.name + '</strong>' +
                         '<small class="float-right text-muted">' +
-                            '<img src="resources/imgs/si-glyph-clock.svg" />' + t +
+                            '<img class="widgetImg" src="resources/imgs/si-glyph-clock.svg" />' + t +
                         '</small>' +
                     '</div>' +
                     '<p class="card-text">' +

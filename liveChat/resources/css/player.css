@@ -99,10 +99,10 @@ body {
 }
 
 
-img {
+.widgetImg {
     width: 14px;
     height: 14px;
-    margin-right: 12px;
+    margin-right: 5px;
 }
 
 .bog {
