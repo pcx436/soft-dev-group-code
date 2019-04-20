@@ -22,7 +22,7 @@
                                     <div class="dropdown-menu pr-5" aria-labelledby="dropButton">
                                         <a class="dropdown-item" href="#">
                                             <div class = "container search-result" id="result1">
-                                                <img id = "item1a" src="resources/imgs/meme.png" width = "65" height = "65" align = "left"> 
+                                                <img id = "item1a" src="resources/imgs/meme.png" width = "65" height = "65" align = "left">
                                                 <div class = "container" id= "cont1in">
                                                   <div class="s1" id = 'item1b'>Hello i am song name dude</div>
                                                   <div class="s2" id = 'item1c'>Burger boi</div>
@@ -31,7 +31,7 @@
                                         </a>
                                         <a class="dropdown-item" href="#">
                                             <div class = "container search-result" id="result2">
-                                                <img id = "item2a" src="resources/imgs/meme.png" width = "65" height = "65" align = "left"> 
+                                                <img id = "item2a" src="resources/imgs/meme.png" width = "65" height = "65" align = "left">
                                                 <div class = "container" id= "cont1in">
                                                   <div class="s1" id = 'item2b'>Song Name</div>
                                                   <div class="s2" id = 'item2c'>Album Name</div>
@@ -40,7 +40,7 @@
                                         </a>
                                         <a class="dropdown-item" href="#">
                                             <div class = "container search-result" id="result3">
-                                                <img id = "item3a" src="resources/imgs/meme.png" width = "65" height = "65" align = "left"> 
+                                                <img id = "item3a" src="resources/imgs/meme.png" width = "65" height = "65" align = "left">
                                                 <div class = "container" id= "cont1in">
                                                   <div class="s1" id = 'item3b'>Song Name</div>
                                                   <div class="s2" id = 'item3c'>Album Name</div>
@@ -49,7 +49,7 @@
                                         </a>
                                         <a class="dropdown-item" href="#">
                                             <div class = "container search-result" id="result4">
-                                                <img id = "item4a" src="resources/imgs/meme.png" width = "65" height = "65" align = "left"> 
+                                                <img id = "item4a" src="resources/imgs/meme.png" width = "65" height = "65" align = "left">
                                                 <div class = "container" id= "cont1in">
                                                   <div class="s1" id = 'item4b'>Song Name</div>
                                                   <div class="s2" id = 'item4c'>Album Name</div>
@@ -58,7 +58,7 @@
                                         </a>
                                         <a class="dropdown-item" href="#">
                                             <div class = "container search-result" id="result5">
-                                                <img id = "item5a" src="resources/imgs/meme.png" width = "65" height = "65" align = "left"> 
+                                                <img id = "item5a" src="resources/imgs/meme.png" width = "65" height = "65" align = "left">
                                                 <div class = "container" id= "cont1in">
                                                   <div class="s1" id = 'item5b'>Song Name</div>
                                                   <div class="s2" id = 'item5c'>Album Name</div>
@@ -68,7 +68,7 @@
                                     </div>
                                 </div>
                             </form>
-                            
+
                         </p>
                     </div>
                     <div class="card h-100">
@@ -94,7 +94,7 @@
                 </p>
             </div>
             <div class="col-sm-7">
-                
+
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="panel panel-default text-center">
@@ -142,21 +142,28 @@
         </div>
         <script type="text/javascript">
             $(function(){
-                var accessToken = "<%- access %>";
+              function refreshTheToken(){
+                    $.ajax({url: location.protocol + "//" + location.host + "/refresh_token", success: function(result){
+                      console.log('new access token: ' + result.access_token);
+                      accessToken = result.access_token;
+                    }});
+              }
+                var accessToken = refreshTheToken();
                 console.log(accessToken);
-
                 var temp;
+
+                setInterval(function(){ refreshTheToken() }, 1800000);
                 function callback(response){ //required to access JSON data outside of ajax request
-                    temp = response; 
+                    temp = response;
                     console.log('Results: ' + temp.tracks.items.length);
                     for(var i = 0; i < 5 && i < temp.tracks.items.length; i++){
                         console.log('i: ' + i);
                         console.log(temp.tracks.items[i]);
                         $('#item' + (i + 1) + 'a').attr('src', temp.tracks.items[i].album.images[0].url); //album image
                         $('#item' + (i + 1) + 'b').html((temp.tracks.items[i].name) + ' - ' + (temp.tracks.items[i].album.artists[0].name)); //song name + artist name
-                        $('#item' + (i + 1) + 'c').html((temp.tracks.items[i].album.name)); //album name 
+                        $('#item' + (i + 1) + 'c').html((temp.tracks.items[i].album.name)); //album name
 
-                        // document.getElementById('contOne').style.display = 'flex'; 
+                        // document.getElementById('contOne').style.display = 'flex';
                         // document.getElementById('cont1in').style.display = 'flex';
                         // document.getElementById('item1a').style.display = 'flex';
                         // document.getElementById('item1b').style.display = 'flex';
@@ -164,10 +171,10 @@
 
                     //result 1
                     /*$('item1a').html((temp.tracks.items[0].name) + ' - ' + (temp.tracks.items[0].album.artists[0].name)); //song name + artist name
-                    $('item1b').html((temp.tracks.items[0].album.name)); //album name 
+                    $('item1b').html((temp.tracks.items[0].album.name)); //album name
                     document.getElementById('myImg').src = (temp.tracks.items[0].album.images[0].url); //album image
 
-                    document.getElementById('contOne').style.display = 'flex'; 
+                    document.getElementById('contOne').style.display = 'flex';
                     document.getElementById('cont1in').style.display = 'flex';
                     document.getElementById('item1a').style.display = 'flex';
                     document.getElementById('item1b').style.display = 'flex';
@@ -178,47 +185,47 @@
                     document.getElementById('myImg2').src = (temp.tracks.items[1].album.images[0].url); //album image
 
                     document.getElementById('contTwo').style.display = 'flex';
-                    document.getElementById('cont2in').style.display = 'flex'; 
+                    document.getElementById('cont2in').style.display = 'flex';
                     document.getElementById('item2a').style.display = 'flex';
                     document.getElementById('item2b').style.display = 'flex';
 
                     //result 3
-                    $('item3a').html((temp.tracks.items[2].name) + ' - ' + (temp.tracks.items[2].artists[0].name)); //song name + artist name 
-                    $('item3b').html((temp.tracks.items[2].album.name)); //album name 
-                    document.getElementById('myImg3').src = (temp.tracks.items[2].album.images[0].url); //album image 
+                    $('item3a').html((temp.tracks.items[2].name) + ' - ' + (temp.tracks.items[2].artists[0].name)); //song name + artist name
+                    $('item3b').html((temp.tracks.items[2].album.name)); //album name
+                    document.getElementById('myImg3').src = (temp.tracks.items[2].album.images[0].url); //album image
 
                     document.getElementById('contThree').style.display = 'flex';
-                    document.getElementById('cont3in').style.display = 'flex'; 
+                    document.getElementById('cont3in').style.display = 'flex';
                     document.getElementById('item3a').style.display = 'flex';
                     document.getElementById('item3b').style.display = 'flex';
 
                     //result 4
-                    $('item4a').html((temp.tracks.items[3].name) + ' - ' + (temp.tracks.items[3].artists[0].name)); //song name + artist name 
-                    $('item4b').html((temp.tracks.items[3].album.name)); //album name 
-                    document.getElementById('myImg4').src = (temp.tracks.items[3].album.images[0].url); //album image 
+                    $('item4a').html((temp.tracks.items[3].name) + ' - ' + (temp.tracks.items[3].artists[0].name)); //song name + artist name
+                    $('item4b').html((temp.tracks.items[3].album.name)); //album name
+                    document.getElementById('myImg4').src = (temp.tracks.items[3].album.images[0].url); //album image
 
                     document.getElementById('contFour').style.display = 'flex';
-                    document.getElementById('cont4in').style.display = 'flex'; 
+                    document.getElementById('cont4in').style.display = 'flex';
                     document.getElementById('item4a').style.display = 'flex';
                     document.getElementById('item4b').style.display = 'flex';
 
                     //result 5
-                    $('item5a').html((temp.tracks.items[4].name) + ' - ' + (temp.tracks.items[4].artists[0].name)); //song name + artist name 
+                    $('item5a').html((temp.tracks.items[4].name) + ' - ' + (temp.tracks.items[4].artists[0].name)); //song name + artist name
                     $('item5b').html((temp.tracks.items[4].album.name)); //album name
-                    document.getElementById('myImg5').src = (temp.tracks.items[4].album.images[0].url); //album image 
+                    document.getElementById('myImg5').src = (temp.tracks.items[4].album.images[0].url); //album image
 
                     document.getElementById('contFive').style.display = 'flex';
-                    document.getElementById('cont5in').style.display = 'flex'; 
+                    document.getElementById('cont5in').style.display = 'flex';
                     document.getElementById('item5a').style.display = 'flex';
                     document.getElementById('item5b').style.display = 'flex';*/
 
                 }
 
-                //spotify ajax request 
+                //spotify ajax request
                 $(':text').bind('keydown',function(e){
-                    if(e.keyCode == 13) //prevents page from rerendering after 'enter' key is pressed 
+                    if(e.keyCode == 13) //prevents page from rerendering after 'enter' key is pressed
                     {
-                        e.preventDefault();        
+                        e.preventDefault();
                         var song = $('#songSearch').val();
 
                         $.ajax({
@@ -245,7 +252,7 @@
 
                     }
                 });
-            
+
 
                 $('.search-result').click(function(){ //lets us know which song index was chosen, use index to get specific song uri
                     console.log(temp.tracks.items[this.id[6] - 1].uri);
@@ -255,9 +262,9 @@
                     document.getElementById('albumImg').src = temp.tracks.items[0].album.images[0].uri;
                     */
                     /*document.getElementById('contOne').style.display = 'none'; //collapse search results after selection
-                    document.getElementById('contTwo').style.display = 'none';  
-                    document.getElementById('contThree').style.display = 'none'; 
-                    document.getElementById('contFour').style.display = 'none'; 
+                    document.getElementById('contTwo').style.display = 'none';
+                    document.getElementById('contThree').style.display = 'none';
+                    document.getElementById('contFour').style.display = 'none';
                     document.getElementById('contFive').style.display = 'none'; */
 
                 });
