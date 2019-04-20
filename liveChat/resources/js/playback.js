@@ -55,11 +55,13 @@ function mute_button(){
         player.setVolume(1).then(() => {
             console.log('Volume');
             toggle = 1;
+            $('#mute_button').html('<i class="fas fa-volume-up"></i>');
         });
     }else if(toggle === 1){
         player.setVolume(0).then(() => {
             console.log('muted');
             toggle = 0;
+            $('#mute_button').html('<i class="fas fa-volume-mute"></i>');
         });
     }
 }
