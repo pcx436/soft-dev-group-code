@@ -2,9 +2,10 @@ $(function () {
     var room; // represents the current room the user is in
 
     // establishes socket connection to the server while sending the username as the parameter
+    console.log('UUID cookie: ' + Cookies.get('uid'));
     var socket = io({
         query: {
-            name: '<%= user %>'
+            uid: Cookies.get('uid')
         }
     });
 
