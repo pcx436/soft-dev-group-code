@@ -62,7 +62,7 @@ $(function () {
     $('form').submit(function(e){
         e.preventDefault(); // prevents page reloading
         
-        $('#messages').append(buildMsg({name:"<%= user %>", msg:$('#chat-input').val()}, true)); // add message to local chat log
+        $('#messages').append(buildMsg({name:Cookies.get('user'), msg:$('#chat-input').val()}, true)); // add message to local chat log
 
         socket.emit('chat message', $('#chat-input').val()); // send message to all other room participants
 
