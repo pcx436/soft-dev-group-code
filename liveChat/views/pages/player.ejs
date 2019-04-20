@@ -145,8 +145,16 @@
                     <div class="col-sm-5">
                         <div class="card" style = "margin-right: -132px">
                             <h4 id="song_title">Song Title </h4>
-                            <p id="artist_name">Artist <button id= "mute_button" class="btn btn-default btn-sm" aria-expanded="false" onclick="mute_button()"><i class="fas fa-volume-up" aria-hidden="true"></i></button></p>
-
+                                <div class="container">
+                                    <div class="row align-items-start">
+                                        <div class='col-sm-6'>
+                                            <p id="artist_name">Artist</p>
+                                        </div>
+                                        <div class='col-sm-6'>
+                                            <button id= "mute_button" class="btn btn-default btn-sm" aria-expanded="false" onclick="mute_button()"><i class="fas fa-volume-up" aria-hidden="true"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
                         </div>
                     </div>
                 </div>
@@ -180,10 +188,10 @@
         <!-- Chat box adapted from BhaumikPatel https://bootsnipp.com/snippets/r1KW -->
         <div class="container">
             <div class="row">
-                <div class="col-sm-6 float-center">
-                    <div class="card">
+                <div class="col-sm-6 float-center offset-3">
+                    <div class="card", style = "margin-right: -30px; margin-left:-30px">
                         <div class="card-header bg-primary bog text-white">
-                            <h5 class="card-title"><img src="resources/imgs/si-glyph-bubble-message-text.svg" /> Chat</h5>
+                            <h5 class="card-title"><img class="widgetImg" src="resources/imgs/si-glyph-bubble-message-text.svg" /> Chat</h5>
                         </div>
                         <div class="card-body pt-lg-0 px-lg-1">
                             <ul id="messages" class="chat list-group list-group-flush">
@@ -278,6 +286,14 @@
                 $('.search-result').click(function(){ //lets us know which song index was chosen, use index to get specific song uri
                     console.log('song: ' + temp.tracks.items[this.id[6] - 1].uri); // logs URI of the song
                     $('.dropdown-toggle').dropdown('toggle'); // removes the dropdown from view
+
+
+                    // socket emit stuff
+                    // CHECK IF THE SONG IS ALREADY IN THE QUEUE
+                    // ALSO CHECK IF CLIENT HAS JOINED A ROOM
+
+                    // if song not in queue, send to queue
+                    socket.emit('queue song', temp.tracks.items[this.id[6] - 1].uri);
                 });
 
 
