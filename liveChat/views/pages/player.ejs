@@ -417,7 +417,7 @@
                             'Authorization': 'Bearer ' + accessToken
                         },
                         success: function(data2) {
-                            $('#item5a').append(buildMsg2({albumImg: data2.album.images[1].url, song: data2.name , 
+                            $('#item5a').append(buildMsg2({albumImg: data2.album.images[1].url, song: data2.name , artist: data2.artists[0].name,
                                 alb_name: data2.album.name}));  
                             console.log(data2.name);
                             console.log(data2.artists[0].name);
@@ -472,7 +472,7 @@
                     newItem ='<li class = "listElement">'+
                                 '<img class = "albimgA" id = "item5a" src = "' + response.albumImg + '" width = "55" height = "55" align = "left>' +
                                     '<div class = "container inner" id = "cont1in">'+
-                                        '<div class = "sA" id = "item1A">' + response.song + '</div' +
+                                        '<div class = "sA" id = "item1A">' + response.song + ' - ' + response.artist + '</div' +
                                         '<div class = "sB" id = "item1B">' + response.alb_name + '</div' +
                                    '</div' +
                                 '</li>';
