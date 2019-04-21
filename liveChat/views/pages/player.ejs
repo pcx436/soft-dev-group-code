@@ -388,6 +388,32 @@
                     socket.emit('queue song', temp.tracks.items[this.id[6] - 1].uri);
                 });
 
+                socket.on('queue song', function(data){
+                    //console.log('Song \'' + data.uri + '\' received');
+                    $.ajax({
+                        url:"https://api.spotify.com/v1/tracks/" + data.uri,
+                        type: 'GET',
+                        dataType: "text json",
+                        //async: false,
+                        headers: {
+                            'Authorization': 'Bearer ' + accessToken
+                        },
+                        success: function(data2) {
+                            // buildMsg2 has to be built to handle how the data will be presented in the queue
+                            $('#Queue').append(buildMsg2(data, false));
+                            console.log(data2.name);
+                            console.log(data2.artists[0].name);
+                            console.log(data2.album.images[1].url)
+                        },
+                        error: function() {
+                            console.log('fail');
+                        }
+                    });
+                    // get song details via spotify API call (song's name, artist, album cover)
+
+                    // append song element to the queue
+                });
+
                 // changing server room functionality
                 $(".room-btn").click(function(){
                     var rname = $(this).text();// stores the name of the room
