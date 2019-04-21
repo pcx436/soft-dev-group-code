@@ -40,14 +40,31 @@
             width: 100px;
         }
 
+        .sA, .sB{
+            color:black;
+            font-size: 9pt;
+        }
+
+        .sA{
+            padding-top: 10px
+        }
+        .albimgA{
+            margin-left: -15px
+        }
+
+        .listElement{
+            height: 65px;
+            margin-left: -25px;
+            margin-top: -10px;
+        }
 
         </style>
 
 <div class="container text-center my-auto my-sm-auto">
     <div class="row">
-        <div class="col-sm-3 card" style = "margin-right: 100px">
-            <div class="card">
-                <p> Song Search
+        <div class="col-sm-3 card" style = "margin-right: 100px; width: 300px">
+            <div class="card" style = "width:300px">
+                <p> Song Search     
                     <form id="form_search" method = "post" style="max-width: 300px;">
                         <div class="dropdown">
                             <input type="text" placeholder="Search..." name="search2" id="songSearch">
@@ -104,27 +121,24 @@
 
                 </p>
             </div>
-            <div class="card h-100">
+
+            <div class="card" style = "overflow: auto; height: 300px; width: 300px">
                 <p>
                     <a href="#">Queue</a>
                 </p>
-                <p>
-     <div class = "container search-result" id="result5">
-                                        <img class = "albimg1" id = "item5a" src="resources/imgs/meme.png" width = "65" height = "65" align = "left">
-                                            <div class = "container" id= "cont1in">
-                                                <div class="s1" id = 'item5b'>Song Name</div>
-                                                <div class="s2" id = 'item5c'>Album Name</div>
-                                            </div>
-                                    </div>
-                        <p>Votes: <span id="clicks">0</span></p>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                </p>
+                <ul class = "queueList" style = "list-style-type: none">
+                    <li class = "listElement">
+                        <img class = "albimgA" id = "item5a" src="resources/imgs/meme.png" width = "55" height = "55" align = "left">
+                            <div class = "container inner" id= "cont1in" >
+                                <div class="sA" id = 'item5b'>Blah blah blah song </div>
+                                <div class="sB" id = 'item5c'>Album Name</div>
+                            </div> 
+                    </li>
+            
+
+                </ul>
             </div>
+
         </div>
         <div class="col-sm-5">
             <div class="row">
@@ -349,6 +363,8 @@
                     return innerCount;
                 }
 
+
+
                 // sending chat message
                 $('form').submit(function(e){
                     e.preventDefault(); // prevents page reloading
@@ -403,6 +419,7 @@
                         success: function(data2) {
                             // buildMsg2 has to be built to handle how the data will be presented in the queue
                             //$('#Queue').append(buildMsg2(data, false));
+                            addToQueue(data2);
                             console.log(data2.name);
                             console.log(data2.artists[0].name);
                             console.log(data2.album.images[1].url)
@@ -415,6 +432,26 @@
 
                     // append song element to the queue
                 });
+
+                function addToQueue(response){
+                    temp = response;
+                    song = temp.name;
+                    alb_name = temp.artists[0].name;
+                    album = temp.album.images[1].url;  //ALSO NEED TO SAVE THE URI
+                    
+                    var newItem;
+
+                    newItem ='<li class = "listElement">'+
+                                '<img class = "albimgA" id = "item5a" src = "' + album + '" width = "55" height = "55" align = "left>' +
+                                    '<div class = "container inner" id = "cont1in">'+
+                                        '<div class = "sA" id = "item1A">' + song + '</div' +
+                                        '<div class = "sB" id = "item1B">' + alb_name + '</div' +
+                                   '</div' +
+                                '</li>';
+                    return newItem;
+                }
+
+          
 
                 // changing server room functionality
                 $(".room-btn").click(function(){
