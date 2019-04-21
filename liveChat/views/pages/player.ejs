@@ -290,8 +290,6 @@
                 $('#form_search').submit(function(e){ getSearchResults(e); });
                 $('#dropButton').click(function(e){ getSearchResults(e); });
 
-               
-
                 // legacy code for upvote system, might implement in the future
                 /*var clicks = 0;
                 function thumbs_up() {
@@ -387,10 +385,7 @@
 
                 $('.search-result').click(function(){ //lets us know which song index was chosen, use index to get specific song uri
                     var uri = songs.tracks.items[this.id[6] - 1].uri;
-                    var id = songs.tracks.items[this.id[6] - 1].id;
-                    console.log('songid: ' + id);
                     console.log('song: ' + uri); // logs URI of the song
-                    testQue(id);
                     $('.dropdown-toggle').dropdown('toggle'); // removes the dropdown from view
 
 
@@ -422,9 +417,8 @@
                             'Authorization': 'Bearer ' + accessToken
                         },
                         success: function(data2) {
-                            // buildMsg2 has to be built to handle how the data will be presented in the queue
-                            //$('#Queue').append(buildMsg2(data, false));
-                            addToQueue(data2);
+                            $('#item5a').append(buildMsg2({albumImg: data2.album.images[1].url, song: data2.name , 
+                                alb_name: data2.album.name}));  
                             console.log(data2.name);
                             console.log(data2.artists[0].name);
                             console.log(data2.album.images[1].url)
@@ -438,50 +432,27 @@
                     // append song element to the queue
                 });
 
-                function testQue(id){
-                    $.ajax({
-                        url:"https://api.spotify.com/v1/tracks/" + id,
-                        type: 'GET',
-                        dataType: "text json",
-                        //async: false,
-                        headers: {
-                            'Authorization': 'Bearer ' + accessToken
-                        },
-                        success: function(data2) {
-                            // buildMsg2 has to be built to handle how the data will be presented in the queue
-                            //$('#Queue').append(buildMsg2(data, false));                           
-                            addToQueue(data2);
-                            console.log(data2.name);
-                            console.log(data2.album.name);
-                            console.log(data2.uri);
-                            console.log(data2.artists[0].name);
-                            console.log(data2.album.images[1].url)
-                        },
-                        error: function() {
-                            console.log('fail');
-                        }
-                    });
-                }
-
-
-                function addToQueue(response){
-                    temp = response;
-                    song = temp.name;
-                    artist_name = temp.artists[0].name;
-                    uri = temp.uri
-                    alb_name = temp.album.name;
-                    albumImg = temp.album.images[1].url;  //ALSO NEED TO SAVE THE URI
+     
+                function buildMsg2(response){
+                    // temp = response;
+                    // song = temp.name;
+                    // artist_name = temp.artists[0].name;
+                    // uri = temp.uri
+                    // alb_name = temp.album.name;
+                    // albumImg = temp.album.images[1].url;  //ALSO NEED TO SAVE THE URI
                     
-                    var newItem;
+                    var newItem = '';
+
 
                     newItem ='<li class = "listElement">'+
-                                '<img class = "albimgA" id = "item5a" src = "' + albumImg + '" width = "55" height = "55" align = "left>' +
+                                '<img class = "albimgA" id = "item5a" src = "' + response.albumImg + '" width = "55" height = "55" align = "left>' +
                                     '<div class = "container inner" id = "cont1in">'+
-                                        '<div class = "sA" id = "item1A">' + song + '</div' +
-                                        '<div class = "sB" id = "item1B">' + alb_name + '</div' +
+                                        '<div class = "sA" id = "item1A">' + response.song + '</div' +
+                                        '<div class = "sB" id = "item1B">' + response.alb_name + '</div' +
                                    '</div' +
                                 '</li>';
-                                console.log('Here: ' + newItem);
+                            console.log(response.song);
+                            console.log(response.alb_name);
                     return newItem;
                     }
 
