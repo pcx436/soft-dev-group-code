@@ -412,7 +412,7 @@ io.on('connection', function(socket){
 
 	// Initialize connection details, update database with current socket ID
 	db.task('init-sock-id', task => {
-		console.log(console.log(socket.headers));
+		//console.log(console.log(socket.headers));
 		return task.one('UPDATE users SET sock_id = \'' + socket.id + '\' WHERE uid = \'' + socket.handshake.query.uid + '\'::UUID RETURNING username;');
 	})
 	.then(info => {
@@ -438,6 +438,9 @@ io.on('connection', function(socket){
 				msg:msg,
 				name:info.username
 			}); // send the message to the other people in the room
+			socket.emit('queue song', {
+				uri: '2WfaOiMkCvy7F5fcp2zZ8L'
+			});
 		})
 		.catch(error => {
 			console.log('Message receive error:');
@@ -486,7 +489,7 @@ io.on('connection', function(socket){
 			return task.one("SELECT getrid(\'" + rname + "\');")
 				.then(retInfo => {
 					var q = 'UPDATE users SET current_room=\'' + retInfo.getrid + '\'::UUID WHERE sock_id=\'' + socket.id + '\' RETURNING username;';
-					console.log(q);
+					//console.log(q);
 					return task.one(q)
 						.then(secInfo => {
 							return [retInfo.getrid, secInfo.username]
