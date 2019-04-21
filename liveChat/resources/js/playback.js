@@ -2,7 +2,6 @@ var player;
 
 // WHAT DO WHEN TOKEN EXPIRES??
 
-
 window.onSpotifyWebPlaybackSDKReady = () => {
     //token is used to connect with spotify connect leaving this undone not sure how we want to authorize this
     //have to have spotify premium and get a code which expires every hour
@@ -39,6 +38,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     // Ready
     player.addListener('ready', ({ device_id }) => {
         console.log('Ready with Device ID', device_id);
+        play_song(device_id);
     });
 
     // Not Ready
@@ -68,3 +68,23 @@ function mute_button(){
         });
     }
 }
+
+function play_song(device_id){
+    console.log(device_id);
+    $.ajax({
+        url:"https://api.spotify.com/v1/me/player/play?device_id=" + device_id,
+        type: 'PUT',
+        data: '{"uris":["spotify:track:6jrPDxHjE2qOKbvFj9u4YX"]}',
+        headers: {
+            'Authorization': 'Bearer ' + Cookies.get('access_token')
+        },
+        success: function() {
+            console.log('success');
+        },
+        error: function() {
+            console.log('fail');
+        }
+    });
+}
+
+//"https://api.spotify.com/v1/me/player/play?device_id=6a7b699fbb3739e80509ecf181104d4a761ff16c" --data "{\"context_uri\":\"spotify:track:6jrPDxHjE2qOKbvFj9u4YX\",\"offset\":{\"position\":5},\"position_ms\":0}" -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer BQAFruQt_8dDG6dm5FegQa5Q9sXSGJLNn6t89CajzX7qzfkTsAOgz0Uxeqv4e26hjtGgdjkbuQiQB7z4wPyX1M12xBfN3urDL8olCo3sg17sjhMbsUIunJIxH4cze5CO-tdFweNzYUTzzqTOuw"
