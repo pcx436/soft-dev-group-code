@@ -432,6 +432,31 @@
                     // append song element to the queue
                 });
 
+                // function testQue(id){
+                //     $.ajax({
+                //         url:"https://api.spotify.com/v1/tracks/" + id,
+                //         type: 'GET',
+                //         dataType: "text json",
+                //         //async: false,
+                //         headers: {
+                //             'Authorization': 'Bearer ' + accessToken
+                //         },
+                //         success: function(data2) {
+                //             // buildMsg2 has to be built to handle how the data will be presented in the queue
+                //             // $('#Queue').append(buildMsg2({albumImg: data2.album.images[1].url, song: data2.name , 
+                //             //     alb_name = data2.album.name})                 
+                //             console.log(data2.name);
+                //             console.log(data2.album.name);
+                //             console.log(data2.uri);
+                //             console.log(data2.artists[0].name);
+                //             console.log(data2.album.images[1].url)
+                //         },
+                //         error: function() {
+                //             console.log('fail');
+                //         }
+                //     });
+                // }  
+
      
                 function buildMsg2(response){
                     // temp = response;
