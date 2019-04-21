@@ -448,42 +448,59 @@ io.on('connection', function(socket){
 		})
 	});
 
-	socket.on('queue song', function(uri){
+	socket.on('queue song', function(uri, clientFunction){
 		console.log('Server received song to add: ' + uri);
+		if(uri.length > 0){
+			var parts = uri.trim().split(':');
+			if (parts.length !== 3){
+				clientFunction(1); // malformed URI
+			}
+			else{
+				var sid = parts[2]; // id of the song
 
-		// check that they're in a room, then check that the song hasn't already been added
-		db.task('check-room', task => {
-			return task.one('SELECT current_room FROM users WHERE sock_id=\'' + socket.id + '\';') // grab current 
-				.then(roomInfo => {
-					return task.one('SELECT r_name FROM rooms WHERE rid = \'' + roomInfo.current_room + '\'::UUID;')
-						.then(roomName => {
-							console.log('ROOM NAME: ' + roomName.r_name);
+				// check that they're in a room, then check that the song hasn't already been added
+				db.task('check-room', task => {
+					return task.one('SELECT current_room FROM users WHERE sock_id=\'' + socket.id + '\';') // grab current 
+						.then(roomInfo => {
+							return task.one('SELECT r_name FROM rooms WHERE rid = \'' + roomInfo.current_room + '\'::UUID;') // convert current room's RID into the name
+								.then(roomName => {
+									var nameToColumn = roomName.current_room.toLowerCase().replace('-', '_').replace(' ', '_'); // format room name to be a column name
 
-							var nameToColumn = roomName.current_room.replace('-', '_').replace(' ', '_'); // format room name to be a column name
-							return task.oneOrNone('SELECT ' + nameToColumn + ' FROM songs WHERE uri = \'' + uri + '\';') // check if the song is already in the db
-								.then(songResults => {
-									if(!songResults || songResults == {}){ // song not in db
-										return task.none('INSERT INTO songs (uri, ' + nameToColumn + ') VALUES (\'' + uri + '\', true);'); // insert song into db
-									}
-									else{
-										console.log('songResults false: ' + songResults);
-									}
+									console.log('Room name: ' + roomName.r_name);// log room name
+									console.log('Converted name: ' + nameToColumn);
+
+									return task.oneOrNone('SELECT ' + nameToColumn + ' FROM songs WHERE sid = \'' + sid + '\';') // check if the song is already in the db
+										.then(songResults => {
+											if(!songResults || songResults == {}){ // song not in db
+												return task.none('INSERT INTO songs (sid, ' + nameToColumn + ') VALUES (\'' + uri + '\', true);'); // insert song into db
+											}
+											else{
+												console.log('songResults false: ' + songResults);
+												console.log(nameToColum + ': ' + songResults.nameToColumn);
+											}
+										})
 								})
+							
 						})
-					
 				})
-		})
-		.then(uselessInfo => {
-			console.log(uri + ' inserted');
-		})
-		.catch(error => {
-			console.log('check-room error:');
-			console.log(error);
-		})
+				.then(uselessInfo => {
+					console.log(uri + ' inserted');
+					clientFunction(0);
+				})
+				.catch(error => {
+					console.log('check-room error:');
+					console.log(error);
+					clientFunction(error);
+				})
+			}
+		}
+		else{
+			clientFunction(1); // malformed URI
+		}
 	});
 
 	// manages user joining a room
-	socket.on('room join', function(crname, rname, fn){
+	socket.on('room join', function(rname, fn){
 		// changes your current room in the db
 		db.task('room-change-query', task => {
 			return task.one("SELECT getrid(\'" + rname + "\');")

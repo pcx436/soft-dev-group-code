@@ -218,44 +218,39 @@
                         accessToken = result.access_token;
                     }});
                 }
-
+                setInterval(function(){ refreshTheToken(); }, 1800000); // refresh the access token every 30 minutes
                 // immediately get the access token
                 var accessToken = refreshTheToken();
 
-                var temp; // stores songs
+                var songs; // stores songs
 
-                setInterval(function(){ refreshTheToken(); }, 1800000); // refresh the access token every 30 minutes
-
-                function callback(response){ //required to access JSON data outside of ajax request
-                    temp = response;
+                
+                // deals with filling the search dropdown
+                function callback(response){ 
+                    songs = response;
 
                     // fill out the 5 dropdown search results
-                    for(var i = 0; i < 5 && i < temp.tracks.items.length; i++){
-                        $('#item' + (i + 1) + 'a').attr('src', temp.tracks.items[i].album.images[0].url); //album image
-                        $('#item' + (i + 1) + 'b').html((temp.tracks.items[i].name) + ' - ' + (temp.tracks.items[i].album.artists[0].name)); //song name + artist name
-                        $('#item' + (i + 1) + 'c').html((temp.tracks.items[i].album.name)); //album name
+                    for(var i = 0; i < 5 && i < songs.tracks.items.length; i++){
+                        $('#item' + (i + 1) + 'a').attr('src', songs.tracks.items[i].album.images[0].url); //album image
+                        $('#item' + (i + 1) + 'b').html((songs.tracks.items[i].name) + ' - ' + (songs.tracks.items[i].album.artists[0].name)); //song name + artist name
+                        $('#item' + (i + 1) + 'c').html((songs.tracks.items[i].album.name)); //album name
                     }
                 }
 
-                var count = 1;
                 var oldButton;
-
                 $('.color-btn').click(function(){
-                  console.log('WHERE');
+                    if (oldButton) {
+                        oldButton.removeClass('btn-primary').addClass('btn-secondary');
+                    }
 
-                  if (oldButton) {
-                    oldButton.removeClass('btn-primary').addClass('btn-secondary');
-                  }
+                    $(this).removeClass('btn-secondary').addClass('btn-primary');
 
-                  $(this).removeClass('btn-secondary').addClass('btn-primary');
-
-                  oldButton = $(this);
-
+                    oldButton = $(this);
                 });
 
 
+                // send search results to spotify
                 function getSearchResults(e){
-                    console.log('getSearchResults function called');
                     e.preventDefault(); //prevents page from rerendering after 'enter' key is pressed
                     var song = $('#songSearch').val();
 
@@ -268,7 +263,7 @@
                             'Authorization': 'Bearer ' + accessToken
                         },
                         success: function(data) {
-                            callback(data);
+                            callback(data); // fill dropdown
                             $('.dropdown-toggle').dropdown('toggle'); // open the dropdown to show the results
                         },
                         error: function() {
@@ -276,11 +271,13 @@
                         }
                     });
                 }
-                //spotify ajax request
-                $('#form_search, #dropButton').click(function(e){ getSearchResults(e); }).submit(function(e){getSearchResults(e)});
+                
+                // run search for songs
+                $('#form_search').submit(function(e){ getSearchResults(e); });
+                $('#dropButton').click(function(e){ getSearchResults(e); });
 
-
-                var clicks = 0;
+                // legacy code for upvote system, might implement in the future
+                /*var clicks = 0;
                 function thumbs_up() {
                     clicks += 1;
                     $("#clicks").text(clicks);
@@ -294,14 +291,9 @@
                         $('#down').prop('disabled', true);
                         $('#up').prop('disabled', false);
                     }
-                }
-
-            
-       
-                var room; // represents the current room the user is in
+                }*/
 
                 // establishes socket connection to the server while sending the username as the parameter
-                console.log('UUID cookie: ' + Cookies.get('uid'));
                 var socket = io({
                     query: {
                         uid: Cookies.get('uid')
@@ -376,16 +368,26 @@
                 });
 
                 $('.search-result').click(function(){ //lets us know which song index was chosen, use index to get specific song uri
-                    console.log('song: ' + temp.tracks.items[this.id[6] - 1].uri); // logs URI of the song
+                    var uri = songs.tracks.items[this.id[6] - 1].uri;
+                    console.log('song: ' + uri); // logs URI of the song
                     $('.dropdown-toggle').dropdown('toggle'); // removes the dropdown from view
 
 
-                    // socket emit stuff
-                    // CHECK IF THE SONG IS ALREADY IN THE QUEUE
-                    // ALSO CHECK IF CLIENT HAS JOINED A ROOM
-
-                    // if song not in queue, send to queue
-                    socket.emit('queue song', temp.tracks.items[this.id[6] - 1].uri);
+                    // send song ID to database
+                    socket.emit('queue song', uri, function(status){
+                        if(status === 0){
+                            console.log('Song sent to server successfully');
+                        }
+                        else if (status === 1){ // malformed URI
+                            console.log('The URI \'' + uri + '\' is malformed');
+                        }
+                        else if(status === 2){ // already in the queue
+                            console.log('The song corresponding to URI \'' + uri + '\' is already in the queue');
+                        }
+                        else{
+                            console.log('Unknown error? Status: ' + status);
+                        }
+                    });
                 });
 
                 socket.on('queue song', function(data){
@@ -419,7 +421,7 @@
                     var rname = $(this).text();// stores the name of the room
 
                     // actually attempting to change rooms
-                    socket.emit('room join', room, rname, function(status){
+                    socket.emit('room join', rname, function(status){
                         if(status === 0){
                             console.log('Room change successful!');
                             
