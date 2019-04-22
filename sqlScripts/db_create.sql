@@ -5,6 +5,10 @@
 -- used for hash security
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
+-- drop users table and associated triggers
+DROP TRIGGER IF EXISTS inserthash ON users;
+DROP TRIGGER IF EXISTS insertNewUser ON users;
+DROP TRIGGER IF EXISTS updateHash ON users;
 DROP TABLE IF EXISTS users;
 
 -- add table
@@ -26,7 +30,6 @@ $BODY$
 DECLARE
  sal TEXT := gen_salt('bf');
 BEGIN
- RAISE WARNING 'NEW(%)', NEW.hash;
  NEW.hash = crypt(NEW.hash, sal);
  
  RETURN NEW;
