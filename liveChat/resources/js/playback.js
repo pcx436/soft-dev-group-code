@@ -1,7 +1,5 @@
 var player;
 
-// WHAT DO WHEN TOKEN EXPIRES??
-
 window.onSpotifyWebPlaybackSDKReady = () => {
     //token is used to connect with spotify connect leaving this undone not sure how we want to authorize this
     //have to have spotify premium and get a code which expires every hour
@@ -38,7 +36,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     // Ready
     player.addListener('ready', ({ device_id }) => {
         console.log('Ready with Device ID', device_id);
-        play_song(device_id);
+        play_song(device_id, '6jrPDxHjE2qOKbvFj9u4YX');
     });
 
     // Not Ready
@@ -56,33 +54,33 @@ var toggle = 1;
 function mute_button(){
     if(toggle === 0){
         player.setVolume(1).then(() => {
-            console.log('Volume');
+            console.log('Output has been unmuted');
             toggle = 1;
             $('#mute_button').html('<i class="fas fa-volume-up"></i>');
         });
     }else if(toggle === 1){
         player.setVolume(0).then(() => {
-            console.log('muted');
+            console.log('Output has been muted.');
             toggle = 0;
             $('#mute_button').html('<i class="fas fa-volume-mute"></i>');
         });
     }
 }
 
-function play_song(device_id){
+function play_song(device_id, sid){
     console.log(device_id);
     $.ajax({
         url:"https://api.spotify.com/v1/me/player/play?device_id=" + device_id,
         type: 'PUT',
-        data: '{"uris":["spotify:track:6jrPDxHjE2qOKbvFj9u4YX"]}',
+        data: '{"uris":["spotify:track:' + sid + '"]}',
         headers: {
             'Authorization': 'Bearer ' + Cookies.get('access_token')
         },
         success: function() {
-            console.log('success');
+            console.log('Successfully played SID \'' + sid + '\'');
         },
         error: function() {
-            console.log('fail');
+            console.log('Failed to play SID \'' + sid + '\'');
         }
     });
 }
