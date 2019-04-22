@@ -401,7 +401,8 @@
 
                 // changing server room functionality
                 $(".room-btn").click(function(){
-                    
+                    // room change
+                    var rname = $(this).text();// stores the name of the room
 
                     // actually attempting to change rooms
                     socket.emit('room join', rname, function(status){
@@ -418,8 +419,7 @@
                             $(this).removeClass('btn-secondary').addClass('btn-primary');
                             oldButton = $(this);
 
-                            // room change
-                            var rname = $(this).text();// stores the name of the room
+                            
 
                             $('#messages').html('');// wipe message log when changing rooms
                         }
