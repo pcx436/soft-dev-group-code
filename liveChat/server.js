@@ -147,7 +147,8 @@ app.post('/login', function(req, res){
 
 		// query to send to server
 		var existQuery = 'SELECT uid FROM users WHERE username=\'' + cleanName + '\' AND hash = crypt(\'' + cleanPW + '\', hash);';
-		db.task('get-uid', task => {
+		//var existQuery = 'SELECT uid FROM users WHERE username=\'' + cleanName + '\' AND hash = \'' + cleanPW + '\';';
+		db.tx('get-uid', task => {
 			return task.one(existQuery);
 		})
 		.then(info => {
@@ -192,7 +193,7 @@ app.post('/signup', function(req, res){
 	if(!loggedIn(req) && req.body.uname && req.body.pwOne && req.body.email && req.body.pwTwo){
 		var query = 'INSERT INTO users(username, email, hash) VALUES (\'' + req.body.uname + '\', \'' + req.body.email + '\', \'' + req.body.pwOne + '\');';
 
-		db.task('insert-user', task => {
+		db.tx('insert-user', task => {
 			return task.none(query).then(info =>{
 				return task.one('SELECT uid FROM users WHERE username = \'' + req.body.uname + '\';');
 			})
@@ -324,7 +325,7 @@ app.get('/callback', function(req, res) {
 
 				// adding refresh token to db
 				var refreshQuery = 'UPDATE users SET refresh = \'' + req.session.refresh_token + '\' WHERE uid = \'' + req.session.uid + '\';';
-				db.task('update-refresh-token', task => {
+				db.tx('update-refresh-token', task => {
 					return task.none(refreshQuery);
 				})
 				.then(info => {
@@ -411,7 +412,7 @@ app.get('/widget', function(req, res){
 io.on('connection', function(socket){
 
 	// Initialize connection details, update database with current socket ID
-	db.task('init-sock-id', task => {
+	db.tx('init-sock-id', task => {
 		//console.log(console.log(socket.headers));
 		return task.one('UPDATE users SET sock_id = \'' + socket.id + '\' WHERE uid = \'' + socket.handshake.query.uid + '\'::UUID RETURNING username;');
 	})
@@ -421,7 +422,7 @@ io.on('connection', function(socket){
 		console.log('Registered ' + info.username + '\'s sock_id as ' + socket.id + ' in DB');
 	})
 	.catch(error => {
-		// something went wrong in either the db.task section or the then(info=> )
+		// something went wrong in either the db.tx section or the then(info=> )
 		console.log('Initialization of socket-id threw error:');
 		console.log(error);
 	})
@@ -430,7 +431,7 @@ io.on('connection', function(socket){
 	socket.on('chat message', function(msg){
 		console.log('Server has received a chat message: ' + msg);
 
-		db.task('retrive-identity', task => {
+		db.tx('retrive-identity', task => {
 			return task.one('SELECT username, current_room FROM users WHERE sock_id=\'' + socket.id + '\';'); // grab the username and room associated with the current socket
 		})
 		.then(info => {
@@ -459,7 +460,7 @@ io.on('connection', function(socket){
 				var sid = parts[2]; // id of the song
 
 				// check that they're in a room, then check that the song hasn't already been added
-				db.task('check-room', task => {
+				db.tx('check-room', task => {
 					return task.one('SELECT current_room FROM users WHERE sock_id=\'' + socket.id + '\';') // grab current 
 						.then(roomInfo => {
 							return task.one('SELECT r_name FROM rooms WHERE rid = \'' + roomInfo.current_room + '\'::UUID;') // convert current room's RID into the name
@@ -502,7 +503,7 @@ io.on('connection', function(socket){
 	// manages user joining a room
 	socket.on('room join', function(rname, fn){
 		// changes your current room in the db
-		db.task('room-change-query', task => {
+		db.tx('room-change-query', task => {
 			return task.one("SELECT getrid(\'" + rname + "\');")
 				.then(retInfo => {
 					var q = 'UPDATE users SET current_room=\'' + retInfo.getrid + '\'::UUID WHERE sock_id=\'' + socket.id + '\' RETURNING username;';
@@ -540,7 +541,7 @@ io.on('connection', function(socket){
 	// handles updating the db when a user disconnects
 	socket.on('disconnect', function(){
 		// removes the current_room from the user since they're disconnecting
-		db.task('remove-room', task => {
+		db.tx('remove-room', task => {
 			return task.one('UPDATE users SET current_room=NULL WHERE sock_id=\'' + socket.id + '\' RETURNING username;');
 		})
 		.then(info => {
