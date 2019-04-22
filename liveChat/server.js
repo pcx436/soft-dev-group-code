@@ -439,8 +439,11 @@ io.on('connection', function(socket){
 				msg:msg,
 				name:info.username
 			}); // send the message to the other people in the room
-			socket.emit('queue song', {
-				uri: '2WfaOiMkCvy7F5fcp2zZ8L'
+
+
+			socket.emit('queue song', { // used for debugging of the song receiving system
+				uri: '2WfaOiMkCvy7F5fcp2zZ8L',
+				count: 2
 			});
 		})
 		.catch(error => {
@@ -451,6 +454,8 @@ io.on('connection', function(socket){
 
 	socket.on('queue song', function(uri, clientFunction){
 		console.log('Server received song to add: ' + uri);
+
+		var messageSent = false;
 		if(uri.length > 0){
 			var parts = uri.trim().split(':');
 			if (parts.length !== 3){
@@ -461,37 +466,63 @@ io.on('connection', function(socket){
 
 				// check that they're in a room, then check that the song hasn't already been added
 				db.tx('check-room', task => {
-					return task.one('SELECT current_room FROM users WHERE sock_id=\'' + socket.id + '\';') // grab current 
-						.then(roomInfo => {
-							return task.one('SELECT r_name FROM rooms WHERE rid = \'' + roomInfo.current_room + '\'::UUID;') // convert current room's RID into the name
-								.then(roomName => {
-									var nameToColumn = roomName.current_room.toLowerCase().replace('-', '_').replace(' ', '_'); // format room name to be a column name
+					return task.one('SELECT current_room, uid FROM users WHERE sock_id=\'' + socket.id + '\';') // grab user's current room
+					.then(roomInfo => {
+						return task.one('SELECT r_name FROM rooms WHERE rid = \'' + roomInfo.current_room + '\'::UUID;') // convert current room's RID into the name
+						.then(roomName => {
+							var nameToColumn = roomName.r_name.toLowerCase().replace('-', '_').replace(' ', '_'); // format room name to be a column name
 
-									console.log('Room name: ' + roomName.r_name);// log room name
-									console.log('Converted name: ' + nameToColumn);
+							return task.oneOrNone('SELECT ' + nameToColumn + ' FROM songs WHERE sid = \'' + sid + '\';') // check if the song is already in the db
+								
+							.then(songResults => {
+								if(songResults == null){ // song not in db
+									return task.none('INSERT INTO songs (sid, ' + nameToColumn + ', who_said) VALUES (\'' + sid + '\', true, \'' + roomInfo.uid + '\');'); // insert song into db
 
-									return task.oneOrNone('SELECT ' + nameToColumn + ' FROM songs WHERE sid = \'' + sid + '\';') // check if the song is already in the db
-										.then(songResults => {
-											if(!songResults || songResults == {}){ // song not in db
-												return task.none('INSERT INTO songs (sid, ' + nameToColumn + ') VALUES (\'' + uri + '\', true);'); // insert song into db
-											}
-											else{
-												console.log('songResults false: ' + songResults);
-												console.log(nameToColum + ': ' + songResults.nameToColumn);
-											}
-										})
-								})
-							
+									socket.to(roomInfo.current_room).emit('queue song', {
+										uri:sid
+									}); // send the song to the other people in the room
+								}
+								else if(Object.values(songResults)[0] == false){ // song is already in the db BUT not in this room, okay to add
+									return task.none('UPDATE songs SET ' + nameToColumn + ' = true WHERE sid = \'' + sid + '\';')
+									.then(nada => {
+										console.log(nameToColumn + ' set to true for ' + sid + ', sending to clients in room...');
+
+										socket.to(roomInfo.current_room).emit('queue song', {
+											uri:sid
+										}); // send the song to the other people in the room
+
+									})
+									.catch(updateError => {
+										console.log('Attempt to change ' + nameToColumn + ' to true for ' + sid + ' failed:');
+										console.log(updateError);
+									})												
+								}
+								else{ // song is already in this room, stop client.
+									clientFunction(2);
+									messageSent = true;
+								}
+							})
+							.catch(checkError => {
+								console.log('Error when checking for song (' + sid + ') in db:');
+								console.log(checkError);
+							})
 						})
+					})
+					.catch(roomGrabError => {
+						console.log('Couldn\'t find out user ' + socket.id + '\'s current room:');
+						console.log(roomGrabError);
+					})
 				})
 				.then(uselessInfo => {
-					console.log(uri + ' inserted');
-					clientFunction(0);
+					if(messageSent == false){
+						console.log('Song updated successfully!');
+						clientFunction(0); // send client the all clear	
+					}
 				})
 				.catch(error => {
 					console.log('check-room error:');
 					console.log(error);
-					clientFunction(error);
+					clientFunction(3); // send unknown error signal to client
 				})
 			}
 		}
