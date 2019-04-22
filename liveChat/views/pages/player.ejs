@@ -399,6 +399,15 @@
                 // handles changing of the color of the room buttons
                 var oldButton;
 
+
+                $('#basin, #copper, #dora, #vail, #winterpark').click(function(){
+                    // color change
+                    if (oldButton) {
+                        oldButton.removeClass('btn-primary').addClass('btn-secondary');
+                    }
+                    $(this).removeClass('btn-secondary').addClass('btn-primary');
+                    oldButton = $(this);
+                });
                 // changing server room functionality
                 $(".room-btn").click(function(){
                     // room change
@@ -411,15 +420,6 @@
 
                             // enabled fields
                             $('#chat-submit, #chat-input, #songSearch, #dropButton').prop('disabled', false);
-
-                            // color change
-                            if (oldButton) {
-                                oldButton.removeClass('btn-primary').addClass('btn-secondary');
-                            }
-                            $(this).removeClass('btn-secondary').addClass('btn-primary');
-                            oldButton = $(this);
-
-                            
 
                             $('#messages').html('');// wipe message log when changing rooms
                         }

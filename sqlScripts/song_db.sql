@@ -1,5 +1,3 @@
-\c mountain_db
-
 DROP TABLE IF EXISTS songs;
 
 CREATE TABLE songs (
