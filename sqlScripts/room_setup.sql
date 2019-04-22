@@ -1,16 +1,11 @@
 -- Used for creating the rooms for music. Not sure if this is exactly what we need.
 -- mainly using this for testing at the moment but it will be fleshed out eventually
-
-
 DROP TABLE IF EXISTS rooms;
 
 CREATE TABLE rooms (
  rid UUID NOT NULL DEFAULT gen_random_uuid(),
  r_name TEXT NOT NULL PRIMARY KEY
 );
-
--- songs is a 2-D array which can hold 50 songs and holds the song ID, number of votes,
--- and time in which it was added
 
 INSERT INTO rooms(r_name)
  VALUES ('Eldora'), ('Winter Park'), ('A-Basin'), ('Copper Mountain'), ('Vail Resorts');
@@ -28,4 +23,3 @@ CREATE OR REPLACE FUNCTION getrid(name TEXT)
  LANGUAGE plpgsql;
 
 SELECT * FROM rooms;
-
