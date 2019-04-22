@@ -40,7 +40,6 @@ LANGUAGE plpgsql VOLATILE
 COST 100;
 
 -- installing the autohashing trigger for insertion
-DROP TRIGGER IF EXISTS insertNewUser ON users;
 CREATE TRIGGER insertNewUser
   BEFORE INSERT
   ON users
@@ -48,7 +47,6 @@ CREATE TRIGGER insertNewUser
   EXECUTE PROCEDURE autoHash();
 
 -- installing the autohashing trigger for updates ONLY WHEN HASH CHANGES!
-DROP TRIGGER IF EXISTS updateHash ON users;
 CREATE TRIGGER updateHash
   BEFORE UPDATE
   ON users
@@ -69,13 +67,7 @@ UPDATE users SET hash='otherPassword' WHERE username='iAmBob';
 
 -- adding in some extra users
 INSERT INTO users(email, username, hash)
- VALUES('sally@example.com', 'sally1988', 'beepBoop');
-
-INSERT INTO users(email, username, hash)
- VALUES('thomas@example.com', 'thomasTheTank', 'thomasWillKillAgain');
-
-INSERT INTO users(email, username, hash)
- VALUES('jacob@jacob.com', 'jacob', 'jacob');
+ VALUES('sally@example.com', 'sally1988', 'beepBoop'), ('thomas@example.com', 'thomasTheTank', 'thomasWillKillAgain'), ('jacob@jacob.com', 'jacob', 'jacob');
 
 -- showing change password worked + new users
 SELECT * FROM users;
