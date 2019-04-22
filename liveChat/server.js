@@ -477,8 +477,9 @@ io.on('connection', function(socket){
 							.then(songResults => {
 								if(songResults == null){ // song not in db
 									return task.none('INSERT INTO songs (sid, ' + nameToColumn + ', who_said) VALUES (\'' + sid + '\', true, \'' + roomInfo.uid + '\');'); // insert song into db
-
-									socket.to(roomInfo.current_room).emit('queue song', {
+									clientFunction(0);
+									
+									socket.emit('queue song', {
 										uri:sid
 									}); // send the song to the other people in the room
 								}
@@ -486,8 +487,9 @@ io.on('connection', function(socket){
 									return task.none('UPDATE songs SET ' + nameToColumn + ' = true WHERE sid = \'' + sid + '\';')
 									.then(nada => {
 										console.log(nameToColumn + ' set to true for ' + sid + ', sending to clients in room...');
+										clientFunction(0); // send client the all clear	
 
-										socket.to(roomInfo.current_room).emit('queue song', {
+										socket.emit('queue song', {
 											uri:sid
 										}); // send the song to the other people in the room
 
@@ -514,10 +516,9 @@ io.on('connection', function(socket){
 					})
 				})
 				.then(uselessInfo => {
-					if(messageSent == false){
-						console.log('Song updated successfully!');
-						clientFunction(0); // send client the all clear	
-					}
+					
+					console.log('Song updated successfully!');
+					
 				})
 				.catch(error => {
 					console.log('check-room error:');
