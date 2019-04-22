@@ -1,9 +1,6 @@
 -- This PostgreSQL script is designed to create the user/password database for the project.
--- It includes creating of the database, users table, and an automatic password hashing routine (although this is currently limited to the MD5 algorithm).
+-- It includes creating of the database, users table, and an automatic password hashing routine.
 -- It also adds a test user, iAmBob, adds a password, and changes his password.
-
-
--- dropping and/or creating mUserTest database
 
 -- used for hash security
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
@@ -29,6 +26,7 @@ $BODY$
 DECLARE
  sal TEXT := gen_salt('bf');
 BEGIN
+ RAISE WARNING 'NEW(%)', NEW.hash;
  NEW.hash = crypt(NEW.hash, sal);
  
  RETURN NEW;
@@ -38,12 +36,21 @@ $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100;
 
--- installing the autohashing trigger
-DROP TRIGGER IF EXISTS insertHash ON users;
-CREATE TRIGGER insertHash
-  BEFORE INSERT OR UPDATE
+-- installing the autohashing trigger for insertion
+DROP TRIGGER IF EXISTS insertNewUser ON users;
+CREATE TRIGGER insertNewUser
+  BEFORE INSERT
   ON users
   FOR EACH ROW
+  EXECUTE PROCEDURE autoHash();
+
+-- installing the autohashing trigger for updates ONLY WHEN HASH CHANGES!
+DROP TRIGGER IF EXISTS updateHash ON users;
+CREATE TRIGGER updateHash
+  BEFORE UPDATE
+  ON users
+  FOR EACH ROW
+  WHEN (OLD.hash IS DISTINCT FROM NEW.hash)
   EXECUTE PROCEDURE autoHash();
 -- end automatic hashing content
 
@@ -65,7 +72,7 @@ INSERT INTO users(email, username, hash)
  VALUES('thomas@example.com', 'thomasTheTank', 'thomasWillKillAgain');
 
 INSERT INTO users(email, username, hash)
- VALUES('testUser@example.com', 'testuser', 'Malcy436!');
+ VALUES('jacob@jacob.com', 'jacob', 'jacob');
 
 -- showing change password worked + new users
 SELECT * FROM users;
