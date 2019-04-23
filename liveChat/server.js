@@ -473,26 +473,35 @@ io.on('connection', function(socket){
 							var nameToColumn = roomName.r_name.toLowerCase().replace('-', '_').replace(' ', '_'); // format room name to be a column name
 
 							return task.oneOrNone('SELECT ' + nameToColumn + ' FROM songs WHERE sid = \'' + sid + '\';') // check if the song is already in the db
-								
+							
 							.then(songResults => {
 								if(songResults == null){ // song not in db
-									return task.none('INSERT INTO songs (sid, ' + nameToColumn + ', who_said) VALUES (\'' + sid + '\', true, \'' + roomInfo.uid + '\');'); // insert song into db
-									clientFunction(0);
-									
-									socket.emit('queue song', {
-										uri:sid
-									}); // send the song to the other people in the room
+									return task.none('INSERT INTO songs (sid, ' + nameToColumn + ', who_said) VALUES (\'' + sid + '\', true, \'' + roomInfo.uid + '\');') // insert song into db
+									.then(uselessInfo => {
+
+										console.log('SENDING QUEUE SONG SIGNAL A');
+										messageSent = true;
+										
+										socket.emit('queue song', {
+											sid:sid
+										}); // send the song to the other people in the room
+									})
+									.catch(error => {
+										console.log('Failed to insert song, location A:');
+										console.log(error);
+									})
 								}
 								else if(Object.values(songResults)[0] == false){ // song is already in the db BUT not in this room, okay to add
 									return task.none('UPDATE songs SET ' + nameToColumn + ' = true WHERE sid = \'' + sid + '\';')
 									.then(nada => {
 										console.log(nameToColumn + ' set to true for ' + sid + ', sending to clients in room...');
-										clientFunction(0); // send client the all clear	
 
+										console.log('SENDING QUEUE SONG SIGNAL B');
+										messageSent = true;
+										
 										socket.emit('queue song', {
-											uri:sid
+											sid:sid
 										}); // send the song to the other people in the room
-
 									})
 									.catch(updateError => {
 										console.log('Attempt to change ' + nameToColumn + ' to true for ' + sid + ' failed:');
@@ -501,7 +510,6 @@ io.on('connection', function(socket){
 								}
 								else{ // song is already in this room, stop client.
 									clientFunction(2);
-									messageSent = true;
 								}
 							})
 							.catch(checkError => {
@@ -516,9 +524,13 @@ io.on('connection', function(socket){
 					})
 				})
 				.then(uselessInfo => {
-					
-					console.log('Song updated successfully!');
-					
+					if(!messageSent){
+						console.log('Song updated successfully!');
+						clientFunction(0);	
+					}
+					else{
+						console.log('No errors, but the message wasn\'t sent...');
+					}
 				})
 				.catch(error => {
 					console.log('check-room error:');

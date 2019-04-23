@@ -196,7 +196,6 @@
                     }
                 }             
 
-
                 // send search results to spotify
                 function getSearchResults(e){
                     e.preventDefault(); //prevents page from rerendering after 'enter' key is pressed
@@ -300,7 +299,7 @@
 
                 $('.search-result').click(function(){ //lets us know which song index was chosen, use index to get specific song uri
                     var uri = songs.tracks.items[this.id[6] - 1].uri;
-                    console.log('song: ' + uri); // logs URI of the song
+                    console.log('\'' + uri + '\' has been selected from the search'); // logs URI of the song
                     $('#dropButton').dropdown('hide'); // removes the dropdown from view
 
 
@@ -322,8 +321,9 @@
                 });
 
                 socket.on('queue song', function(data){
+                    console.log('Song queue signal received with SID \'' + data.sid + '\'');
                     $.ajax({
-                        url:"https://api.spotify.com/v1/tracks/" + data.uri,
+                        url:"https://api.spotify.com/v1/tracks/" + data.sid,
                         type: 'GET',
                         dataType: "text json",
                         //async: false,
@@ -399,7 +399,6 @@
                 // handles changing of the color of the room buttons
                 var oldButton;
 
-
                 $('#basin, #copper, #dora, #vail, #winterpark').click(function(){
                     // color change
                     if (oldButton) {
@@ -408,6 +407,7 @@
                     $(this).removeClass('btn-secondary').addClass('btn-primary');
                     oldButton = $(this);
                 });
+                
                 // changing server room functionality
                 $(".room-btn").click(function(){
                     // room change
