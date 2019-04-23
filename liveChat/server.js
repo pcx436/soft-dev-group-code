@@ -208,7 +208,7 @@ app.post('/signup', function(req, res){
 			res.clearCookie('uid');
 			res.clearCookie('user');
 			res.cookie('uid', info.uid);
-			res.cookie('user', cleanName);
+			res.cookie('user', req.body.uname);
 			
 			res.end('success');
 		})
