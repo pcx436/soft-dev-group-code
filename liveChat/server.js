@@ -482,7 +482,7 @@ io.on('connection', function(socket){
 										console.log('SENDING QUEUE SONG SIGNAL A');
 										messageSent = true;
 										
-										socket.emit('queue song', {
+										socket.to(roomInfo.current_room).emit('queue song', {
 											sid:sid
 										}); // send the song to the other people in the room
 									})
@@ -499,7 +499,7 @@ io.on('connection', function(socket){
 										console.log('SENDING QUEUE SONG SIGNAL B');
 										messageSent = true;
 										
-										socket.emit('queue song', {
+										socket.to(roomInfo.current_room).emit('queue song', {
 											sid:sid
 										}); // send the song to the other people in the room
 									})
