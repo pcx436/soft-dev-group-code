@@ -297,8 +297,9 @@
                     $('#messages').append(buildMsg(data, false)); // add to the message log
                 });
 
-                $('.search-result').click(function(){ //lets us know which song index was chosen, use index to get specific song uri
-                    var uri = songs.tracks.items[this.id[6] - 1].uri;
+                $('.search-result').click(function(){ // song result clicked, send to server
+                    var songIndex = this.id[6] - 1;
+                    var uri = songs.tracks.items[songIndex].uri;
                     console.log('\'' + uri + '\' has been selected from the search'); // logs URI of the song
                     $('#dropButton').dropdown('hide'); // removes the dropdown from view
 
@@ -306,7 +307,14 @@
                     // send song ID to database
                     socket.emit('queue song', uri, function(status){
                         if(status === 0){
-                            console.log('Song sent to server successfully');
+                            console.log('Song sent to server successfully, adding to local queue');
+
+                            $('#queueList').append(buildMsg2({
+                                albumImg: songs.tracks.items[songIndex].url,
+                                song: songs.tracks.items[songIndex].name,
+                                artist: songs.tracks.items[songIndex].album.artists[0].name,
+                                alb_name: songs.tracks.items[songIndex].album.name
+                            })); // should add the song to the local list
                         }
                         else if (status === 1){ // malformed URI
                             console.log('The URI \'' + uri + '\' is malformed');
@@ -336,19 +344,17 @@
                                 song: data2.name,
                                 artist: data2.artists[0].name,
                                 alb_name: data2.album.name
-                            }));  
+                            }));
                             console.log('Successful Spotify track info request:');
                             console.log('Track name: \'' + data2.name + '\'');
-                            console.log('Artist name: \'' + data2.artists[0].name + '\'');
-                            console.log('Img URL: ' + data2.album.images[1].url);
+                            // console.log('Artist name: \'' + data2.artists[0].name + '\'');
+                            // console.log('Img URL: ' + data2.album.images[1].url);
                         },
                         error: function() {
                             console.log('couldnt queue up received song.');
                         }
                     });
                     // get song details via spotify API call (song's name, artist, album cover)
-
-                    // append song element to the queue
                 });
 
                 /*function testQue(id){
@@ -422,6 +428,7 @@
                             $('#chat-submit, #chat-input, #songSearch, #dropButton').prop('disabled', false);
 
                             $('#messages').html('');// wipe message log when changing rooms
+                            $('#queueList').html('');
                         }
                         else{
                             console.log('Room change failed, status ' + status);
