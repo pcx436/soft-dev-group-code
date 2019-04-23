@@ -69,6 +69,10 @@ UPDATE users SET hash='otherPassword' WHERE username='iAmBob';
 INSERT INTO users(email, username, hash)
  VALUES('sally@example.com', 'sally1988', 'beepBoop'), ('thomas@example.com', 'thomasTheTank', 'thomasWillKillAgain'), ('jacob@jacob.com', 'jacob', 'jacob');
 
+
+INSERT INTO users(email, username, hash)
+ VALUES('spencer', 'spencer', 'spencer'), ('chan', 'chan', 'chan'), ('devin', 'devin', 'devin'), ('eric', 'eric', 'eric'), ('james', 'james', 'james');
+
 -- showing change password worked + new users
 SELECT * FROM users;
 
