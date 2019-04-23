@@ -442,8 +442,7 @@ io.on('connection', function(socket){
 
 
 			socket.emit('queue song', { // used for debugging of the song receiving system
-				uri: '2WfaOiMkCvy7F5fcp2zZ8L',
-				count: 2
+				sid: '2WfaOiMkCvy7F5fcp2zZ8L'
 			});
 		})
 		.catch(error => {
@@ -455,7 +454,7 @@ io.on('connection', function(socket){
 	socket.on('queue song', function(uri, clientFunction){
 		console.log('Server received song to add: ' + uri);
 
-		var messageSent = false;
+		
 		if(uri.length > 0){
 			var parts = uri.trim().split(':');
 			if (parts.length !== 3){
@@ -463,7 +462,6 @@ io.on('connection', function(socket){
 			}
 			else{
 				var sid = parts[2]; // id of the song
-
 				// check that they're in a room, then check that the song hasn't already been added
 				db.tx('check-room', task => {
 					return task.one('SELECT current_room, uid FROM users WHERE sock_id=\'' + socket.id + '\';') // grab user's current room
@@ -478,58 +476,62 @@ io.on('connection', function(socket){
 								if(songResults == null){ // song not in db
 									return task.none('INSERT INTO songs (sid, ' + nameToColumn + ', who_said) VALUES (\'' + sid + '\', true, \'' + roomInfo.uid + '\');') // insert song into db
 									.then(uselessInfo => {
-
 										console.log('SENDING QUEUE SONG SIGNAL A');
-										messageSent = true;
 										
 										socket.to(roomInfo.current_room).emit('queue song', {
 											sid:sid
 										}); // send the song to the other people in the room
+										return true;
 									})
 									.catch(error => {
 										console.log('Failed to insert song, location A:');
 										console.log(error);
+										return false;
 									})
 								}
 								else if(Object.values(songResults)[0] == false){ // song is already in the db BUT not in this room, okay to add
 									return task.none('UPDATE songs SET ' + nameToColumn + ' = true WHERE sid = \'' + sid + '\';')
 									.then(nada => {
 										console.log(nameToColumn + ' set to true for ' + sid + ', sending to clients in room...');
-
 										console.log('SENDING QUEUE SONG SIGNAL B');
-										messageSent = true;
 										
 										socket.to(roomInfo.current_room).emit('queue song', {
 											sid:sid
 										}); // send the song to the other people in the room
+										return true;
 									})
 									.catch(updateError => {
 										console.log('Attempt to change ' + nameToColumn + ' to true for ' + sid + ' failed:');
 										console.log(updateError);
+										return false;
 									})												
 								}
 								else{ // song is already in this room, stop client.
 									clientFunction(2);
+									return false;
 								}
 							})
 							.catch(checkError => {
 								console.log('Error when checking for song (' + sid + ') in db:');
 								console.log(checkError);
+								return false;
 							})
 						})
 					})
 					.catch(roomGrabError => {
 						console.log('Couldn\'t find out user ' + socket.id + '\'s current room:');
 						console.log(roomGrabError);
+						return false;
 					})
 				})
-				.then(uselessInfo => {
-					if(!messageSent){
+				.then(messageSent => {
+					if(messageSent){
 						console.log('Song updated successfully!');
-						clientFunction(0);	
+						clientFunction(0);
 					}
 					else{
 						console.log('No errors, but the message wasn\'t sent...');
+						clientFunction(0);
 					}
 				})
 				.catch(error => {
@@ -549,14 +551,32 @@ io.on('connection', function(socket){
 		// changes your current room in the db
 		db.tx('room-change-query', task => {
 			return task.one("SELECT getrid(\'" + rname + "\');")
-				.then(retInfo => {
-					var q = 'UPDATE users SET current_room=\'' + retInfo.getrid + '\'::UUID WHERE sock_id=\'' + socket.id + '\' RETURNING username;';
-					//console.log(q);
-					return task.one(q)
-						.then(secInfo => {
-							return [retInfo.getrid, secInfo.username]
-						})
-				});
+			.then(retInfo => {
+				return task.one('UPDATE users SET current_room=\'' + retInfo.getrid + '\'::UUID WHERE sock_id=\'' + socket.id + '\' RETURNING username;')
+				.then(secInfo => {
+					// get all the songs for this room
+				
+					return task.any('SELECT sid FROM songs WHERE ' + rname.toLowerCase().replace('-', '_').replace(' ', '_') + ' = true GROUP BY sid ORDER BY stamp ASC;')
+					.then(songs => {
+						return [retInfo.getrid, secInfo.username, songs]
+					})
+					/*.catch(error => {
+						console.log('Selection error:');
+						console.log(error);
+						fn(1, []);
+					})*/
+				})
+				/*.catch(error => {
+					console.log('Updating of current room threw error:');
+					console.log(error);
+					fn(2, []);
+				})*/
+			})
+			/*.catch(error => {
+				console.log('Retrieval of RID errored:');
+				console.log(error);
+				fn(3, []);
+			})*/
 		})
 		.then(info => {
 			// successful login, add username to session for persistent login capabilities
@@ -572,13 +592,13 @@ io.on('connection', function(socket){
 			socket.join(info[0]);// join the room!
 			console.log(info[1] + ' joined room ' + rname + ' (' + info[0] + ')!');
 			
-			fn(0); // send all clear back to client
+			fn(0, info[2]); // send all clear back to client
 		})
 		.catch(error => {
 			console.log('Room join query threw an error:');
 			console.log(error);
 		  	
-		  	fn(1); // send failure to client
+		  	fn(4, []); // send failure to client
 		})
 	});
 

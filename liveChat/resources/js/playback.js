@@ -24,10 +24,10 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         if(position === 0){
             console.log('end of song'); //when the song ends do something
         }
-        console.log('Currently Playing', current_track);
-        console.log('Position in Song', position);
-        console.log('Duration of Song', duration);
-        console.log("Album Image", current_track.album.images[2].url); //The album image url of the currently playing track
+        console.log('Currently Playing', current_track.name);
+        // console.log('Position in Song', position);
+        // console.log('Duration of Song', duration);
+        // console.log("Album Image", current_track.album.images[2].url); //The album image url of the currently playing track
         $("#song_title").html(current_track.name);//sets song name
         $("#artist_name").html(current_track.artists[0].name);
         $("#album").attr('src', current_track.album.images[2].url);//sets the album image
@@ -68,7 +68,7 @@ function mute_button(){
 }
 
 function play_song(device_id, sid){
-    console.log(device_id);
+    //console.log(device_id);
     $.ajax({
         url:"https://api.spotify.com/v1/me/player/play?device_id=" + device_id,
         type: 'PUT',

@@ -25,7 +25,7 @@
                 <!-- Search & Queue -->
                 <div class="ml-0 mr-auto">
                     <div class="card h-100">
-                        <div class="card-body">
+                        <div class="card-body" style="max-width: 295px;">
                             <h5 class="card-title">Song Search</h5>
                             <form id="form_search">
                                 <div class="dropdown"> 
@@ -33,7 +33,7 @@
                                         <div class="col">  
                                             <input id="songSearch" type="text" class="form-control" placeholder="Search..." name="search2" disabled>
                                         </div>
-                                        <div class="col-3">
+                                        <div class="col-3" style="z-index: 15;">
                                             <button id="dropButton" type="submit" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
                                                 <i class="fa fa-search"></i>
                                             </button>
@@ -89,15 +89,9 @@
                             </form>
                         
                             <p>Queue</p>
-                            <div style = "overflow: auto;">
-                                <ul id="queueList" style = "list-style-type: none">
-                                    <li class = "listElement">
-                                        <img class = "albImgQueue firstInQueue" src="resources/imgs/meme.png">
-                                        <div class = "container inner">
-                                            <div class="sA">Placeholder</div>
-                                            <div class="sB">Placeholder</div>
-                                        </div> 
-                                    </li>
+                            <div class="text-truncate" style = "overflow-y: auto; overflow-x: hidden;">
+                                <ul id="queueList" style="list-style-type: none; overflow: inherit;">
+                                    
                                 </ul>
                             </div>
                         </div>
@@ -134,8 +128,7 @@
                 </div>
             </div>
 
-        <!-- Chat box adapted from BhaumikPatel https://bootsnipp.com/snippets/r1KW -->
-        
+            <!-- Chat box adapted from BhaumikPatel https://bootsnipp.com/snippets/r1KW -->
             <div class="row h-100">
                 <div class="col-6 float-center offset-3">
                     <div class="card" style = "margin-right: -30px; margin-left:-30px">
@@ -310,7 +303,7 @@
                             console.log('Song sent to server successfully, adding to local queue');
 
                             $('#queueList').append(buildMsg2({
-                                albumImg: songs.tracks.items[songIndex].url,
+                                albumImg: songs.tracks.items[songIndex].album.images[1].url,
                                 song: songs.tracks.items[songIndex].name,
                                 artist: songs.tracks.items[songIndex].album.artists[0].name,
                                 alb_name: songs.tracks.items[songIndex].album.name
@@ -339,19 +332,20 @@
                             'Authorization': 'Bearer ' + accessToken
                         },
                         success: function(data2) {
+                            console.log('Successful Spotify track info request:');
+                            console.log('Track name: \'' + data2.name + '\'');
+                            console.log('kids: ' + $('#queueList').children()['length']);
+                            var first = $('#queueList').children()['length'] == 0;
                             $('#queueList').append(buildMsg2({
                                 albumImg: data2.album.images[1].url,
                                 song: data2.name,
                                 artist: data2.artists[0].name,
                                 alb_name: data2.album.name
-                            }));
-                            console.log('Successful Spotify track info request:');
-                            console.log('Track name: \'' + data2.name + '\'');
-                            // console.log('Artist name: \'' + data2.artists[0].name + '\'');
-                            // console.log('Img URL: ' + data2.album.images[1].url);
+                            }, first));
+                            
                         },
                         error: function() {
-                            console.log('couldnt queue up received song.');
+                            console.log('couldnt queue up received song \'' + sid + '\'');
                         }
                     });
                     // get song details via spotify API call (song's name, artist, album cover)
@@ -382,25 +376,17 @@
                     });
                 }  */
 
-                // we need to communicate to the client what id in the queue is
-                function buildMsg2(response){
-                    // temp = response;
-                    // song = temp.name;
-                    // artist_name = temp.artists[0].name;
-                    // uri = temp.uri
-                    // alb_name = temp.album.name;
-                    // albumImg = temp.album.images[1].url;  //ALSO NEED TO SAVE THE URI
-
-                    var newItem = '<li class = "listElement">' +
-                                '<img class = "albImgQueue" src = "' + response.albumImg + '">' +
-                                '<div class = "container" id = "cont1in">'+
-                                    '<div class = "sA">' + response.song + ' - ' + response.artist + '</div>' +
-                                    '<div class = "sB">' + response.alb_name + '</div>' +
+                function buildMsg2(response, first){
+                    var head = (first ? '<li class="listElement firstInQueue mt-1">' : '<li class="listElement">');
+                    var newItem =  head +
+                                '<img class="albImgQueue" src="' + response.albumImg + '">' +
+                                '<div class="container">' +
+                                    '<div class="sA">' + response.song + ' - ' + response.artist + '</div>' +
+                                    '<div class="sB">' + response.alb_name + '</div>' +
                                '</div' +
                             '</li>';
                     return newItem;
                 }
-
           
                 // handles changing of the color of the room buttons
                 var oldButton;
@@ -420,7 +406,7 @@
                     var rname = $(this).text();// stores the name of the room
 
                     // actually attempting to change rooms
-                    socket.emit('room join', rname, function(status){
+                    socket.emit('room join', rname, function(status, elements){
                         if(status === 0){
                             console.log('Room change successful!');
 
@@ -429,6 +415,41 @@
 
                             $('#messages').html('');// wipe message log when changing rooms
                             $('#queueList').html('');
+                            
+                            var queryStr = "";
+                            for(var i = 0; i < elements.length; i++){
+                                queryStr += elements[i].sid + ',';
+                            }
+                            queryStr = queryStr.substr(0, queryStr.length - 1); // remove last extra comma
+
+                            $.ajax({
+                                url:"https://api.spotify.com/v1/tracks/?ids=" + queryStr,
+                                type: 'GET',
+                                dataType: "text json",
+                                //async: false,
+                                headers: {
+                                    'Authorization': 'Bearer ' + accessToken
+                                },
+                                success: function(data2) {
+                                    console.log('Successful Spotify track info request:');
+                                    
+                                    var listObj = $('#queueList');
+                                    var first = true;
+
+                                    for(var i = 0; i < data2.tracks.length; i++){
+                                        listObj.append(buildMsg2({
+                                            albumImg: data2.tracks[i].album.images[1].url,
+                                            song: data2.tracks[i].name,
+                                            artist: data2.tracks[i].artists[0].name,
+                                            alb_name: data2.tracks[i].album.name
+                                        }, first));
+                                        first = false;
+                                    }                                    
+                                },
+                                error: function() {
+                                    console.log('couldnt queue up received song \'' + sid + '\'');
+                                }
+                            });
                         }
                         else{
                             console.log('Room change failed, status ' + status);
