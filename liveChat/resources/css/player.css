@@ -154,7 +154,7 @@ nav, .darkBlue, body{
 }
 
 #messages {
-    border: 1px solid black;
+    
     height: 200px;
     overflow: auto;
 }
