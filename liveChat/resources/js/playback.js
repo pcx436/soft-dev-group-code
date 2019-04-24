@@ -50,7 +50,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     player.addListener('ready', ({ device_id }) => {
         console.log('Ready with Device ID', device_id);
         Cookies.set('device_id', device_id);
-        // play_song(device_id, '4thEpE8oDddq6fVuHfdKUY'); // disclaimer: I don't know what song this is, I just looked up short songs on spotify. Listen to at your own risk.
+        play_song(device_id, '4thEpE8oDddq6fVuHfdKUY'); // disclaimer: I don't know what song this is, I just looked up short songs on spotify. Listen to at your own risk.
     });
 
     // Not Ready
