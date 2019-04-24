@@ -441,9 +441,9 @@ io.on('connection', function(socket){
 			}); // send the message to the other people in the room
 
 
-			socket.emit('queue song', { // used for debugging of the song receiving system
+/*			socket.emit('queue song', { // used for debugging of the song receiving system
 				sid: '2WfaOiMkCvy7F5fcp2zZ8L'
-			});
+			});*/
 		})
 		.catch(error => {
 			console.log('Message receive error:');
@@ -471,7 +471,6 @@ io.on('connection', function(socket){
 							var nameToColumn = roomName.r_name.toLowerCase().replace('-', '_').replace(' ', '_'); // format room name to be a column name
 
 							return task.oneOrNone('SELECT ' + nameToColumn + ' FROM songs WHERE sid = \'' + sid + '\';') // check if the song is already in the db
-							
 							.then(songResults => {
 								if(songResults == null){ // song not in db
 									return task.none('INSERT INTO songs (sid, ' + nameToColumn + ', who_said) VALUES (\'' + sid + '\', true, \'' + roomInfo.uid + '\');') // insert song into db
