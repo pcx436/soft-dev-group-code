@@ -441,7 +441,7 @@ io.on('connection', function(socket){
 			}); // send the message to the other people in the room
 
 
-/*			socket.emit('queue song', { // used for debugging of the song receiving system
+			/*socket.emit('queue song', { // used for debugging of the song receiving system
 				sid: '2WfaOiMkCvy7F5fcp2zZ8L'
 			});*/
 		})
@@ -451,6 +451,7 @@ io.on('connection', function(socket){
 		})
 	});
 
+	// a client would like to add a song to the db
 	socket.on('queue song', function(uri, clientFunction){
 		console.log('Server received song to add: ' + uri);
 
@@ -612,6 +613,56 @@ io.on('connection', function(socket){
 		.catch(error => {
 			console.log('Socket information erasure threw an error:');
 			console.log(error);
+		})
+	});
+});
+
+app.get('/player/remove-song', function(req, res){
+	var sid = req.query.sid;
+
+	console.log('Attempt to delete ' + sid + ' occurring');
+	db.tx('song-removal', task => {
+		console.log(req.session.uid);
+		return task.one('SELECT current_room FROM users WHERE uid=\'' + req.session.uid + '\'::UUID;') // get the user's current room
+		.then(roomInfo => {
+			return task.one('SELECT r_name FROM rooms WHERE rid = \'' + roomInfo.current_room + '\'::UUID;') // translate the user's current room's ID into the room's actual name
+			.then(realName => {
+				var nameToColumn = realName.r_name.toLowerCase().replace('-', '_').replace(' ', '_'); // format room name to be a column name
+
+				return task.one('SELECT a_basin, copper_mountain, eldora, vail_resorts, winter_park FROM songs WHERE sid = \'' + sid + '\';') // check if song is even in the database
+				.then(inRooms => {
+					
+					return task.none('UPDATE songs SET ' + nameToColumn + ' = false WHERE sid = \'' + sid + '\';')
+					.then(nothing => {
+						var allFalse = true;
+						// check if the song exists in any room
+						for(var i = 0; i < 5 && allFalse; i++){
+							if(Object.keys(inRooms) != nameToColumn){
+								if(inRooms[Object.values(inRooms)[i]] == true){
+									allFalse = false;
+								}
+							}
+						}
+
+						if(allFalse){
+							return task.none('DELETE FROM songs WHERE sid=\'' + sid + '\';')
+							.then(nothing => {
+								console.log('Song deleted from db');
+								res.end('success'); // just deleted the song from the db
+							})
+						}
+						else{
+							console.log('Song still being listened to');
+							res.end('success'); // someone is still listening to this song
+						}
+					})
+				})
+			})
+		})
+		.catch(error => {
+			console.log('Song removal error:');
+			console.log(error);
+			res.end('failure');
 		})
 	});
 });
