@@ -243,6 +243,14 @@
                     
                     var t = h.toString() + ":" + m.toString() + side;
 
+                    // var div = $("#messages");   
+                    // div.scrollTop(div.prop('scrollHeight'));
+
+                    // This is the only working solution
+                    $("#messages").animate({ scrollTop: $('#messages').prop("scrollHeight")}, 500);
+    
+                    //$('#messages').scrollTop($('#messages')[0].scrollHeight);
+
                     if(clientSaid){
                         // client sent the message 
                         innerCount =
@@ -300,6 +308,7 @@
                 socket.on('chat message', function(data){
                     $('#messages').append(buildMsg(data, false)); // add to the message log
                 });
+
 
                 $('.search-result').click(function(){ // song result clicked, send to server
                     var songIndex = this.id[6] - 1; // which song was returned
