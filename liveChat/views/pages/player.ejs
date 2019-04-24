@@ -88,9 +88,9 @@
                                 </div>
                             </form>
                         
-                            <p>Queue</p>
-                            <div class="text-truncate" style = "overflow-y: auto; overflow-x: hidden;">
-                                <ul id="queueList" style="list-style-type: none; overflow: inherit;">
+                            Queue
+                            <div class="text-truncate" style = "max-height: 315px; overflow-y: auto; overflow-x: hidden;">
+                                <ul id="queueList" style="list-style-type: none;">
                                     
                                 </ul>
                             </div>
@@ -111,7 +111,7 @@
                     </div>  
                 </div>
                 <!-- Room buttons -->
-                <div class="card mx-auto">
+                <div class="card mx-auto text-center">
                     <div class="card-body">
                         <h4 class="card-title">Server List:</h4>
                         <button class="btn btn-secondary room-btn py-2 my-1" id="basin">A-Basin</button>
@@ -176,7 +176,6 @@
                 setInterval(function(){ refreshTheToken(); }, 1800000); // refresh the access token every 30 minutes
                 
                 var songs; // stores songs
-                
                 // deals with filling the search dropdown
                 function callback(response){ 
                     songs = response;
@@ -192,7 +191,7 @@
                 // send search results to spotify
                 function getSearchResults(e){
                     e.preventDefault(); //prevents page from rerendering after 'enter' key is pressed
-                    var song = $('#songSearch').val();
+                    var song = $('#songSearch').val(); // user input for the song
 
                     $.ajax({
                         url:"https://api.spotify.com/v1/search?q=" + song + "&type=track&limit=8",
@@ -212,7 +211,7 @@
                     });
                 }
                 
-                // run search for songs
+                // add listeners for when the search form is submitted or the search button is clicked
                 $('#form_search').submit(function(e){ getSearchResults(e); });
                 $('#dropButton').click(function(e){ getSearchResults(e); });
 
@@ -230,16 +229,24 @@
                     // timestamp stuff
                     var d = new Date();
                     var h = d.getHours(), m = d.getMinutes(), side = "AM";
+
+                    // Change time to 12-hour format
                     if(h > 12){
                         h -= 12;
                         side = "PM";
                     }
+
+                    // make sure there is a zero in the timestamp
+                    if(m < 10){
+                        m = '0' + m;
+                    }
+                    
                     var t = h.toString() + ":" + m.toString() + side;
 
                     if(clientSaid){
-                        // client send message 
+                        // client sent the message 
                         innerCount =
-                        '<li class="right list-group-item clearfix">' +
+                        '<li class="right clearfix">' +
                             '<div class="chat-body clearfix">' +
                                 '<div class="header">' +
                                     '<small class="text-muted">' +
@@ -254,8 +261,9 @@
                         '</li>';
                     }
                     else{
+                        // server sent the message
                         innerCount =
-                        '<li class="left list-group-item clearfix">' +
+                        '<li class="left clearfix">' +
                             '<div class="chat-body clearfix">' +
                                 '<div class="header">' +
                                     '<strong class="primary-font">' + data.name + '</strong>' +
@@ -276,7 +284,10 @@
                 $('#chatForm').submit(function(e){
                     e.preventDefault(); // prevents page reloading
                     
-                    $('#messages').append(buildMsg({name:Cookies.get('user'), msg:$('#chat-input').val()}, true)); // add message to local chat log
+                    $('#messages').append(buildMsg({
+                        name:Cookies.get('user'),
+                        msg:$('#chat-input').val()
+                    }, true)); // add message to local chat log
 
                     socket.emit('chat message', $('#chat-input').val()); // send message to all other room participants
 
@@ -291,8 +302,9 @@
                 });
 
                 $('.search-result').click(function(){ // song result clicked, send to server
-                    var songIndex = this.id[6] - 1;
+                    var songIndex = this.id[6] - 1; // which song was returned
                     var uri = songs.tracks.items[songIndex].uri;
+
                     console.log('\'' + uri + '\' has been selected from the search'); // logs URI of the song
                     $('#dropButton').dropdown('hide'); // removes the dropdown from view
 
@@ -302,6 +314,7 @@
                         if(status === 0){
                             console.log('Song sent to server successfully, adding to local queue');
 
+                            // add the song that the user just selected to the user's queue
                             $('#queueList').append(buildMsg2({
                                 albumImg: songs.tracks.items[songIndex].album.images[1].url,
                                 song: songs.tracks.items[songIndex].name,
@@ -321,8 +334,10 @@
                     });
                 });
 
+                // someone else added a song to the queue
                 socket.on('queue song', function(data){
                     console.log('Song queue signal received with SID \'' + data.sid + '\'');
+
                     $.ajax({
                         url:"https://api.spotify.com/v1/tracks/" + data.sid,
                         type: 'GET',
@@ -334,7 +349,8 @@
                         success: function(data2) {
                             console.log('Successful Spotify track info request:');
                             console.log('Track name: \'' + data2.name + '\'');
-                            console.log('kids: ' + $('#queueList').children()['length']);
+                            
+                            // is the queue empty?
                             var first = $('#queueList').children()['length'] == 0;
                             $('#queueList').append(buildMsg2({
                                 albumImg: data2.album.images[1].url,
@@ -351,6 +367,7 @@
                     // get song details via spotify API call (song's name, artist, album cover)
                 });
 
+                // legacy code, likely can remove
                 /*function testQue(id){
                     $.ajax({
                         url:"https://api.spotify.com/v1/tracks/" + id,
@@ -376,10 +393,13 @@
                     });
                 }  */
 
+                // build the entry for the song queue
                 function buildMsg2(response, first){
-                    var head = (first ? '<li class="listElement firstInQueue mt-1">' : '<li class="listElement">');
+                    // if the queue is empty, set the element's ID appropriately
+                    var head = (first ? '<li class="listElement mt-1" id="firstInQueue">' : '<li class="listElement">');
                     var newItem =  head +
-                                '<img class="albImgQueue" src="' + response.albumImg + '">' +
+                                '<img class="albImgQueue" src="' + response.albumImg + '">' +                                
+                                '<span id="topID" style="display: none;">' + response.id + '</span>' + 
                                 '<div class="container">' +
                                     '<div class="sA">' + response.song + ' - ' + response.artist + '</div>' +
                                     '<div class="sB">' + response.alb_name + '</div>' +
@@ -390,7 +410,6 @@
           
                 // handles changing of the color of the room buttons
                 var oldButton;
-
                 $('#basin, #copper, #dora, #vail, #winterpark').click(function(){
                     // color change
                     if (oldButton) {
@@ -413,15 +432,16 @@
                             // enabled fields
                             $('#chat-submit, #chat-input, #songSearch, #dropButton').prop('disabled', false);
 
-                            $('#messages').html('');// wipe message log when changing rooms
-                            $('#queueList').html('');
+                            $('#messages, #queueList').html(''); // wipe message log and the queue when changing rooms
                             
                             var queryStr = "";
+                            // build string that is all the SIDs the server just sent us
                             for(var i = 0; i < elements.length; i++){
                                 queryStr += elements[i].sid + ',';
                             }
                             queryStr = queryStr.substr(0, queryStr.length - 1); // remove last extra comma
 
+                            // query spotify for songs in the queue
                             $.ajax({
                                 url:"https://api.spotify.com/v1/tracks/?ids=" + queryStr,
                                 type: 'GET',
@@ -436,15 +456,17 @@
                                     var listObj = $('#queueList');
                                     var first = true;
 
+                                    // Add all of the results to the queue
                                     for(var i = 0; i < data2.tracks.length; i++){
                                         listObj.append(buildMsg2({
                                             albumImg: data2.tracks[i].album.images[1].url,
                                             song: data2.tracks[i].name,
                                             artist: data2.tracks[i].artists[0].name,
-                                            alb_name: data2.tracks[i].album.name
+                                            alb_name: data2.tracks[i].album.name,
+                                            id: data2.tracks[i].id
                                         }, first));
                                         first = false;
-                                    }                                    
+                                    }
                                 },
                                 error: function() {
                                     console.log('couldnt queue up received song \'' + sid + '\'');

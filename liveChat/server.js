@@ -393,8 +393,8 @@ app.get('/refresh_token', function(req, res) {
 	});
 });
 
-// Chat test page
-app.get('/widget', function(req, res){
+// Chat test page -- originaly used for testing purposes, now defunct
+/*app.get('/widget', function(req, res){
 	if(!loggedIn(req)){
 		res.redirect('/login');
 	}
@@ -406,7 +406,7 @@ app.get('/widget', function(req, res){
 			active: 'listen-nav',
 		});
 	}
-});
+});*/
 
 // Manages the chat system and room changes
 io.on('connection', function(socket){
@@ -454,7 +454,7 @@ io.on('connection', function(socket){
 	socket.on('queue song', function(uri, clientFunction){
 		console.log('Server received song to add: ' + uri);
 
-		
+		// check if URI empty
 		if(uri.length > 0){
 			var parts = uri.trim().split(':');
 			if (parts.length !== 3){
@@ -491,8 +491,7 @@ io.on('connection', function(socket){
 								else if(Object.values(songResults)[0] == false){ // song is already in the db BUT not in this room, okay to add
 									return task.none('UPDATE songs SET ' + nameToColumn + ' = true WHERE sid = \'' + sid + '\';')
 									.then(nada => {
-										console.log(nameToColumn + ' set to true for ' + sid + ', sending to clients in room...');
-										console.log('SENDING QUEUE SONG SIGNAL B');
+										console.log(nameToColumn + ' set to true for ' + sid + ', sending to clients in room ' + roomName.r_name);
 										
 										socket.to(roomInfo.current_room).emit('queue song', {
 											sid:sid
@@ -503,7 +502,7 @@ io.on('connection', function(socket){
 										console.log('Attempt to change ' + nameToColumn + ' to true for ' + sid + ' failed:');
 										console.log(updateError);
 										return false;
-									})												
+									})		
 								}
 								else{ // song is already in this room, stop client.
 									clientFunction(2);
@@ -528,7 +527,7 @@ io.on('connection', function(socket){
 						console.log('Song updated successfully!');
 						clientFunction(0);
 					}
-					else{
+					else{ // pretty much shouldn't happen
 						console.log('No errors, but the message wasn\'t sent...');
 						clientFunction(0);
 					}
@@ -591,13 +590,13 @@ io.on('connection', function(socket){
 			socket.join(info[0]);// join the room!
 			console.log(info[1] + ' joined room ' + rname + ' (' + info[0] + ')!');
 			
-			fn(0, info[2]); // send all clear back to client
+			fn(0, info[2]); // send all clear back to client + all the songs in the room they selected
 		})
 		.catch(error => {
 			console.log('Room join query threw an error:');
 			console.log(error);
 		  	
-		  	fn(4, []); // send failure to client
+		  	fn(4, []); // send failure to client + empty array of songs
 		})
 	});
 
@@ -617,11 +616,6 @@ io.on('connection', function(socket){
 	});
 });
 
-// start server on port 8888
+// start server on port 8888 if local, else grab port from environment
 var portPort = (process.env.PORT) ? process.env.PORT : 8888;
 server.listen(portPort);
-/*console.log('http://localhost:8888 is the home page');
-console.log('http://localhost:8888/login is the login page');
-console.log('http://localhost:8888/signup is the signup page');
-console.log('http://localhost:8888/widget is the widget test page');
-console.log('http://localhost:8888/player is the player test page');*/
