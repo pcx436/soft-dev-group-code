@@ -1,6 +1,7 @@
 # Node Server
 This section of the repo is divided up into a few parts:
-- node_modules: a directory that holds a ton of modules for node. I don't know what a lot of them are, i copied them from Lab7.
+- node_modules: a directory that holds a ton of modules for node. I copied some of them from Lab7 and gave comments about what they are in the server.js file.
+
 - resources: split into the following directories
   - imgs: includes the SVG files for the navbar icons
   - css: includes style sheets for individual pages
@@ -10,7 +11,7 @@ This section of the repo is divided up into a few parts:
   - partials: includes the header and footer pages.
 
 ## server.js contents
-The `server.js` file is the beef of the server. There are, as of this commit, 3 main parts.
+The `server.js` file is the core of the server. There are, as of this commit, 3 main parts.
 - One manages the homepage
 - One manages HTTP GET on the login page
 - One manages HTTP POST on the login page (user attempting to login)
