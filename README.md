@@ -9,5 +9,5 @@ Repo Organization:
   where there is a seperate folder for the views and and then a server.js file
   
 Running the app:
-  In order to run the website localy type 'node server.js' in the liveChat directory
-  then in the web browser typye localhost:8888 which is the port the website runs on.
+  In order to run the website localy: type 'node server.js' in the liveChat directory
+  then in the web browser type localhost:8888 which is the port the website runs on.
