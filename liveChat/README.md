@@ -1,4 +1,4 @@
-# Node Server Stuffs
+# Node Server
 This section of the repo is divided up into a few parts:
 - node_modules: a directory that holds a ton of modules for node. I don't know what a lot of them are, i copied them from Lab7.
 - resources: split into the following directories
