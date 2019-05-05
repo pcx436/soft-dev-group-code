@@ -14,4 +14,7 @@ The `server.js` file is the beef of the server. There are, as of this commit, 3 
 - One manages the homepage
 - One manages HTTP GET on the login page
 - One manages HTTP POST on the login page (user attempting to login)
-There's also some extra content in there from lab7 i was using as a reference but you can ignore that for the most part.
+(There's also some extra content in there from lab7 i was using as a reference but you can ignore that for the most part.)
+- One manages authorization, and refresh Token of Spotify API
+- One manages chat system and changing room on the server side 
+- One manages adding, removing and queueing up the song
