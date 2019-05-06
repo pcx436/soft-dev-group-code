@@ -5,16 +5,15 @@ This app provides a collaborative listening room for skiiers.  Skiers can choose
 
 
 
-Repo Organization:
-  All the relevant files for the project are stored in liveChat file. Under liveChat, there are node_modules, resources, and views files. (Each description of the files are explained in the ReadMe of liveChat file)
-  
-  
-Running the app:
-  The actual code to run the project is located under the liveChat file folder
-  where there is a seperate folder for the views and and then a server.js file
-  
-  In order to run the website locally: type 'node server.js' in the liveChat directory
-  then in the web browser type localhost:8888 which is the port the website runs on.
-  
-  In order to run the app through herkou. Here is the link.
-  Link to heroku: https://mountain-music.herokuapp.com/login 
+## Repo Organization:
+  All the relevant server files for the project are stored in liveChat file. Under liveChat, there are node_modules, resources, and views files. (Each description of the files are explained in the ReadMe of liveChat file).
+
+### Building the Database
+  If you want to run this app local you'll have to first run the following scripts into your PostgreSQL database IN ORDER:
+  1. sqlScripts/db_create.sql
+  2. sqlScripts/room_setup.sql
+  3. sqlScripts/song_db.sql
+
+### Running the server
+  First run `npm install` from the main directory followed by `npm start`. Then, in your web browser go to [this link](http://localhost:8888/)
+  In order to run the app through Herkou (our hosting platform of choice), [here is the link](https://mountain-music.herokuapp.com/login).
